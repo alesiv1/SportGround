@@ -1,36 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System.Web.Mvc;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.BusinessLogic.Operations;
 
 namespace SportGround.Web.Controllers
 {
     public class CourtController : Controller
     {
-	    private CourtOperations _courtData;
+	    public CourtController() { }
+		private ICourtOperations _courtOperations;
 
-	    public CourtController(CourtOperations courtOperations)
+	    public CourtController(ICourtOperations operations)
 	    {
-		    _courtData = courtOperations;
+		    _courtOperations = operations;
 	    }
 
-        // GET: Court
-        public ActionResult Index()
-        {
-	        var allCourt = _courtData.GetAll();
-			return View();
+		// GET: Court
+		public ActionResult Index()
+		{
+			var allCourt = _courtOperations.GetAll();
+			if (allCourt == null)
+			{
+				return new HttpNotFoundResult();
+			}
+			return View(allCourt);
         }
 
         // GET: Court/Details/5
         public ActionResult Details(int id)
         {
-	        var court = _courtData.GetCourtById(id);
-			return View(court);
+	        var court = _courtOperations.GetCourtById(id);
+            return View(court);
         }
 
         // GET: Court/Create
@@ -41,14 +41,13 @@ namespace SportGround.Web.Controllers
 
         // POST: Court/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(FormCollection collection)
         {
             try
             {
-				var court = GetModel(collection);
-				_courtData.Create(court);
-				return RedirectToAction(nameof(Index));
+	            var court = GetCourt(collection);
+				_courtOperations.Create(court);
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -59,19 +58,19 @@ namespace SportGround.Web.Controllers
         // GET: Court/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(_courtData.GetCourtById(id));
+	        var court = _courtOperations.GetCourtById(id);
+            return View(court);
         }
 
         // POST: Court/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, FormCollection collection)
         {
             try
             {
-				var court = GetModel(collection);
-				_courtData.Update(id, court);
-				return RedirectToAction(nameof(Index));
+				var court = GetCourt(collection);
+				_courtOperations.Update(id, court);
+				return RedirectToAction("Index");
             }
             catch
             {
@@ -82,18 +81,18 @@ namespace SportGround.Web.Controllers
         // GET: Court/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(_courtData.GetCourtById(id));
+	        var court = _courtOperations.GetCourtById(id);
+			return View(court);
         }
 
         // POST: Court/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, FormCollection collection)
         {
             try
             {
-				_courtData.Delete(id);
-				return RedirectToAction(nameof(Index));
+				_courtOperations.Delete(id);
+				return RedirectToAction("Index");
             }
             catch
             {
@@ -101,15 +100,15 @@ namespace SportGround.Web.Controllers
             }
         }
 
-        private CourtModel GetModel(IFormCollection collection)
+        private CourtModel GetCourt(FormCollection collectio)
         {
-	        int id = Convert.ToInt32(collection["Id"]);
-	        string name = Convert.ToString(collection["Name"]);
-			return new CourtModel()
-			{
+	        int id = Convert.ToInt32(Request.Form["Id"]);
+			string name = Convert.ToString(Request.Form["Name"]);
+	        return new CourtModel()
+	        {
 				Id = id,
 				Name = name
-			};
+	        };
         }
     }
 }

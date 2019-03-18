@@ -1,7 +1,7 @@
 ﻿@model SportGround.BusinessLogic.Models.CourtModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = "Details";
 }
 
 <h2>Details</h2>
@@ -11,20 +11,16 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
+
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
+
     </dl>
 </div>
-<div>
+<p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -46,6 +46,11 @@
     <Compile Include="Operations\CourtOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SportGround.Data\SportGround.Data.csproj">
+      <Project>{bbe55e90-a359-438d-b138-f50e997b9b16}</Project>
+      <Name>SportGround.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

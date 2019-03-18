@@ -3,47 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
+using SportGround.Data.Entities;
+using SportGround.Data.Interfaces;
+using SportGround.Data.Repositories;
 
 namespace SportGround.BusinessLogic.Operations
 {
 	public class CourtOperations : ICourtOperations
 	{
-		private List<CourtModel> data = new List<CourtModel>()
+		private IDataRepository<CourtEntity> _courtData;
+
+		public CourtOperations(IDataRepository<CourtEntity> courtRepository)
 		{
-			new CourtModel(){ Id = 1, Name = "First" },
-			new CourtModel(){ Id = 2, Name = "Two" },
-			new CourtModel(){ Id = 3, Name = "Three" },
-			new CourtModel(){ Id = 4, Name = "Four" },
-		};
+			_courtData = courtRepository;
+		}
 
 		public void Create(CourtModel model)
 		{
-			data.Add(model);
+			CourtEntity court = new CourtEntity()
+			{
+				Id = model.Id,
+				Name = model.Name
+			};
+			_courtData.Insert(court);
 		}
 
 		public void Delete(int id)
 		{
-			data.Remove(data.FirstOrDefault(s => s.Id == id));
+			_courtData.DeleteById(id);
 		}
 
 		public List<CourtModel> GetAll()
 		{
-			return data;
+			var allCourt = new List<CourtModel>();
+			foreach (var court in _courtData.Get)
+			{
+				allCourt.Add(new CourtModel()
+				{
+					Id = court.Id,
+					Name = court.Name
+				});
+			}
+			return allCourt;
 		}
 
 		public CourtModel GetCourtById(int id)
 		{
-			return data.FirstOrDefault(s => s.Id == id);
+			var courtEntity = _courtData.GetById(id);
+			return new CourtModel()
+			{
+				Id = courtEntity.Id,
+				Name = courtEntity.Name
+			};
 		}
 
 		public void Update(int id, CourtModel model)
 		{
-			var record = data.FirstOrDefault(s => s.Id == id);
-			if (record != null)
-			{
-				record.Id = model.Id;
-				record.Name = model.Name;
-			}
+			var court = _courtData.GetById(id);
+			court.Name = model.Name;
+			_courtData.Update(court);
 		}
 	}
 }

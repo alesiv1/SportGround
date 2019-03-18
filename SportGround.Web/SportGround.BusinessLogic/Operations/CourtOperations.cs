@@ -8,7 +8,13 @@ namespace SportGround.BusinessLogic.Operations
 {
 	public class CourtOperations : ICourtOperations
 	{
-		private List<CourtModel> data = new List<CourtModel>();
+		private List<CourtModel> data = new List<CourtModel>()
+		{
+			new CourtModel(){ Id = 1, Name = "First" },
+			new CourtModel(){ Id = 2, Name = "Two" },
+			new CourtModel(){ Id = 3, Name = "Three" },
+			new CourtModel(){ Id = 4, Name = "Four" },
+		};
 
 		public void Create(CourtModel model)
 		{

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SportGround.BusinessLogic.Interfaces;
+using SportGround.BusinessLogic.Operations;
 
 namespace SportGround.Web
 {
@@ -33,6 +35,8 @@ namespace SportGround.Web
 
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddScoped<ICourtOperations, CourtOperations>();
+			services.AddScoped<CourtOperations, CourtOperations>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

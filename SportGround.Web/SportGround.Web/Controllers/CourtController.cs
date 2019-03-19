@@ -7,7 +7,6 @@ namespace SportGround.Web.Controllers
 {
     public class CourtController : Controller
     {
-	    public CourtController() { }
 		private ICourtOperations _courtOperations;
 
 	    public CourtController(ICourtOperations operations)

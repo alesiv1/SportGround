@@ -49,6 +49,7 @@ namespace SportGround.Web
 			container.RegisterType<ICourtOperations, CourtOperations>();
 			container.RegisterType<CourtOperations, CourtOperations>();
 			container.RegisterType<IDataRepository<CourtEntity>, DataRepository<CourtEntity>>();
+			container.RegisterType<DataRepository<CourtEntity>, DataRepository<CourtEntity>>();
 		}
     }
 }

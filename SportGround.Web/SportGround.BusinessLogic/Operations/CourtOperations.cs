@@ -36,15 +36,19 @@ namespace SportGround.BusinessLogic.Operations
 		public List<CourtModel> GetAll()
 		{
 			var allCourt = new List<CourtModel>();
-			var query = _courtData.Get;
-			foreach (var court in query)
+			try
 			{
-				allCourt.Add(new CourtModel()
+				var query = _courtData.Get.ToList();
+				foreach (var court in query)
 				{
-					Id = court.Id,
-					Name = court.Name
-				});
+					allCourt.Add(new CourtModel()
+					{
+						Id = court.Id,
+						Name = court.Name
+					});
+				}
 			}
+			catch { }
 			return allCourt;
 		}
 

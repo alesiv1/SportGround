@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
+using SportGround.BusinessLogic.Operations;
 
 namespace SportGround.Web.Controllers
 {
@@ -9,12 +10,13 @@ namespace SportGround.Web.Controllers
     {
 		private ICourtOperations _courtOperations;
 
-	    public CourtController(ICourtOperations operations)
+		public CourtController(ICourtOperations operations)
 	    {
 		    _courtOperations = operations;
 	    }
 
 		// GET: Court
+		[Route("Court")]
 		public ActionResult Index()
 		{
 			var allCourt = _courtOperations.GetAll();
@@ -101,7 +103,7 @@ namespace SportGround.Web.Controllers
 
         private CourtModel GetCourt(FormCollection collectio)
         {
-	        int id = Convert.ToInt32(Request.Form["Id"]);
+	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
 			string name = Convert.ToString(Request.Form["Name"]);
 	        return new CourtModel()
 	        {

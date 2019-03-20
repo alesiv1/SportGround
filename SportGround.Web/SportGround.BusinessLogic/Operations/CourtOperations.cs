@@ -48,7 +48,10 @@ namespace SportGround.BusinessLogic.Operations
 					});
 				}
 			}
-			catch { }
+			catch (Exception ex)
+			{
+				throw;
+			}
 			return allCourt;
 		}
 

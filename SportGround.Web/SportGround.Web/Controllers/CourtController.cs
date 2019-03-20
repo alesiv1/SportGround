@@ -20,10 +20,6 @@ namespace SportGround.Web.Controllers
 		public ActionResult Index()
 		{
 			var allCourt = _courtOperations.GetAll();
-			if (allCourt == null)
-			{
-				return new HttpNotFoundResult();
-			}
 			return View(allCourt);
         }
 

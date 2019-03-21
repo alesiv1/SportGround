@@ -42,8 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\ICourtOperations.cs" />
+    <Compile Include="Interfaces\IUserOperations.cs" />
     <Compile Include="Models\CourtModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Operations\CourtOperations.cs" />
+    <Compile Include="Operations\UserOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

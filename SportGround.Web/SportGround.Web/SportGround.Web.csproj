@@ -170,11 +170,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
+    <Compile Include="Controllers\AuthorisationController.cs" />
     <Compile Include="Controllers\CourtController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\LogInModel.cs" />
+    <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -221,10 +224,12 @@
     <Content Include="Views\Court\Delete.cshtml" />
     <Content Include="Views\Court\Edit.cshtml" />
     <Content Include="Views\Court\Create.cshtml" />
+    <Content Include="Views\Authorisation\Login.cshtml" />
+    <Content Include="Views\Authorisation\Registration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Context\" />
     <Folder Include="Views\Registration\" />
   </ItemGroup>
   <ItemGroup>

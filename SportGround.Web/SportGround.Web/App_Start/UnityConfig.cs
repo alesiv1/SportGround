@@ -5,6 +5,7 @@ using SportGround.Data.Repositories;
 using System;
 using SportGround.Data.Entities;
 using Unity;
+using SportGround.Data.entities;
 
 namespace SportGround.Web
 {
@@ -50,6 +51,11 @@ namespace SportGround.Web
 			container.RegisterType<CourtOperations, CourtOperations>();
 			container.RegisterType<IDataRepository<CourtEntity>, DataRepository<CourtEntity>>();
 			container.RegisterType<DataRepository<CourtEntity>, DataRepository<CourtEntity>>();
+
+			container.RegisterType<IUserOperations, UserOperations>();
+			container.RegisterType<UserOperations, UserOperations>();
+			container.RegisterType<IDataRepository<UserEntity>, DataRepository<UserEntity>>();
+			container.RegisterType<DataRepository<UserEntity>, DataRepository<UserEntity>>();
 		}
     }
 }

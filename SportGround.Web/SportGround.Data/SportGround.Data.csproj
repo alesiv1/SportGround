@@ -58,6 +58,10 @@
     <Compile Include="Migrations\201903181157255_CreateLocalDB.Designer.cs">
       <DependentUpon>201903181157255_CreateLocalDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903211024283_DeleteRegistrationTable.cs" />
+    <Compile Include="Migrations\201903211024283_DeleteRegistrationTable.Designer.cs">
+      <DependentUpon>201903211024283_DeleteRegistrationTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\DataRepository.cs" />
@@ -65,6 +69,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201903181157255_CreateLocalDB.resx">
       <DependentUpon>201903181157255_CreateLocalDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903211024283_DeleteRegistrationTable.resx">
+      <DependentUpon>201903211024283_DeleteRegistrationTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

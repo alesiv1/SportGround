@@ -16,6 +16,7 @@ namespace SportGround.Web.Controllers
 	    }
 
 		// GET: Court
+		[Authorize]
 		[Route("Court")]
 		public ActionResult Index()
 		{
@@ -23,21 +24,24 @@ namespace SportGround.Web.Controllers
 			return View(allCourt);
         }
 
-        // GET: Court/Details/5
-        public ActionResult Details(int id)
+		// GET: Court/Details/5
+		[Authorize]
+		public ActionResult Details(int id)
         {
 	        var court = _courtOperations.GetCourtById(id);
             return View(court);
         }
 
-        // GET: Court/Create
-        public ActionResult Create()
+		// GET: Court/Create
+		[Authorize]
+		public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Court/Create
-        [HttpPost]
+		// POST: Court/Create
+		[Authorize]
+		[HttpPost]
         public ActionResult Create(FormCollection collection)
         {
             try
@@ -52,15 +56,17 @@ namespace SportGround.Web.Controllers
             }
         }
 
-        // GET: Court/Edit/5
-        public ActionResult Edit(int id)
+		// GET: Court/Edit/5
+		[Authorize]
+		public ActionResult Edit(int id)
         {
 	        var court = _courtOperations.GetCourtById(id);
             return View(court);
         }
 
-        // POST: Court/Edit/5
-        [HttpPost]
+		// POST: Court/Edit/5
+		[Authorize]
+		[HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
             try
@@ -75,15 +81,17 @@ namespace SportGround.Web.Controllers
             }
         }
 
-        // GET: Court/Delete/5
-        public ActionResult Delete(int id)
+		// GET: Court/Delete/5
+		[Authorize]
+		public ActionResult Delete(int id)
         {
 	        var court = _courtOperations.GetCourtById(id);
 			return View(court);
         }
 
-        // POST: Court/Delete/5
-        [HttpPost]
+		// POST: Court/Delete/5
+		[Authorize]
+		[HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {
             try
@@ -97,7 +105,8 @@ namespace SportGround.Web.Controllers
             }
         }
 
-        private CourtModel GetCourt(FormCollection collectio)
+        [Authorize]
+		private CourtModel GetCourt(FormCollection collectio)
         {
 	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
 			string name = Convert.ToString(Request.Form["Name"]);

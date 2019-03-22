@@ -19,13 +19,13 @@ namespace SportGround.Web.Controllers
 		    _userOperations = operations;
 	    }
 
-		public ActionResult Login()
+		public ActionResult Login(string returnUrl)
 	    {
 		    return View();
 	    }
 
 		[HttpPost]
-		public ActionResult Login(LogInModel model)
+		public ActionResult Login(LogInModel model, string returnUrl)
         {
 			if (!ModelState.IsValid)
 			{
@@ -49,7 +49,7 @@ namespace SportGround.Web.Controllers
 
 				authManager.SignIn(identity);
 
-				return Redirect(GetRedirectUrl(""));
+				return Redirect(GetRedirectUrl(returnUrl));
 			}
 
 			ModelState.AddModelError("", "Invalid email or password");

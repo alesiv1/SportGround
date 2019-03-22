@@ -22,6 +22,12 @@ namespace SportGround.Data.Configurations
 
 			Property(x => x.Role)
 				.IsRequired();
+
+			Property(x => x.Email)
+				.IsRequired();
+
+			Property(x => x.Password)
+				.IsRequired();
 		}
 	}
 }

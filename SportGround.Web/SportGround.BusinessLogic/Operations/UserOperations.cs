@@ -26,7 +26,9 @@ namespace SportGround.BusinessLogic.Operations
 				Id = model.Id,
 				FirstName = model.FirstName,
 				LastName = model.LastName,
-				Role = model.Role
+				Role = model.Role,
+				Password = model.Password,
+				Email = model.Email
 			};
 			_userData.Insert(user);
 		}
@@ -49,7 +51,9 @@ namespace SportGround.BusinessLogic.Operations
 						Id = user.Id,
 						FirstName = user.FirstName,
 						LastName = user.LastName,
-						Role = user.Role
+						Role = user.Role,
+						Password = user.Password,
+						Email = user.Email
 					});
 				}
 			}
@@ -68,16 +72,19 @@ namespace SportGround.BusinessLogic.Operations
 				Id = userEntity.Id,
 				FirstName = userEntity.FirstName,
 				LastName = userEntity.LastName,
-				Role = userEntity.Role
+				Role = userEntity.Role,
+				Password = userEntity.Password,
+				Email = userEntity.Email
 			};
 		}
 
 		public void Update(int id, UserModel model)
 		{
 			var user = _userData.GetById(id);
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
-			user.Role = model.Role;
+			user.FirstName = model.FirstName ?? user.FirstName;
+			user.LastName = model.LastName ?? user.LastName;
+			user.Role = model.Role ?? user.Role;
+			user.Email = model.Email ?? user.Email;
 			_userData.Update(user);
 		}
 	}

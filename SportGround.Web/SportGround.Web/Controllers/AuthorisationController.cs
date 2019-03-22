@@ -32,13 +32,14 @@ namespace SportGround.Web.Controllers
 				return View();
 			}
 
-			var user = _userOperations.GetAll().FirstOrDefault(i => i.FirstName == model.Login);
+			var user = _userOperations.GetAll()
+				.FirstOrDefault(m => m.FirstName == model.Login && m.Password == model.Password);
 
-			if (user != null && model.Password == "password")
+			if (user != null)
 			{
 				var identity = new ClaimsIdentity(new[] {
 						new Claim(ClaimTypes.Name, user.FirstName),
-						new Claim(ClaimTypes.Email, "test@test.gmail"),
+						new Claim(ClaimTypes.Email, user.Email),
 						new Claim(ClaimTypes.Country, "Ukrain")
 					},
 					DefaultAuthenticationTypes.ApplicationCookie);

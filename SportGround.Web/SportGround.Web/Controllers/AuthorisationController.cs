@@ -76,8 +76,8 @@ namespace SportGround.Web.Controllers
         {
 	        if (!ModelState.IsValid)
 	        {
-		        return View();
-	        }
+		        return RedirectToAction("Registration", "Authorisation");
+			}
 	        var user = GetUser(collection);
 	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName))
 	        {

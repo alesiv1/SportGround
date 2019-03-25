@@ -79,8 +79,10 @@ namespace SportGround.Web.Controllers
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
-	        var user = GetUser(collection);
-	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName))
+
+			var user = GetUser(collection);
+	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName) ||
+	            user.Password != user.ConfirmPassword)
 	        {
 		        _userOperations.Create(user);
 		        return RedirectToAction("Index", "User");
@@ -98,22 +100,24 @@ namespace SportGround.Web.Controllers
 	        return returnUrl;
         }
 
-        private UserModel GetUser(FormCollection collectio)
+        private UserRegistrationModel GetUser(FormCollection collectio)
         {
-	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
+	        int id = Convert.ToInt32(Request.Form["Id"]);
 	        string firstName = Convert.ToString(Request.Form["FirstName"]);
 	        string lastName = Convert.ToString(Request.Form["LastName"]);
 	        string role = Convert.ToString(Request.Form["Role"]) ?? "User";
 	        string email = Convert.ToString(Request.Form["Email"]);
 	        string password = Convert.ToString(Request.Form["Password"]);
-	        return new UserModel()
+	        var confirmPassword = Convert.ToString(Request.Form["ConfirmPassword"]);
+			return new UserRegistrationModel()
 	        {
 		        Id = id,
 		        FirstName = firstName,
 		        LastName = lastName,
 		        Email = email,
 		        Role = role == "Admin" ? UserRole.Admin : UserRole.User,
-				Password = password
+				Password = password,
+				ConfirmPassword = confirmPassword
 	        };
         }
 	}

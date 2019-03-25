@@ -48,9 +48,11 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
 		public ActionResult Create(FormCollection collection)
 		{
+			string password = Convert.ToString(Request.Form["Password"]);
 			try
 			{
 				var user = GetUser(collection);
+				user.Password = password;
 				_userOperations.Create(user);
 				return RedirectToAction("Index");
 			}
@@ -113,16 +115,33 @@ namespace SportGround.Web.Controllers
 		public ActionResult ResetPassword(int id)
         {
 			var user = _userOperations.GetUserById(id);
-			return View(user);
+			string password = Convert.ToString(Request.Form["Password"]);
+			var userForChange = new UserRegistrationModel()
+			{
+				Id = id,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				Email = user.Email,
+				Role = user.Role,
+				Password = password,
+				ConfirmPassword = "",
+			};
+			return View(userForChange);
 		}
 
 		[Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult ResetPassword(int id, FormCollection collection)
         {
-	        try
+	        if (!ModelState.IsValid)
 	        {
-		        string password = Convert.ToString(Request.Form["Password"]);
+		        return RedirectToAction("ResetPassword", "User");
+	        }
+			string password = Convert.ToString(Request.Form["Password"]);
+	        string confirmPassword = Convert.ToString(Request.Form["ConfirmPassword"]);
+	        if (password != confirmPassword) return View();
+			try
+	        {
 		        var user = _userOperations.GetUserById(id);
 		        user.Password = password;
 		        _userOperations.Update(id, user);
@@ -161,12 +180,11 @@ namespace SportGround.Web.Controllers
 
 		private UserModel GetUser(FormCollection collectio)
         {
-	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
+	        int id = Convert.ToInt32(Request.Form["Id"]);
 	        string firstName = Convert.ToString(Request.Form["FirstName"]);
 	        string lastName = Convert.ToString(Request.Form["LastName"]);
 	        string role = Convert.ToString(Request.Form["Role"]);
 	        string email = Convert.ToString(Request.Form["Email"]);
-			string password = Convert.ToString(Request.Form["Password"]);
 			return new UserModel()
 	        {
 		        Id = id,
@@ -174,7 +192,6 @@ namespace SportGround.Web.Controllers
 				LastName = lastName,
 				Email = email,
 				Role = role == "Admin" ? UserRole.Admin : UserRole.User,
-				Password = password
 			};
         }
 	}

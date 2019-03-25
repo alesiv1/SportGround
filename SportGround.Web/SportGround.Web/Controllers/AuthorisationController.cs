@@ -92,7 +92,7 @@ namespace SportGround.Web.Controllers
         {
 	        if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
 	        {
-		        return Url.Action("Index", "Court");
+		        return Url.Action("Index", "User");
 	        }
 
 	        return returnUrl;

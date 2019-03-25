@@ -94,6 +94,7 @@ namespace SportGround.Web.Controllers
 		}
 
 		// POST: User/Delete/5
+		[Authorize]
 		[HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {
@@ -108,7 +109,55 @@ namespace SportGround.Web.Controllers
 	        }
 		}
 
-        private UserModel GetUser(FormCollection collectio)
+        public ActionResult ResetPassword(int id)
+        {
+			var user = _userOperations.GetUserById(id);
+			return View(user);
+		}
+
+		[Authorize]
+        [HttpPost]
+        public ActionResult ResetPassword(int id, FormCollection collection)
+        {
+	        try
+	        {
+		        string password = Convert.ToString(Request.Form["Password"]);
+		        var user = _userOperations.GetUserById(id);
+		        user.Password = password;
+		        _userOperations.Update(id, user);
+		        return RedirectToAction("Index");
+	        }
+	        catch
+	        {
+		        return View();
+	        }
+		}
+
+        public ActionResult ChangeRole(int id)
+        {
+			var user = _userOperations.GetUserById(id);
+			return View(user);
+		}
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ChangeRole(int id, FormCollection collection)
+        {
+			try
+			{
+				string role = Convert.ToString(Request.Form["Role"]);
+				var user = _userOperations.GetUserById(id);
+				user.Role = role == "Admin" ? UserRole.Admin : UserRole.User;
+				_userOperations.Update(id, user);
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return View();
+			}
+		}
+
+		private UserModel GetUser(FormCollection collectio)
         {
 	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
 	        string firstName = Convert.ToString(Request.Form["FirstName"]);

@@ -85,6 +85,8 @@ namespace SportGround.BusinessLogic.Operations
 			user.FirstName = model.FirstName ?? user.FirstName;
 			user.LastName = model.LastName ?? user.LastName;
 			user.Email = model.Email ?? user.Email;
+			user.Role = String.IsNullOrEmpty(model.Role.ToString()) ? user.Role : model.Role.ToString();
+			user.Password = model.Password ?? user.Password;
 			_userData.Update(user);
 		}
 	}

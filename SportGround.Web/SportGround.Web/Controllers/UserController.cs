@@ -109,13 +109,14 @@ namespace SportGround.Web.Controllers
 	        }
 		}
 
-        public ActionResult ResetPassword(int id)
+        [Authorize(Roles = "Admin")]
+		public ActionResult ResetPassword(int id)
         {
 			var user = _userOperations.GetUserById(id);
 			return View(user);
 		}
 
-		[Authorize]
+		[Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult ResetPassword(int id, FormCollection collection)
         {
@@ -133,14 +134,15 @@ namespace SportGround.Web.Controllers
 	        }
 		}
 
-        public ActionResult ChangeRole(int id)
+        [Authorize(Roles = "Admin")]
+		public ActionResult ChangeRole(int id)
         {
 			var user = _userOperations.GetUserById(id);
 			return View(user);
 		}
 
-        [Authorize]
-        [HttpPost]
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
         public ActionResult ChangeRole(int id, FormCollection collection)
         {
 			try

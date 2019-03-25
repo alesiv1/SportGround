@@ -42,7 +42,7 @@ namespace SportGround.Web.Controllers
 				var identity = new ClaimsIdentity(new[] {
 						new Claim(ClaimTypes.Name, user.FirstName),
 						new Claim(ClaimTypes.Email, user.Email),
-						new Claim(ClaimTypes.Country, "Ukrain")
+						new Claim(ClaimTypes.Role, user.Role.ToString())
 					},
 					DefaultAuthenticationTypes.ApplicationCookie);
 

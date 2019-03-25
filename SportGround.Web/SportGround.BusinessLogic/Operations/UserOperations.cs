@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SportGround.BusinessLogic.Enums;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.entities;
@@ -26,7 +27,7 @@ namespace SportGround.BusinessLogic.Operations
 				Id = model.Id,
 				FirstName = model.FirstName,
 				LastName = model.LastName,
-				Role = model.Role,
+				Role = model.Role.ToString(),
 				Password = model.Password,
 				Email = model.Email
 			};
@@ -51,7 +52,7 @@ namespace SportGround.BusinessLogic.Operations
 						Id = user.Id,
 						FirstName = user.FirstName,
 						LastName = user.LastName,
-						Role = user.Role,
+						Role = user.Role == "Admin" ? UserRole.Admin : UserRole.User,
 						Password = user.Password,
 						Email = user.Email
 					});
@@ -72,7 +73,7 @@ namespace SportGround.BusinessLogic.Operations
 				Id = userEntity.Id,
 				FirstName = userEntity.FirstName,
 				LastName = userEntity.LastName,
-				Role = userEntity.Role,
+				Role = userEntity.Role == "Admin" ? UserRole.Admin : UserRole.User,
 				Password = userEntity.Password,
 				Email = userEntity.Email
 			};
@@ -83,7 +84,6 @@ namespace SportGround.BusinessLogic.Operations
 			var user = _userData.GetById(id);
 			user.FirstName = model.FirstName ?? user.FirstName;
 			user.LastName = model.LastName ?? user.LastName;
-			user.Role = model.Role ?? user.Role;
 			user.Email = model.Email ?? user.Email;
 			_userData.Update(user);
 		}

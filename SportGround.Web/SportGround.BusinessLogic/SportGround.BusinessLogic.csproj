@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Interfaces\ICourtOperations.cs" />
     <Compile Include="Interfaces\IUserOperations.cs" />
     <Compile Include="Models\CourtModel.cs" />

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using SportGround.BusinessLogic.Enums;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Web.Models;
@@ -102,7 +103,7 @@ namespace SportGround.Web.Controllers
 	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
 	        string firstName = Convert.ToString(Request.Form["FirstName"]);
 	        string lastName = Convert.ToString(Request.Form["LastName"]);
-	        string role = Convert.ToString(Request.Form["Role"]);
+	        string role = Convert.ToString(Request.Form["Role"]) ?? "User";
 	        string email = Convert.ToString(Request.Form["Email"]);
 	        string password = Convert.ToString(Request.Form["Password"]);
 	        return new UserModel()
@@ -111,8 +112,8 @@ namespace SportGround.Web.Controllers
 		        FirstName = firstName,
 		        LastName = lastName,
 		        Email = email,
-		        Role = role,
-		        Password = password
+		        Role = role == "Admin" ? UserRole.Admin : UserRole.User,
+				Password = password
 	        };
         }
 	}

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SportGround.BusinessLogic.Enums;
 
 namespace SportGround.Web.Controllers
 {
@@ -121,7 +122,7 @@ namespace SportGround.Web.Controllers
 		        FirstName = firstName,
 				LastName = lastName,
 				Email = email,
-				Role = role,
+				Role = role == "Admin" ? UserRole.Admin : UserRole.User,
 				Password = password
 			};
         }

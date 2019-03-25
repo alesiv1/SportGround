@@ -52,7 +52,7 @@ namespace SportGround.Web.Controllers
 			try
 			{
 				var user = GetUser(collection);
-				user.Password = password;
+				user.Password = _userOperations.GetPasswordHashCode(user.Id, password);
 				_userOperations.Create(user);
 				return RedirectToAction("Index");
 			}
@@ -111,11 +111,10 @@ namespace SportGround.Web.Controllers
 	        }
 		}
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
 		public ActionResult ResetPassword(int id)
         {
 			var user = _userOperations.GetUserById(id);
-			string password = Convert.ToString(Request.Form["Password"]);
 			var userForChange = new UserRegistrationModel()
 			{
 				Id = id,
@@ -123,13 +122,13 @@ namespace SportGround.Web.Controllers
 				LastName = user.LastName,
 				Email = user.Email,
 				Role = user.Role,
-				Password = password,
+				Password = "",
 				ConfirmPassword = "",
 			};
 			return View(userForChange);
 		}
 
-		[Authorize(Roles = "Admin")]
+		[Authorize]
         [HttpPost]
         public ActionResult ResetPassword(int id, FormCollection collection)
         {
@@ -143,7 +142,7 @@ namespace SportGround.Web.Controllers
 			try
 	        {
 		        var user = _userOperations.GetUserById(id);
-		        user.Password = password;
+		        user.Password = _userOperations.GetPasswordHashCode(id, password);
 		        _userOperations.Update(id, user);
 		        return RedirectToAction("Index");
 	        }

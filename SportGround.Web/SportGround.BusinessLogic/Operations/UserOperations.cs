@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using SportGround.BusinessLogic.Enums;
@@ -62,6 +63,7 @@ namespace SportGround.BusinessLogic.Operations
 			{
 				throw;
 			}
+
 			return allUsers;
 		}
 
@@ -89,5 +91,35 @@ namespace SportGround.BusinessLogic.Operations
 			user.Password = model.Password ?? user.Password;
 			_userData.Update(user);
 		}
+
+		public string GetPasswordHashCode(int id, string password)
+		{
+			var hash = "";
+			foreach (var symbol in password)
+			{
+				hash += ((int)symbol + (id * id)).ToString() + ".";
+			}
+
+			hash += id;
+			return hash;
+		}
+
+		public string GetDecodePassword(string passwordHashCode)
+		{
+			if (!passwordHashCode.Contains("."))
+			{
+				return passwordHashCode;
+			}
+
+			var allsymbols = passwordHashCode.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+			var id = Int16.Parse(allsymbols[allsymbols.Length - 1]);
+			var password = "";
+			for (int i = 0; i < allsymbols.Length - 1; i++)
+			{
+				password += ((char)(Int16.Parse(allsymbols[i]) - (id * id))).ToString();
+			}
+			return password;
+		}
 	}
 }
+

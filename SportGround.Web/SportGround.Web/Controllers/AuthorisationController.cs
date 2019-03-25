@@ -33,9 +33,9 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-
 			var user = _userOperations.GetAll()
-				.FirstOrDefault(m => m.FirstName == model.Login && m.Password == model.Password);
+				.FirstOrDefault(m => m.FirstName == model.Login && 
+				_userOperations.GetDecodePassword(m.Password) == model.Password);
 
 			if (user != null)
 			{
@@ -84,7 +84,8 @@ namespace SportGround.Web.Controllers
 	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName) ||
 	            user.Password != user.ConfirmPassword)
 	        {
-		        _userOperations.Create(user);
+		        user.Password = _userOperations.GetPasswordHashCode(user.Id, user.Password);
+				_userOperations.Create(user);
 		        return RedirectToAction("Index", "User");
 			}
 			return RedirectToAction("Registration", "Authorisation");

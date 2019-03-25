@@ -105,7 +105,6 @@ namespace SportGround.Web.Controllers
             }
         }
 
-        [Authorize]
 		private CourtModel GetCourt(FormCollection collectio)
         {
 	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;

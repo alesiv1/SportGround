@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using SportGround.BusinessLogic.Interfaces;
+using SportGround.BusinessLogic.Models;
 using SportGround.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -66,9 +67,25 @@ namespace SportGround.Web.Controllers
 		}
 
 		public ActionResult Registration()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult Registration(FormCollection collection)
         {
-	        return View();
-        }
+	        if (!ModelState.IsValid)
+	        {
+		        return View();
+	        }
+	        var user = GetUser(collection);
+	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName))
+	        {
+		        _userOperations.Create(user);
+		        return RedirectToAction("Index", "User");
+			}
+			return RedirectToAction("Registration", "Authorisation");
+		}
 
         private string GetRedirectUrl(string returnUrl)
         {
@@ -78,6 +95,25 @@ namespace SportGround.Web.Controllers
 	        }
 
 	        return returnUrl;
+        }
+
+        private UserModel GetUser(FormCollection collectio)
+        {
+	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
+	        string firstName = Convert.ToString(Request.Form["FirstName"]);
+	        string lastName = Convert.ToString(Request.Form["LastName"]);
+	        string role = Convert.ToString(Request.Form["Role"]);
+	        string email = Convert.ToString(Request.Form["Email"]);
+	        string password = Convert.ToString(Request.Form["Password"]);
+	        return new UserModel()
+	        {
+		        Id = id,
+		        FirstName = firstName,
+		        LastName = lastName,
+		        Email = email,
+		        Role = role,
+		        Password = password
+	        };
         }
 	}
 }

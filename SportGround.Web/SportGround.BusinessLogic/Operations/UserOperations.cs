@@ -16,6 +16,7 @@ namespace SportGround.BusinessLogic.Operations
 	public class UserOperations : IUserOperations
 	{
 		private IDataRepository<UserEntity> _userData;
+		private readonly string ProjectKey = "SportGround";
 
 		public UserOperations(IDataRepository<UserEntity> courtRepository)
 		{
@@ -93,9 +94,9 @@ namespace SportGround.BusinessLogic.Operations
 			_userData.Update(user);
 		}
 
-		public string GetPasswordHashCode(int id, string password)
+		public string GetPasswordHashCode(string password, string encryptionKey = null)
 		{
-			string EncryptionKey = "SportGround";
+			string EncryptionKey = encryptionKey ?? ProjectKey;
 			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
 			using (Aes encryptor = Aes.Create())
 			{
@@ -124,9 +125,9 @@ namespace SportGround.BusinessLogic.Operations
 			return password;
 		}
 
-		public string GetDecodePassword(string passwordHashCode)
+		public string GetDecodePassword(string passwordHashCode, string encryptionKey = null)
 		{
-			string EncryptionKey = "SportGround";
+			string EncryptionKey = encryptionKey ?? ProjectKey;
 			passwordHashCode = passwordHashCode.Replace(" ", "+");
 			byte[] cipherBytes = Convert.FromBase64String(passwordHashCode);
 			using (Aes encryptor = Aes.Create())

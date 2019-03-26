@@ -52,7 +52,7 @@ namespace SportGround.Web.Controllers
 			try
 			{
 				var user = GetUser(collection);
-				user.Password = _userOperations.GetPasswordHashCode(user.Id, password);
+				user.Password = _userOperations.GetPasswordHashCode(password);
 				_userOperations.Create(user);
 				return RedirectToAction("Index");
 			}
@@ -142,7 +142,7 @@ namespace SportGround.Web.Controllers
 			try
 	        {
 		        var user = _userOperations.GetUserById(id);
-		        user.Password = _userOperations.GetPasswordHashCode(id, password);
+		        user.Password = _userOperations.GetPasswordHashCode(password);
 		        _userOperations.Update(id, user);
 		        return RedirectToAction("Index");
 	        }

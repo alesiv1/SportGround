@@ -84,7 +84,7 @@ namespace SportGround.Web.Controllers
 	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName) ||
 	            user.Password != user.ConfirmPassword)
 	        {
-		        user.Password = _userOperations.GetPasswordHashCode(user.Id, user.Password);
+		        user.Password = _userOperations.GetPasswordHashCode(user.Password);
 				_userOperations.Create(user);
 		        return RedirectToAction("Index", "User");
 			}

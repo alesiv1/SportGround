@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
 using SportGround.BusinessLogic.Enums;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.entities;
 using SportGround.Data.Interfaces;
+using System.IO;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
 
 namespace SportGround.BusinessLogic.Operations
 {
@@ -94,31 +95,65 @@ namespace SportGround.BusinessLogic.Operations
 
 		public string GetPasswordHashCode(int id, string password)
 		{
-			var hash = "";
-			foreach (var symbol in password)
+			string EncryptionKey = "SportGround";
+			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
+			using (Aes encryptor = Aes.Create())
 			{
-				hash += ((int)symbol + (id * id)).ToString() + ".";
-			}
+				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+				encryptor.Key = pdb.GetBytes(32);
+				encryptor.IV = pdb.GetBytes(16);
+				try
+				{
+					using (MemoryStream ms = new MemoryStream())
+					{
+						using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(),
+							CryptoStreamMode.Write))
+						{
+							cs.Write(clearBytes, 0, clearBytes.Length);
+							cs.Close();
+						}
 
-			hash += id;
-			return hash;
+						password = Convert.ToBase64String(ms.ToArray());
+					}
+				}
+				catch
+				{
+					password = "";
+				}
+			}
+			return password;
 		}
 
 		public string GetDecodePassword(string passwordHashCode)
 		{
-			if (!passwordHashCode.Contains("."))
+			string EncryptionKey = "SportGround";
+			passwordHashCode = passwordHashCode.Replace(" ", "+");
+			byte[] cipherBytes = Convert.FromBase64String(passwordHashCode);
+			using (Aes encryptor = Aes.Create())
 			{
-				return passwordHashCode;
-			}
+				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+				encryptor.Key = pdb.GetBytes(32);
+				encryptor.IV = pdb.GetBytes(16);
+				try
+				{
+					using (MemoryStream ms = new MemoryStream())
+					{
+						using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(),
+							CryptoStreamMode.Write))
+						{
+							cs.Write(cipherBytes, 0, cipherBytes.Length);
+							cs.Close();
+						}
 
-			var allsymbols = passwordHashCode.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-			var id = Int16.Parse(allsymbols[allsymbols.Length - 1]);
-			var password = "";
-			for (int i = 0; i < allsymbols.Length - 1; i++)
-			{
-				password += ((char)(Int16.Parse(allsymbols[i]) - (id * id))).ToString();
+						passwordHashCode = Encoding.Unicode.GetString(ms.ToArray());
+					}
+				}
+				catch
+				{
+					passwordHashCode = "";
+				}
 			}
-			return password;
+			return passwordHashCode;
 		}
 	}
 }

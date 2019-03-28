@@ -18,6 +18,7 @@ namespace SportGround.BusinessLogic.Models
 		public UserRole Role { get; set; }
 		[Required]
 		[EmailAddress]
+		[RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "E-mail is not valid")]
 		public string Email { get; set; }
 		[Required]
 		[StringLength(50, MinimumLength = 6)]

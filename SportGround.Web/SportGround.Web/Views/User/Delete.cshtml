@@ -42,14 +42,6 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-
     </dl>
 
     @using (Html.BeginForm()) {
@@ -57,7 +49,6 @@
 
     <div class="form-actions no-color">
         <input type="submit" value="Delete" class="btn btn-default" /> |
-        <button class="btn btn-default">@Html.ActionLink("Back to List", "Index")</button>
         @Html.ActionLink("Back to List", "Index")
     </div>
     }

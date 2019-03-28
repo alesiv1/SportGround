@@ -49,6 +49,9 @@
 
 <div>
     @Html.ActionLink("Reset password", "ResetPassword", new { id = Model.Id }) |
-    @Html.ActionLink("Change role", "Changerole", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index") |
+    @if (this.User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Change role", "Changerole", new {id = Model.Id})
+    }
 </div>

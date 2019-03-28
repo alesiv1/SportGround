@@ -1,5 +1,5 @@
-﻿using SportGround.Data.entities;
-using System;
+﻿using System;
+using SportGround.Data.entities;
 using System.Data.Entity.ModelConfiguration;
 
 namespace SportGround.Data.Configurations
@@ -14,19 +14,22 @@ namespace SportGround.Data.Configurations
 
 			Property(x => x.FirstName)
 				.HasMaxLength(255)
-				.IsOptional();
+				.IsRequired();
 
 			Property(x => x.LastName)
 				.HasMaxLength(255)
 				.IsOptional();
 
-			Property(x => x.Role)
-				.IsRequired();
-
 			Property(x => x.Email)
 				.IsRequired();
 
+			Property(x => x.Role)
+				.IsRequired();
+
 			Property(x => x.Password)
+				.IsRequired();
+
+			Property(x => x.Salt)
 				.IsRequired();
 		}
 	}

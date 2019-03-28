@@ -1,5 +1,5 @@
-﻿using SportGround.Data.Entities;
-using System;
+﻿using System;
+using SportGround.Data.Entities;
 using System.Data.Entity.ModelConfiguration;
 
 

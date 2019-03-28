@@ -49,13 +49,13 @@ namespace SportGround.Web
 			//container.RegisterType<IProductRepository, ProductRepository>();
 			container.RegisterType<ICourtOperations, CourtOperations>();
 			container.RegisterType<CourtOperations, CourtOperations>();
-			container.RegisterType<IDataRepository<CourtEntity>, DataRepository<CourtEntity>>();
-			container.RegisterType<DataRepository<CourtEntity>, DataRepository<CourtEntity>>();
+			container.RegisterType<IDataRepository<CourtEntity>, UserDataRepository<CourtEntity>>();
+			container.RegisterType<UserDataRepository<CourtEntity>, UserDataRepository<CourtEntity>>();
 
 			container.RegisterType<IUserOperations, UserOperations>();
 			container.RegisterType<UserOperations, UserOperations>();
-			container.RegisterType<IDataRepository<UserEntity>, DataRepository<UserEntity>>();
-			container.RegisterType<DataRepository<UserEntity>, DataRepository<UserEntity>>();
+			container.RegisterType<IDataRepository<UserEntity>, UserDataRepository<UserEntity>>();
+			container.RegisterType<UserDataRepository<UserEntity>, UserDataRepository<UserEntity>>();
 		}
     }
 }

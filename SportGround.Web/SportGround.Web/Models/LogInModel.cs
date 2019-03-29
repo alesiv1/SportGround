@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
 namespace SportGround.Web.Models
 {
 	public class LogInModel
 	{
 		[Required]
+		[EmailAddress]
 		[DataType(DataType.Text)]
-		public string Login { get; set; }
+		public string Email { get; set; }
 
 		[Required]
 		[DataType(DataType.Password)]
+		[StringLength(50, MinimumLength = 6)]
 		public string Password { get; set; }
 	}
 }

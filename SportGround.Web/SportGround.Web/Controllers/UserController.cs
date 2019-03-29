@@ -1,12 +1,8 @@
 ﻿using SportGround.BusinessLogic.Interfaces;
-using SportGround.BusinessLogic.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using SportGround.BusinessLogic.Enums;
+using SportGround.BusinessLogic.Models;
 
 namespace SportGround.Web.Controllers
 {
@@ -19,7 +15,6 @@ namespace SportGround.Web.Controllers
 		    _userOperations = operations;
 	    }
 
-		// GET: User
 		[Authorize]
 		[Route("Users")]
 		public ActionResult Index()
@@ -28,7 +23,6 @@ namespace SportGround.Web.Controllers
 			return View(allUsers);
 		}
 
-		// GET: User/Details/5
 		[Authorize]
 		public ActionResult Details(int id)
 		{
@@ -36,23 +30,22 @@ namespace SportGround.Web.Controllers
 			return View(user);
 		}
 
-		// GET: User/Create
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Create()
 		{
 			return View();
 		}
 
-		// POST: User/Create
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public ActionResult Create(FormCollection collection)
+		public ActionResult Create(UserModelWithPassword user)
 		{
-			string password = Convert.ToString(Request.Form["Password"]);
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
 			try
 			{
-				var user = GetUser(collection);
-				user.Password = _userOperations.GetPasswordHashCode(password);
 				_userOperations.Create(user);
 				return RedirectToAction("Index");
 			}
@@ -62,7 +55,6 @@ namespace SportGround.Web.Controllers
 			}
 		}
 
-		// GET: User/Edit/5
 		[Authorize]
 		public ActionResult Edit(int id)
 		{
@@ -70,14 +62,16 @@ namespace SportGround.Web.Controllers
 			return View(user);
 		}
 
-		// POST: User/Edit/5
 		[Authorize]
 		[HttpPost]
-		public ActionResult Edit(int id, FormCollection collection)
+		public ActionResult Edit(int id, UserModel user)
 		{
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
 			try
 			{
-				var user = GetUser(collection);
 				_userOperations.Update(id, user);
 				return RedirectToAction("Index");
 			}
@@ -87,20 +81,22 @@ namespace SportGround.Web.Controllers
 			}
 		}
 
-		// GET: User/Delete/5
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
 		{
 			var user = _userOperations.GetUserById(id);
 			return View(user);
 		}
 
-		// POST: User/Delete/5
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, UserModelWithRole user)
         {
-	        try
+	        if (!ModelState.IsValid)
+	        {
+		        return View();
+	        }
+			try
 	        {
 		        _userOperations.Delete(id);
 		        return RedirectToAction("Index");
@@ -114,15 +110,18 @@ namespace SportGround.Web.Controllers
         [Authorize]
 		public ActionResult ResetPassword(int id)
         {
-			var user = _userOperations.GetUserById(id);
-			var userForChange = new UserRegistrationModel()
+			var user = _userOperations.Users().FirstOrDefault();
+			if (user == null)
+			{
+				throw new ArgumentException("User does'nt exist in database!");
+			}
+			var userForChange = new UserModelWithPassword()
 			{
 				Id = id,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Email = user.Email,
-				Role = user.Role,
-				Password = "",
+				Password = user.Password,
 				ConfirmPassword = "",
 			};
 			return View(userForChange);
@@ -130,19 +129,14 @@ namespace SportGround.Web.Controllers
 
 		[Authorize]
         [HttpPost]
-        public ActionResult ResetPassword(int id, FormCollection collection)
+        public ActionResult ResetPassword(int id, UserModelWithPassword user)
         {
 	        if (!ModelState.IsValid)
 	        {
 		        return RedirectToAction("ResetPassword", "User");
 	        }
-			string password = Convert.ToString(Request.Form["Password"]);
-	        string confirmPassword = Convert.ToString(Request.Form["ConfirmPassword"]);
-	        if (password != confirmPassword) return View();
 			try
-	        {
-		        var user = _userOperations.GetUserById(id);
-		        user.Password = _userOperations.GetPasswordHashCode(password);
+	        {		        
 		        _userOperations.Update(id, user);
 		        return RedirectToAction("Index");
 	        }
@@ -161,13 +155,14 @@ namespace SportGround.Web.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-        public ActionResult ChangeRole(int id, FormCollection collection)
+        public ActionResult ChangeRole(int id, UserModelWithRole user)
         {
+	        if (!ModelState.IsValid)
+	        {
+		        return RedirectToAction("ResetPassword", "User");
+	        }
 			try
 			{
-				string role = Convert.ToString(Request.Form["Role"]);
-				var user = _userOperations.GetUserById(id);
-				user.Role = role == "Admin" ? UserRole.Admin : UserRole.User;
 				_userOperations.Update(id, user);
 				return RedirectToAction("Index");
 			}
@@ -176,22 +171,5 @@ namespace SportGround.Web.Controllers
 				return View();
 			}
 		}
-
-		private UserModel GetUser(FormCollection collectio)
-        {
-	        int id = Convert.ToInt32(Request.Form["Id"]);
-	        string firstName = Convert.ToString(Request.Form["FirstName"]);
-	        string lastName = Convert.ToString(Request.Form["LastName"]);
-	        string role = Convert.ToString(Request.Form["Role"]);
-	        string email = Convert.ToString(Request.Form["Email"]);
-			return new UserModel()
-	        {
-		        Id = id,
-		        FirstName = firstName,
-				LastName = lastName,
-				Email = email,
-				Role = role == "Admin" ? UserRole.Admin : UserRole.User,
-			};
-        }
 	}
 }

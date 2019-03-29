@@ -8,7 +8,7 @@ namespace SportGround.Data.Context
 	public class DataContext : DbContext
 	{
 		public DataContext()
-			: base("LocalDB")
+			: base("SportGroundDB")
 		{
 		}
 

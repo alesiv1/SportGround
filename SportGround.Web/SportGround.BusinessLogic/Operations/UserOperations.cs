@@ -70,6 +70,11 @@ namespace SportGround.BusinessLogic.Operations
 			return allUsers;
 		}
 
+		public List<UserEntity> Users()
+		{
+			return _userRepository.GetAll().ToList();
+		}
+
 		public UserModelWithRole GetUserById(int id)
 		{
 			var userEntity = _userRepository.GetById(id);
@@ -96,9 +101,6 @@ namespace SportGround.BusinessLogic.Operations
 		public void Update(int id, UserModelWithRole model)
 		{
 			var user = _userRepository.GetById(id);
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
-			user.Email = model.Email;
 			user.Role = user.Role;
 			_userRepository.Update(user);
 		}
@@ -106,10 +108,7 @@ namespace SportGround.BusinessLogic.Operations
 		public void Update(int id, UserModelWithPassword model)
 		{
 			var user = _userRepository.GetById(id);
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
-			user.Email = model.Email;
-			user.Password = model.Password;
+			user.Password = GetCodeForPassword(model.Password, user.Salt, user.Id);
 			_userRepository.Update(user);
 		}
 

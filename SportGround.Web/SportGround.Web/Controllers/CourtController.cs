@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.BusinessLogic.Operations;
 
 namespace SportGround.Web.Controllers
 {
@@ -15,7 +14,6 @@ namespace SportGround.Web.Controllers
 		    _courtOperations = operations;
 	    }
 
-		// GET: Court
 		[Authorize]
 		[Route("Court")]
 		public ActionResult Index()
@@ -24,7 +22,6 @@ namespace SportGround.Web.Controllers
 			return View(allCourt);
         }
 
-		// GET: Court/Details/5
 		[Authorize]
 		public ActionResult Details(int id)
         {
@@ -32,88 +29,60 @@ namespace SportGround.Web.Controllers
             return View(court);
         }
 
-		// GET: Court/Create
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Create()
         {
             return View();
         }
 
-		// POST: Court/Create
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(CourtModel court)
         {
-            try
-            {
-	            var court = GetCourt(collection);
-				_courtOperations.Create(court);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+	        if (!ModelState.IsValid)
+	        {
+		        return View();
+	        }
+			_courtOperations.Create(court);
+            return RedirectToAction("Index");
         }
 
-		// GET: Court/Edit/5
-		[Authorize]
+        [Authorize(Roles = "Admin")]
 		public ActionResult Edit(int id)
         {
 	        var court = _courtOperations.GetCourtById(id);
             return View(court);
         }
 
-		// POST: Court/Edit/5
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, CourtModel court)
         {
-            try
-            {
-				var court = GetCourt(collection);
-				_courtOperations.Update(id, court);
-				return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
+			_courtOperations.Update(id, court);
+			return RedirectToAction("Index");
         }
 
-		// GET: Court/Delete/5
-		[Authorize]
+        [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
         {
 	        var court = _courtOperations.GetCourtById(id);
 			return View(court);
         }
 
-		// POST: Court/Delete/5
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, CourtModel court)
         {
-            try
-            {
-				_courtOperations.Delete(id);
-				return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-		private CourtModel GetCourt(FormCollection collectio)
-        {
-	        int id = Convert.ToInt32(Request.Form["Id"]) + 1;
-			string name = Convert.ToString(Request.Form["Name"]);
-	        return new CourtModel()
-	        {
-				Id = id,
-				Name = name
-	        };
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
+			_courtOperations.Delete(id);
+			return RedirectToAction("Index");
         }
     }
 }

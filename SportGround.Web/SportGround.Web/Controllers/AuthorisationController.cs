@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNet.Identity;
-using SportGround.BusinessLogic.Enums;
+﻿using System;
+using Microsoft.AspNet.Identity;
 using SportGround.BusinessLogic.Interfaces;
-using SportGround.BusinessLogic.Models;
 using SportGround.Web.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using SportGround.BusinessLogic.Models;
 
 namespace SportGround.Web.Controllers
 {
@@ -33,12 +31,15 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			var user = _userOperations.GetAll()
-				.FirstOrDefault(m => m.FirstName == model.Login && 
-				_userOperations.GetDecodePassword(m.Password) == model.Password);
-
+			var user = _userOperations.Users()
+				.FirstOrDefault(m => m.Email == model.Email);
 			if (user != null)
 			{
+				if (user.Password != _userOperations.GetPasswordHashCode(model.Password, user.Salt, user.Id))
+				{
+					ModelState.AddModelError("Password", "Invalid password. Chack your password and try again!");
+					return View();
+				}
 				var identity = new ClaimsIdentity(new[] {
 						new Claim(ClaimTypes.Name, user.FirstName),
 						new Claim(ClaimTypes.Email, user.Email),
@@ -53,8 +54,7 @@ namespace SportGround.Web.Controllers
 
 				return Redirect(GetRedirectUrl(returnUrl));
 			}
-
-			ModelState.AddModelError("", "Invalid email or password");
+			ModelState.AddModelError("Email", "Invalid email. Chack your email and try again!");
 			return View();
 		}
 
@@ -73,21 +73,18 @@ namespace SportGround.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Registration(FormCollection collection)
+		public ActionResult Registration(UserModelWithPassword user)
         {
 	        if (!ModelState.IsValid)
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
-
-			var user = GetUser(collection);
-	        if (!_userOperations.GetAll().Any(s => s.Email == user.Email && s.FirstName == user.FirstName) ||
-	            user.Password != user.ConfirmPassword)
+	        try
 	        {
-		        user.Password = _userOperations.GetPasswordHashCode(user.Password);
-				_userOperations.Create(user);
+		        _userOperations.Create(user);
 		        return RedirectToAction("Index", "User");
-			}
+	        }
+	        catch { }
 			return RedirectToAction("Registration", "Authorisation");
 		}
 
@@ -99,27 +96,6 @@ namespace SportGround.Web.Controllers
 	        }
 
 	        return returnUrl;
-        }
-
-        private UserRegistrationModel GetUser(FormCollection collectio)
-        {
-	        int id = Convert.ToInt32(Request.Form["Id"]);
-	        string firstName = Convert.ToString(Request.Form["FirstName"]);
-	        string lastName = Convert.ToString(Request.Form["LastName"]);
-	        string role = Convert.ToString(Request.Form["Role"]) ?? "User";
-	        string email = Convert.ToString(Request.Form["Email"]);
-	        string password = Convert.ToString(Request.Form["Password"]);
-	        var confirmPassword = Convert.ToString(Request.Form["ConfirmPassword"]);
-			return new UserRegistrationModel()
-	        {
-		        Id = id,
-		        FirstName = firstName,
-		        LastName = lastName,
-		        Email = email,
-		        Role = role == "Admin" ? UserRole.Admin : UserRole.User,
-				Password = password,
-				ConfirmPassword = confirmPassword
-	        };
         }
 	}
 }

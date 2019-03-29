@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace SportGround.Web.Models
 {
@@ -17,19 +14,18 @@ namespace SportGround.Web.Models
 		public string LastName { get; set; }
 
 		[Required]
-		[DataType(DataType.Text)]
-		public string Login { get; set; }
-
-		[Required]
+		[EmailAddress]
 		[DataType(DataType.EmailAddress)]
 		public string Email { get; set; }
 
 		[Required]
 		[DataType(DataType.Password)]
+		[StringLength(50, MinimumLength = 6)]
 		public string Password { get; set; }
 
 		[Required]
-		[DataType(DataType.Text)]
-		public string Country { get; set; }
+		[Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
+		[StringLength(50, MinimumLength = 6)]
+		public string ConfirmPassword { get; set; }
 	}
 }

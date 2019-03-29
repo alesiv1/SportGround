@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SportGround.BusinessLogic.Models;
+using SportGround.Data.entities;
 
 namespace SportGround.BusinessLogic.Interfaces
 {
@@ -8,6 +9,7 @@ namespace SportGround.BusinessLogic.Interfaces
 	{
 		UserModelWithRole GetUserById(int id);
 		List<UserModelWithRole> GetAll();
+		List<UserEntity> Users();
 		void Create(UserModelWithPassword model);
 		void Update(int id, UserModel model);
 		void Update(int id, UserModelWithRole model);

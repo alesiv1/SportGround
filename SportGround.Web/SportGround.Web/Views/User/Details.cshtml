@@ -1,4 +1,4 @@
-﻿@model SportGround.BusinessLogic.Models.UserModel
+﻿@model SportGround.BusinessLogic.Models.UserModelWithRole
 
 @{
     ViewBag.Title = "Details";
@@ -44,6 +44,9 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index") |
+    @if (this.User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new {id = Model.Id})
+    }
 </p>

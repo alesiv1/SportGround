@@ -77,10 +77,6 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtModel court)
         {
-			if (!ModelState.IsValid)
-			{
-				return View();
-			}
 			_courtOperations.Delete(id);
 			return RedirectToAction("Index");
         }

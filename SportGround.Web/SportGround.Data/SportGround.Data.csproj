@@ -64,6 +64,10 @@
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Interfaces\IDataRepository.cs" />
+    <Compile Include="Migrations\201903291410191_CreateDataBase.cs" />
+    <Compile Include="Migrations\201903291410191_CreateDataBase.Designer.cs">
+      <DependentUpon>201903291410191_CreateDataBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\CourtDataRepository.cs" />
@@ -72,6 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201903291410191_CreateDataBase.resx">
+      <DependentUpon>201903291410191_CreateDataBase.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

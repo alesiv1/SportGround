@@ -1,5 +1,5 @@
 ﻿@using SportGround.Data.Enums
-@model SportGround.BusinessLogic.Models.UserModel
+@model SportGround.BusinessLogic.Models.UserModelWithRole
 
 
 @using (Html.BeginForm())
@@ -7,9 +7,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Reset Password</h4>
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+        <h4>Reset password</h4>
         <hr />
         <div>
             <dl class="dl-horizontal">
@@ -51,7 +49,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Role", new SelectList(new List<UserRole>{ UserRole.Admin, UserRole.User }), new { style = "width: 100px; height : 30px; border-radius: 5px;" })
+                @Html.DropDownList("Role", new SelectList(new List<UserRole> { UserRole.Admin, UserRole.User }), new { style = "width: 100px; height : 30px; border-radius: 5px;" })
                 @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
             </div>
         </div>

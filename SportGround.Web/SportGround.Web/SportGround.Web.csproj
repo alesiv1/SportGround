@@ -219,19 +219,19 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Authorisation\Login.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\User\Create.cshtml" />
-    <Content Include="Views\User\Delete.cshtml" />
-    <Content Include="Views\User\Details.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\Authorisation\Registration.cshtml" />
-    <Content Include="Views\User\ChangeRole.cshtml" />
-    <Content Include="Views\User\ResetPassword.cshtml" />
     <Content Include="Views\Court\Index.cshtml" />
     <Content Include="Views\Court\Create.cshtml" />
     <Content Include="Views\Court\Delete.cshtml" />
     <Content Include="Views\Court\Details.cshtml" />
     <Content Include="Views\Court\Edit.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\Details.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\User\Create.cshtml" />
+    <Content Include="Views\User\Delete.cshtml" />
+    <Content Include="Views\User\ChangeRole.cshtml" />
+    <Content Include="Views\User\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

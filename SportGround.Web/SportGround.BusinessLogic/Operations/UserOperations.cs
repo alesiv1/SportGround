@@ -30,7 +30,7 @@ namespace SportGround.BusinessLogic.Operations
 			}
 
 			var salt = CreateSaltForPasscode();
-			var passcode = GetCodeForPassword(model.Password, salt, model.Id);
+			var passcode = GetCodeForPassword(model.Password, salt);
 
 			UserEntity user = new UserEntity()
 			{
@@ -101,25 +101,25 @@ namespace SportGround.BusinessLogic.Operations
 		public void Update(int id, UserModelWithRole model)
 		{
 			var user = _userRepository.GetById(id);
-			user.Role = user.Role;
+			user.Role = model.Role;
 			_userRepository.Update(user);
 		}
 
 		public void Update(int id, UserModelWithPassword model)
 		{
 			var user = _userRepository.GetById(id);
-			user.Password = GetCodeForPassword(model.Password, user.Salt, user.Id);
+			user.Password = GetCodeForPassword(model.Password, user.Salt);
 			_userRepository.Update(user);
 		}
 
-		public string GetPasswordHashCode(string password, string salt, int id)
+		public string GetPasswordHashCode(string password, string salt)
 		{
-			return GetCodeForPassword(password, salt, id);
+			return GetCodeForPassword(password, salt);
 		}
 
-		public string GetDecodePassword(string password, string salt, int id)
+		public string GetDecodePassword(string password, string salt)
 		{
-			return GetPasswordByDecode(password, salt, id);
+			return GetPasswordByDecode(password, salt);
 		}
 
 		private bool UserAlreadyExist(string email)
@@ -141,9 +141,9 @@ namespace SportGround.BusinessLogic.Operations
 			return Convert.FromBase64String(salt);
 		}
 
-		private string GetCodeForPassword(string password, string salt, int id)
+		private string GetCodeForPassword(string password, string salt)
 		{
-			string EncryptionKey = ProjectKey + id;
+			string EncryptionKey = ProjectKey;
 			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
 			using (Aes encryptor = Aes.Create())
 			{
@@ -173,9 +173,9 @@ namespace SportGround.BusinessLogic.Operations
 			return password;
 		}
 
-		private string GetPasswordByDecode(string password, string salt, int id)
+		private string GetPasswordByDecode(string password, string salt)
 		{
-			string EncryptionKey = ProjectKey + id;
+			string EncryptionKey = ProjectKey;
 			password = password.Replace(" ", "+");
 			byte[] cipherBytes = Convert.FromBase64String(password);
 			using (Aes encryptor = Aes.Create())

@@ -92,10 +92,6 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, UserModelWithRole user)
         {
-	        if (!ModelState.IsValid)
-	        {
-		        return View();
-	        }
 			try
 	        {
 		        _userOperations.Delete(id);
@@ -121,7 +117,7 @@ namespace SportGround.Web.Controllers
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Email = user.Email,
-				Password = user.Password,
+				Password = _userOperations.GetPasswordHashCode(user.Password, user.Salt),
 				ConfirmPassword = "",
 			};
 			return View(userForChange);
@@ -131,10 +127,6 @@ namespace SportGround.Web.Controllers
         [HttpPost]
         public ActionResult ResetPassword(int id, UserModelWithPassword user)
         {
-	        if (!ModelState.IsValid)
-	        {
-		        return RedirectToAction("ResetPassword", "User");
-	        }
 			try
 	        {		        
 		        _userOperations.Update(id, user);
@@ -157,10 +149,6 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult ChangeRole(int id, UserModelWithRole user)
         {
-	        if (!ModelState.IsValid)
-	        {
-		        return RedirectToAction("ResetPassword", "User");
-	        }
 			try
 			{
 				_userOperations.Update(id, user);

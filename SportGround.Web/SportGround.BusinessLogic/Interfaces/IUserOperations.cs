@@ -15,7 +15,7 @@ namespace SportGround.BusinessLogic.Interfaces
 		void Update(int id, UserModelWithRole model);
 		void Update(int id, UserModelWithPassword model);
 		void Delete(int id);
-		string GetPasswordHashCode(string password, string salt, int id);
-		string GetDecodePassword(string password, string salt, int id);
+		string GetPasswordHashCode(string password, string salt);
+		string GetDecodePassword(string password, string salt);
 	}
 }

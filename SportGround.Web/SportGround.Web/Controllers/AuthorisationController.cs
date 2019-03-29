@@ -35,8 +35,7 @@ namespace SportGround.Web.Controllers
 				.FirstOrDefault(m => m.Email == model.Email);
 			if (user != null)
 			{
-				var pass = _userOperations.GetPasswordHashCode(model.Password, user.Salt, 0);
-				//d2AWUBBWhQgyHRJRvzEumw==
+				var pass = _userOperations.GetPasswordHashCode(model.Password, user.Salt);
 				if (user.Password != pass)
 				{
 					ModelState.AddModelError("Password", "Invalid password. Chack your password and try again!");

@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
-using SportGround.Data.Repositories;
 
 namespace SportGround.BusinessLogic.Operations
 {
 	public class CourtOperations : ICourtOperations
 	{
-		private IDataRepository<CourtEntity> _courtData;
+		private IDataRepository<CourtEntity> _courtRepository;
 
 		public CourtOperations(IDataRepository<CourtEntity> courtRepository)
 		{
-			_courtData = courtRepository;
+			_courtRepository = courtRepository;
 		}
 
 		public void Create(CourtModel model)
@@ -25,39 +23,35 @@ namespace SportGround.BusinessLogic.Operations
 				Id = model.Id,
 				Name = model.Name
 			};
-			_courtData.Insert(court);
+			_courtRepository.Insert(court);
 		}
 
 		public void Delete(int id)
 		{
-			_courtData.DeleteById(id);
+			_courtRepository.DeleteById(id);
 		}
 
 		public List<CourtModel> GetAll()
 		{
 			var allCourt = new List<CourtModel>();
-			try
+
+			var query = _courtRepository.GetAll();
+			foreach (var court in query)
 			{
-				var query = _courtData.Get.ToList();
-				foreach (var court in query)
+				allCourt.Add(new CourtModel()
 				{
-					allCourt.Add(new CourtModel()
-					{
-						Id = court.Id,
-						Name = court.Name
-					});
-				}
+					Id = court.Id,
+					Name = court.Name
+				});
 			}
-			catch (Exception ex)
-			{
-				throw;
-			}
+
 			return allCourt;
 		}
 
 		public CourtModel GetCourtById(int id)
 		{
-			var courtEntity = _courtData.GetById(id);
+			var courtEntity = _courtRepository.GetById(id);
+
 			return new CourtModel()
 			{
 				Id = courtEntity.Id,
@@ -67,9 +61,9 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, CourtModel model)
 		{
-			var court = _courtData.GetById(id);
+			var court = _courtRepository.GetById(id);
 			court.Name = model.Name;
-			_courtData.Update(court);
+			_courtRepository.Update(court);
 		}
 	}
 }

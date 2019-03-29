@@ -1,5 +1,5 @@
-﻿using SportGround.BusinessLogic.Models;
-using System;
+﻿using System;
+using SportGround.BusinessLogic.Models;
 using System.Collections.Generic;
 
 namespace SportGround.BusinessLogic.Interfaces

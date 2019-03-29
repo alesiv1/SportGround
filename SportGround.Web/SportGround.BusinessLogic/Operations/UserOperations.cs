@@ -2,105 +2,153 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SportGround.BusinessLogic.Enums;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.entities;
 using SportGround.Data.Interfaces;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Security.Cryptography;
+using SportGround.Data.Enums;
 
 namespace SportGround.BusinessLogic.Operations
 {
 	public class UserOperations : IUserOperations
 	{
-		private IDataRepository<UserEntity> _userData;
 		private readonly string ProjectKey = "SportGround";
+		private IDataRepository<UserEntity> _userRepository;
 
-		public UserOperations(IDataRepository<UserEntity> courtRepository)
+		public UserOperations(IDataRepository<UserEntity> userRepository)
 		{
-			_userData = courtRepository;
+			_userRepository = userRepository;
 		}
 
-		public void Create(UserModel model)
+		public void Create(UserModelWithPassword model)
 		{
+			if (UserAlreadyExist(model.Email))
+			{
+				throw new ArgumentException("User already exist with this email -> {0} ", model.Email);
+			}
+
+			var salt = CreateSaltForPasscode();
+			var passcode = GetCodeForPassword(model.Password, salt, model.Id);
+
 			UserEntity user = new UserEntity()
 			{
 				Id = model.Id,
 				FirstName = model.FirstName,
 				LastName = model.LastName,
-				Role = model.Role.ToString(),
-				Password = model.Password,
-				Email = model.Email
+				Email = model.Email,
+				Role = UserRole.User,
+				Password = passcode,
+				Salt = salt
 			};
-			_userData.Insert(user);
+
+			_userRepository.Insert(user);
 		}
 
 		public void Delete(int id)
 		{
-			_userData.DeleteById(id);
+			_userRepository.DeleteById(id);
 		}
 
-		public List<UserModel> GetAll()
+		public List<UserModelWithRole> GetAll()
 		{
-			var allUsers = new List<UserModel>();
-			try
+			var allUsers = new List<UserModelWithRole>();
+			var query = _userRepository.GetAll();
+			foreach (var user in query)
 			{
-				var query = _userData.Get.ToList();
-				foreach (var user in query)
+				allUsers.Add(new UserModelWithRole()
 				{
-					allUsers.Add(new UserModel()
-					{
-						Id = user.Id,
-						FirstName = user.FirstName,
-						LastName = user.LastName,
-						Role = user.Role == "Admin" ? UserRole.Admin : UserRole.User,
-						Password = user.Password,
-						Email = user.Email
-					});
-				}
-			}
-			catch (Exception ex)
-			{
-				throw;
+					Id = user.Id,
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					Email = user.Email,
+					Role = user.Role,
+				});
 			}
 
 			return allUsers;
 		}
 
-		public UserModel GetUserById(int id)
+		public UserModelWithRole GetUserById(int id)
 		{
-			var userEntity = _userData.GetById(id);
-			return new UserModel()
+			var userEntity = _userRepository.GetById(id);
+
+			return new UserModelWithRole()
 			{
 				Id = userEntity.Id,
 				FirstName = userEntity.FirstName,
 				LastName = userEntity.LastName,
-				Role = userEntity.Role == "Admin" ? UserRole.Admin : UserRole.User,
-				Password = userEntity.Password,
+				Role = userEntity.Role,
 				Email = userEntity.Email
 			};
 		}
 
 		public void Update(int id, UserModel model)
 		{
-			var user = _userData.GetById(id);
-			user.FirstName = model.FirstName ?? user.FirstName;
-			user.LastName = model.LastName ?? user.LastName;
-			user.Email = model.Email ?? user.Email;
-			user.Role = String.IsNullOrEmpty(model.Role.ToString()) ? user.Role : model.Role.ToString();
-			user.Password = model.Password ?? user.Password;
-			_userData.Update(user);
+			var user = _userRepository.GetById(id);
+			user.FirstName = model.FirstName;
+			user.LastName = model.LastName;
+			user.Email = model.Email;
+			_userRepository.Update(user);
 		}
 
-		public string GetPasswordHashCode(string password, string encryptionKey = null)
+		public void Update(int id, UserModelWithRole model)
 		{
-			string EncryptionKey = encryptionKey ?? ProjectKey;
+			var user = _userRepository.GetById(id);
+			user.FirstName = model.FirstName;
+			user.LastName = model.LastName;
+			user.Email = model.Email;
+			user.Role = user.Role;
+			_userRepository.Update(user);
+		}
+
+		public void Update(int id, UserModelWithPassword model)
+		{
+			var user = _userRepository.GetById(id);
+			user.FirstName = model.FirstName;
+			user.LastName = model.LastName;
+			user.Email = model.Email;
+			user.Password = model.Password;
+			_userRepository.Update(user);
+		}
+
+		public string GetPasswordHashCode(string password, string salt, int id)
+		{
+			return GetCodeForPassword(password, salt, id);
+		}
+
+		public string GetDecodePassword(string password, string salt, int id)
+		{
+			return GetPasswordByDecode(password, salt, id);
+		}
+
+		private bool UserAlreadyExist(string email)
+		{
+			return _userRepository.GetAll().Any(em => em.Email == email);
+		}
+
+		private string CreateSaltForPasscode()
+		{
+			var random = new RNGCryptoServiceProvider();
+			byte[] salt = new byte[40];
+			random.GetNonZeroBytes(salt);
+			var s = Convert.ToBase64String(salt);
+			return s;
+		}
+
+		private byte[] GetSaltForPasscode(string salt)
+		{
+			return Convert.FromBase64String(salt);
+		}
+
+		private string GetCodeForPassword(string password, string salt, int id)
+		{
+			string EncryptionKey = ProjectKey + id;
 			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
 			using (Aes encryptor = Aes.Create())
 			{
-				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));
 				encryptor.Key = pdb.GetBytes(32);
 				encryptor.IV = pdb.GetBytes(16);
 				try
@@ -119,20 +167,21 @@ namespace SportGround.BusinessLogic.Operations
 				}
 				catch
 				{
-					password = "";
+					password = null;
 				}
 			}
+
 			return password;
 		}
 
-		public string GetDecodePassword(string passwordHashCode, string encryptionKey = null)
+		private string GetPasswordByDecode(string password, string salt, int id)
 		{
-			string EncryptionKey = encryptionKey ?? ProjectKey;
-			passwordHashCode = passwordHashCode.Replace(" ", "+");
-			byte[] cipherBytes = Convert.FromBase64String(passwordHashCode);
+			string EncryptionKey = ProjectKey + id;
+			password = password.Replace(" ", "+");
+			byte[] cipherBytes = Convert.FromBase64String(password);
 			using (Aes encryptor = Aes.Create())
 			{
-				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));
 				encryptor.Key = pdb.GetBytes(32);
 				encryptor.IV = pdb.GetBytes(16);
 				try
@@ -146,15 +195,16 @@ namespace SportGround.BusinessLogic.Operations
 							cs.Close();
 						}
 
-						passwordHashCode = Encoding.Unicode.GetString(ms.ToArray());
+						password = Encoding.Unicode.GetString(ms.ToArray());
 					}
 				}
 				catch
 				{
-					passwordHashCode = "";
+					password = null;
 				}
 			}
-			return passwordHashCode;
+
+			return password;
 		}
 	}
 }

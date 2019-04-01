@@ -3,6 +3,7 @@ using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace SportGround.Data.Repositories
@@ -100,6 +101,7 @@ namespace SportGround.Data.Repositories
 
 		public ICollection<CourtEntity> GetAll()
 		{
+			var test = _context.Courts.Include(x => x.WorkingHours).ToList();
 			return _context.Courts.ToList();
 		}
 	}

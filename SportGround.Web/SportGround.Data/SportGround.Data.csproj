@@ -58,19 +58,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configurations\CourtConfiguration.cs" />
+    <Compile Include="Configurations\CourtWorkingHoursConfiguration.cs" />
     <Compile Include="Configurations\UserConfiguration.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Entities\CourtEntity.cs" />
+    <Compile Include="Entities\CourtWorkingHoursEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
+    <Compile Include="Enums\DeysOfTheWeek.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Interfaces\IDataRepository.cs" />
     <Compile Include="Migrations\201903291410191_CreateDataBase.cs" />
     <Compile Include="Migrations\201903291410191_CreateDataBase.Designer.cs">
       <DependentUpon>201903291410191_CreateDataBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903291714297_AddTableCourtWorkingHours.cs" />
+    <Compile Include="Migrations\201903291714297_AddTableCourtWorkingHours.Designer.cs">
+      <DependentUpon>201903291714297_AddTableCourtWorkingHours.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\CourtDataRepository.cs" />
+    <Compile Include="Repositories\CourtWorkingHoursDataRepository.cs" />
     <Compile Include="Repositories\UserDataRepository.cs" />
     <Compile Include="UnityConfig.cs" />
   </ItemGroup>
@@ -80,6 +88,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201903291410191_CreateDataBase.resx">
       <DependentUpon>201903291410191_CreateDataBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903291714297_AddTableCourtWorkingHours.resx">
+      <DependentUpon>201903291714297_AddTableCourtWorkingHours.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

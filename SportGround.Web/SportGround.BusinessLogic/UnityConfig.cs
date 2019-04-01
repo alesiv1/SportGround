@@ -11,6 +11,7 @@ namespace SportGround.BusinessLogic
 		{
 			container.RegisterType<ICourtOperations, CourtOperations>();
 			container.RegisterType<IUserOperations, UserOperations>();
+			container.RegisterType<ICourtWorkingHoursOperations, CourtWorkingHoursOperations>();
 		}
 	}
 }

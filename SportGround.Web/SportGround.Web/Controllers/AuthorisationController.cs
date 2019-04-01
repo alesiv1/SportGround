@@ -83,8 +83,20 @@ namespace SportGround.Web.Controllers
 	        try
 	        {
 		        _userOperations.Create(user);
-		        return RedirectToAction("Index", "User");
-	        }
+				var identity = new ClaimsIdentity(new[] {
+						new Claim(ClaimTypes.Name, user.FirstName),
+						new Claim(ClaimTypes.Email, user.Email),
+						new Claim(ClaimTypes.Role, "User")
+					},
+					DefaultAuthenticationTypes.ApplicationCookie);
+
+				var ctx = Request.GetOwinContext();
+				var authManager = ctx.Authentication;
+
+				authManager.SignIn(identity);
+
+				return Redirect(GetRedirectUrl(null));
+			}
 	        catch { }
 			return RedirectToAction("Registration", "Authorisation");
 		}

@@ -1,5 +1,7 @@
 ﻿using SportGround.Data.Enums;
 using System;
+using System.Collections.Generic;
+using SportGround.Data.Entities;
 
 namespace SportGround.Data.entities
 {

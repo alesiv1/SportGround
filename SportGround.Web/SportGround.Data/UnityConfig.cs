@@ -13,6 +13,7 @@ namespace SportGround.Data
 		{
 			container.RegisterType<IDataRepository<CourtEntity>, CourtDataRepository>();
 			container.RegisterType<IDataRepository<UserEntity>, UserDataRepository>();
+			container.RegisterType<IDataRepository<CourtWorkingHoursEntity>, CourtWorkingHoursDataRepository>();
 		}
 	}
 }

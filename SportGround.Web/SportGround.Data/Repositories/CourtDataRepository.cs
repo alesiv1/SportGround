@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
 
 namespace SportGround.Data.Repositories
 {
@@ -101,7 +102,6 @@ namespace SportGround.Data.Repositories
 				{
 					throw new NullReferenceException("The court doesn't exist in the database!");
 				}
-
 				this._context.Courts.Remove(entityToDelete);
 				this._context.SaveChanges();
 			}

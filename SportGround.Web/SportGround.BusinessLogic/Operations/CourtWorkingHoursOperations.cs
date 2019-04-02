@@ -11,10 +11,10 @@ namespace SportGround.BusinessLogic.Operations
 {
 	public class CourtWorkingHoursOperations : ICourtWorkingHoursOperations
 	{
-		private IDataRepository<CourtWorkingHoursEntity> _courtWorkingHoursRepository;
+		private CourtWorkingHoursDataRepository _courtWorkingHoursRepository;
 		private CourtDataRepository _courtRepository;
 
-		public CourtWorkingHoursOperations(IDataRepository<CourtWorkingHoursEntity> courtWorkingHours, CourtDataRepository courtRepository)
+		public CourtWorkingHoursOperations(CourtWorkingHoursDataRepository courtWorkingHours, CourtDataRepository courtRepository)
 		{
 			_courtWorkingHoursRepository = courtWorkingHours;
 			_courtRepository = courtRepository;
@@ -60,11 +60,15 @@ namespace SportGround.BusinessLogic.Operations
 
 		public CourtWorkingHoursModel GetCourtWorkingHoursById(int id)
 		{
-			var workingHours = _courtWorkingHoursRepository.GetById(id);
-
+			var workingHours = _courtWorkingHoursRepository.GetWithCourtById(id); 
 			return new CourtWorkingHoursModel()
 			{
 				Id = workingHours.Id,
+				Court = new CourtModel()
+				{
+					Id = workingHours.CourtId.Id,
+					Name = workingHours.CourtId.Name
+				},
 				Day = workingHours.Day,
 				StartTime = workingHours.StartTime,
 				EndTime = workingHours.EndTime
@@ -83,7 +87,7 @@ namespace SportGround.BusinessLogic.Operations
 		{
 			var allHours = new List<CourtWorkingHoursModel>();
 
-			var query = _courtWorkingHoursRepository.GetAll().Where(id => id.CourtId.Id == courtId);
+			var query = _courtWorkingHoursRepository.GetAllWithCourts().Where(id => id.CourtId.Id == courtId);
 			foreach (var workingHours in query)
 			{
 				allHours.Add(new CourtWorkingHoursModel()

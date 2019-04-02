@@ -17,6 +17,18 @@ namespace SportGround.Data.Repositories
 			this._context = context;
 		}
 
+		public CourtWorkingHoursEntity GetWithCourtById(object id)
+		{
+			try
+			{
+				return this._context.CourtWorkingHours.Include(court => court.CourtId).FirstOrDefault(i => i.Id == (int)id);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("The court working hours doesn't exist in the database!");
+			}
+		}
+
 		public CourtWorkingHoursEntity GetById(object id)
 		{
 			try

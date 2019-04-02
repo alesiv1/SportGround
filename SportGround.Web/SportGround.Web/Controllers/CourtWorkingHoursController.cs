@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
-using SportGround.Data.Entities;
 using SportGround.Data.Enums;
 
 namespace SportGround.Web.Controllers
@@ -10,42 +10,39 @@ namespace SportGround.Web.Controllers
     public class CourtWorkingHoursController : Controller
     {
 	    private ICourtWorkingHoursOperations _courtWorkingHoursOperations;
-	    private ICourtOperations _courtOperations;
 
-		public CourtWorkingHoursController(ICourtWorkingHoursOperations operationsHours, ICourtOperations operationsCourt)
+		public CourtWorkingHoursController(ICourtWorkingHoursOperations operationsHours)
 	    {
 		    _courtWorkingHoursOperations = operationsHours;
-		    _courtOperations = operationsCourt;
 		}
 
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allHours = _courtWorkingHoursOperations.GetAllForCourt(courtId);
-			var court = _courtOperations.GetCourtById(courtId);
+			var allHours = _courtWorkingHoursOperations.GetAllHoursForCourt(courtId);
 			CourtWithWorkingHoursModel courtWithWorkingHours = new CourtWithWorkingHoursModel()
 			{
-				Id = court.Id,
-				Name = court.Name,
+				Id = courtId,
+				Name = "",
 				AllWorkingHours = allHours
 			};
-            return View(courtWithWorkingHours);
-        }
+
+			return View(courtWithWorkingHours);
+		}
 
 		[Authorize]
 		public ActionResult Details(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtById(id);
+	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
 			return View(hours);
         }
 
 		[Authorize(Roles = "Admin")]
-		public ActionResult Create(int courtid)
+		public ActionResult Create(int courtId)
 		{
-			var court = _courtOperations.GetCourtById(courtid);
 			return View(new CourtWorkingHoursModel()
             {
-				Court = court,
+				Court = new CourtModel(){Id = courtId},
 				Day = (DaysOfTheWeek) DateTime.UtcNow.Day,
 				StartTime = DateTimeOffset.UtcNow,
 				EndTime = DateTimeOffset.UtcNow,
@@ -56,19 +53,20 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Create(CourtWorkingHoursModel model)
         {
+	        var id = model.Court.Id;
 	        if (!ModelState.IsValid)
 	        {
 		        return View();
 	        }
-	        _courtWorkingHoursOperations.Create(model.Court.Id, model);
-	        return RedirectToAction("Index", model.Court.Id);
+	        _courtWorkingHoursOperations.Create(id, model);
+	        return RedirectToAction("Index","CourtWorkingHours", new { courtId = id });
 		}
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Edit(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtById(id);
-			return View();
+	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
+			return View(hours);
         }
 
 		[Authorize(Roles = "Admin")]
@@ -80,13 +78,13 @@ namespace SportGround.Web.Controllers
 		        return View();
 	        }
 	        _courtWorkingHoursOperations.Update(id, model);
-	        return RedirectToAction("Index");
+	        return RedirectToAction("Index", new { courtId = model.Court.Id});
 		}
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtById(id);
+	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
 	        return View(hours);
 		}
 
@@ -94,8 +92,9 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtWorkingHoursModel model)
         {
+	        var Id = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id).Court.Id;
 	        _courtWorkingHoursOperations.Delete(id);
-	        return RedirectToAction("Index");
+			return RedirectToAction("Index", new { courtId = Id});
 		}
     }
 }

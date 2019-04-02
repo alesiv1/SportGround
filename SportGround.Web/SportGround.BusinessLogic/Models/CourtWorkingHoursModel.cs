@@ -11,15 +11,17 @@ namespace SportGround.BusinessLogic.Models
 		public int Id { get; set; }
 
 		[Required]
-		public CourtEntity CourtId { get; set; }
+		public CourtModel Court { get; set; }
 
 		[Required]
 		public DaysOfTheWeek Day { get; set; }
 
 		[Required]
+		[DataType(DataType.DateTime)]
 		public DateTimeOffset StartTime { get; set; }
 
 		[Required]
+		[DataType(DataType.DateTime)]
 		public DateTimeOffset EndTime { get; set; }
 	}
 }

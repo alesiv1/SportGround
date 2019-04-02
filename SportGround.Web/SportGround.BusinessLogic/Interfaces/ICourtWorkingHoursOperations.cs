@@ -6,10 +6,11 @@ namespace SportGround.BusinessLogic.Interfaces
 {
 	public interface ICourtWorkingHoursOperations
 	{
-		CourtWorkingHoursModel GetCourtById(int id);
+		CourtWorkingHoursModel GetCourtWorkingHoursById(int id);
 		List<CourtWorkingHoursModel> GetAll();
-		void Create(CourtWorkingHoursModel model);
+		void Create(int courtId, CourtWorkingHoursModel model);
 		void Update(int id, CourtWorkingHoursModel model);
 		void Delete(int id);
+		List<CourtWorkingHoursModel> GetAllHoursForCourt(int courtId);
 	}
 }

@@ -1,0 +1,39 @@
+﻿@model SportGround.BusinessLogic.Models.CourtWorkingHoursModel
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+        </div>
+        <div>
+            <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = Model.Court.Id})" class="btn btn-primary">
+                <span>
+                    <strong>Back to list</strong>
+                </span>
+            </a>
+        </div>
+    }
+</div>

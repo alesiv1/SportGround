@@ -61,6 +61,7 @@
     <Compile Include="Interfaces\ICourtWorkingHoursOperations.cs" />
     <Compile Include="Interfaces\IUserOperations.cs" />
     <Compile Include="Models\CourtModel.cs" />
+    <Compile Include="Models\CourtWorkingHoursModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Operations\CourtOperations.cs" />
     <Compile Include="Operations\CourtWorkingHoursOperations.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using SportGround.BusinessLogic.Models;
 using System.Collections.Generic;
+using SportGround.Data.Entities;
 
 namespace SportGround.BusinessLogic.Interfaces
 {
@@ -11,5 +12,6 @@ namespace SportGround.BusinessLogic.Interfaces
 		void Create(CourtModel model);
 		void Update(int id, CourtModel model);
 		void Delete(int id);
+		CourtEntity GetCourtEntityById(int id);
 	}
 }

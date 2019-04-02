@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Entities;
+using SportGround.Data.Enums;
 using SportGround.Data.Interfaces;
 
 namespace SportGround.BusinessLogic.Operations
@@ -21,7 +22,7 @@ namespace SportGround.BusinessLogic.Operations
 			CourtEntity court = new CourtEntity()
 			{
 				Id = model.Id,
-				Name = model.Name
+				Name = model.Name,		
 			};
 			_courtRepository.Insert(court);
 		}
@@ -64,6 +65,11 @@ namespace SportGround.BusinessLogic.Operations
 			var court = _courtRepository.GetById(id);
 			court.Name = model.Name;
 			_courtRepository.Update(court);
+		}
+
+		public CourtEntity GetCourtEntityById(int id)
+		{
+			return _courtRepository.GetById(id);
 		}
 	}
 }

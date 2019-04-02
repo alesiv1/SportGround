@@ -9,6 +9,7 @@
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th></th>
+        <th></th>
     </tr>
 
 @foreach (var item in Model) {
@@ -26,6 +27,13 @@
             {
                 @Html.ActionLink("Delete", "Delete", new {id = item.Id})
             }
+        </td>
+        <td>
+            <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = item.Id})" class="btn btn-primary">
+                <span>
+                    <strong>Working hours</strong>
+                </span>
+            </a>
         </td>
     </tr>
 }

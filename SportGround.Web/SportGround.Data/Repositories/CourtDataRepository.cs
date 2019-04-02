@@ -29,6 +29,18 @@ namespace SportGround.Data.Repositories
 			}
 		}
 
+		public CourtEntity GetWithWorkingHoursBuId(int courtId)
+		{
+			try
+			{
+				return this._context.Courts.Include(wh => wh.WorkingHours).FirstOrDefault(id => id.Id == (int)courtId);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("The court doesn't exist in the database!");
+			}
+		}
+
 		public void Insert(CourtEntity entity)
 		{
 			if (entity == null)
@@ -101,7 +113,6 @@ namespace SportGround.Data.Repositories
 
 		public ICollection<CourtEntity> GetAll()
 		{
-			var test = _context.Courts.Include(x => x.WorkingHours).ToList();
 			return _context.Courts.ToList();
 		}
 	}

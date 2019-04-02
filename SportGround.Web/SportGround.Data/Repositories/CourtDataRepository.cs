@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Claims;
+using System.Linq.Expressions;
 
 namespace SportGround.Data.Repositories
 {
@@ -114,6 +114,33 @@ namespace SportGround.Data.Repositories
 		public ICollection<CourtEntity> GetAll()
 		{
 			return _context.Courts.ToList();
+		}
+
+		public IQueryable<CourtEntity> GetWithInclude(Expression<Func<CourtEntity, bool>> predicate, params Expression<Func<CourtEntity, object>>[] include)
+		{
+			try
+			{
+				IQueryable<CourtEntity> query = this._context.Courts;
+			query = include.Aggregate(query, (current, inc) => current.Include(inc));
+			return query.Where(predicate);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
+		}
+
+		public IQueryable<CourtEntity> Include(params Expression<Func<CourtEntity, object>>[] include)
+		{
+			try
+			{
+				IQueryable<CourtEntity> query = this._context.Courts;
+				return include.Aggregate(query, (current, inc) => current.Include(inc));
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
 		}
 	}
 }

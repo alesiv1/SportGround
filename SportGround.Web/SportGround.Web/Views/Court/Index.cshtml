@@ -8,8 +8,11 @@
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th></th>
-        <th></th>
+        <th>Operations</th>
+    @if (this.User.IsInRole("Admin"))
+    {
+        <th>Working hourse</th>
+    }
     </tr>
 
 @foreach (var item in Model) {
@@ -28,13 +31,16 @@
                 @Html.ActionLink("Delete", "Delete", new {id = item.Id})
             }
         </td>
-        <td>
-            <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = item.Id})" class="btn btn-primary">
-                <span>
-                    <strong>Working hours</strong>
-                </span>
-            </a>
-        </td>
+        @if (this.User.IsInRole("Admin"))
+        {
+            <td>
+                <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = item.Id})" class="btn btn-primary">
+                    <span>
+                        <strong>Working hours</strong>
+                    </span>
+                </a>
+            </td>
+        }
     </tr>
 }
 </table>

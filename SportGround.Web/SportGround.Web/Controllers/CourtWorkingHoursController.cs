@@ -19,11 +19,12 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allHours = _courtWorkingHoursOperations.GetAllHoursForCourt(courtId);
+			var allHours = _courtWorkingHoursOperations.GetAllForCourt(courtId);
+			var name = allHours.FirstOrDefault() != null ? allHours.FirstOrDefault().Court.Name : "";
 			CourtWithWorkingHoursModel courtWithWorkingHours = new CourtWithWorkingHoursModel()
 			{
 				Id = courtId,
-				Name = "",
+				Name = name,
 				AllWorkingHours = allHours
 			};
 
@@ -33,7 +34,7 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Details(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
+	        var hours = _courtWorkingHoursOperations.GetById(id);
 			return View(hours);
         }
 
@@ -42,7 +43,7 @@ namespace SportGround.Web.Controllers
 		{
 			return View(new CourtWorkingHoursModel()
             {
-				Court = new CourtModel(){Id = courtId},
+				Court = new CourtModel(){Id = courtId, Name = "Just defolt"},
 				Day = (DaysOfTheWeek) DateTime.UtcNow.Day,
 				StartTime = DateTimeOffset.UtcNow,
 				EndTime = DateTimeOffset.UtcNow,
@@ -65,7 +66,7 @@ namespace SportGround.Web.Controllers
         [Authorize(Roles = "Admin")]
 		public ActionResult Edit(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
+	        var hours = _courtWorkingHoursOperations.GetById(id);
 			return View(hours);
         }
 
@@ -84,7 +85,7 @@ namespace SportGround.Web.Controllers
         [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
         {
-	        var hours = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id);
+	        var hours = _courtWorkingHoursOperations.GetById(id);
 	        return View(hours);
 		}
 
@@ -92,7 +93,7 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtWorkingHoursModel model)
         {
-	        var Id = _courtWorkingHoursOperations.GetCourtWorkingHoursById(id).Court.Id;
+	        var Id = _courtWorkingHoursOperations.GetById(id).Court.Id;
 	        _courtWorkingHoursOperations.Delete(id);
 			return RedirectToAction("Index", new { courtId = Id});
 		}

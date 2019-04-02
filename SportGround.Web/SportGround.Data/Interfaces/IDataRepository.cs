@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace SportGround.Data.Interfaces
 {
@@ -11,5 +13,7 @@ namespace SportGround.Data.Interfaces
 		void Update(TEntity entity);
 		void Delete(TEntity entity);
 		void DeleteById(object id);
+		IQueryable<TEntity> GetWithInclude(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] include);
+		IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] include);
 	}
 }

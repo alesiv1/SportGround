@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SportGround.Data.Repositories
 {
@@ -15,18 +16,6 @@ namespace SportGround.Data.Repositories
 		public CourtWorkingHoursDataRepository(DataContext context)
 		{
 			this._context = context;
-		}
-
-		public CourtWorkingHoursEntity GetWithCourtById(object id)
-		{
-			try
-			{
-				return this._context.CourtWorkingHours.Include(court => court.CourtId).FirstOrDefault(i => i.Id == (int)id);
-			}
-			catch (Exception e)
-			{
-				throw new InvalidOperationException("The court working hours doesn't exist in the database!");
-			}
 		}
 
 		public CourtWorkingHoursEntity GetById(object id)
@@ -116,9 +105,31 @@ namespace SportGround.Data.Repositories
 			return _context.CourtWorkingHours.ToList();
 		}
 
-		public ICollection<CourtWorkingHoursEntity> GetAllWithCourts()
+		public IQueryable<CourtWorkingHoursEntity> GetWithInclude(Expression<Func<CourtWorkingHoursEntity, bool>> predicate, params Expression<Func<CourtWorkingHoursEntity, object>>[] include)
 		{
-			return _context.CourtWorkingHours.Include(court => court.CourtId).ToList();
+			try
+			{
+				IQueryable<CourtWorkingHoursEntity> query = this._context.CourtWorkingHours;
+				query = include.Aggregate(query, (current, inc) => current.Include(inc));
+				return query.Where(predicate);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
+		}
+
+		public IQueryable<CourtWorkingHoursEntity> Include(params Expression<Func<CourtWorkingHoursEntity, object>>[] include)
+		{
+			try
+			{
+				IQueryable<CourtWorkingHoursEntity> query = this._context.CourtWorkingHours;
+				return include.Aggregate(query, (current, inc) => current.Include(inc));
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
 		}
 	}
 }

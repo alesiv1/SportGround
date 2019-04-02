@@ -3,7 +3,9 @@ using SportGround.Data.entities;
 using SportGround.Data.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SportGround.Data.Repositories
 {
@@ -101,6 +103,33 @@ namespace SportGround.Data.Repositories
 		public ICollection<UserEntity> GetAll()
 		{
 			return _context.Users.ToList();
+		}
+
+		public IQueryable<UserEntity> GetWithInclude(Expression<Func<UserEntity, bool>> predicate, params Expression<Func<UserEntity, object>>[] include)
+		{
+			try
+			{
+				IQueryable<UserEntity> query = this._context.Users;
+				query = include.Aggregate(query, (current, inc) => current.Include(inc));
+				return query.Where(predicate);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
+		}
+
+		public IQueryable<UserEntity> Include(params Expression<Func<UserEntity, object>>[] include)
+		{
+			try
+			{
+				IQueryable<UserEntity> query = this._context.Users;
+				return include.Aggregate(query, (current, inc) => current.Include(inc));
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException("An error occurred while requesting!");
+			}
 		}
 	}
 }

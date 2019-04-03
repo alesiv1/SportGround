@@ -179,7 +179,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CourtBookingModel.cs" />
     <Compile Include="Models\LogInModel.cs" />
     <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -240,11 +239,13 @@
     <Content Include="Views\CourtWorkingHours\Edit.cshtml" />
     <Content Include="Views\CourtWorkingHours\Details.cshtml" />
     <Content Include="Views\CourtWorkingHours\Delete.cshtml" />
+    <Content Include="Views\CourtBooking\Index.cshtml" />
+    <Content Include="Views\CourtBooking\DeclineBookingCourt.cshtml" />
+    <Content Include="Views\CourtBooking\BookingCourt.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Context\" />
-    <Folder Include="Views\CourtBooking\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

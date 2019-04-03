@@ -1,0 +1,31 @@
+﻿@model IEnumerable<SportGround.BusinessLogic.Models.CourtBookingModel>
+
+<table class="table">
+    <tr>
+        <th>
+            Court Name
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            Decline
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Court.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Decline", "DeclineBookingCourt", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
+  @Html.ActionLink("Back to users", "Index", "User")

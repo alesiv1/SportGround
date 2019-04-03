@@ -16,6 +16,9 @@ namespace SportGround.Data.Configurations
 			HasOptional(x => x.WorkingHours)
 				.WithMany();
 
+			HasOptional(x => x.BookingCourt)
+				.WithMany();
+
 			Property(x => x.Name)
 				.HasMaxLength(255)
 				.IsOptional();

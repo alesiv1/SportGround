@@ -57,10 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configurations\CourtBookingConfiguration.cs" />
     <Compile Include="Configurations\CourtConfiguration.cs" />
     <Compile Include="Configurations\CourtWorkingHoursConfiguration.cs" />
     <Compile Include="Configurations\UserConfiguration.cs" />
     <Compile Include="Context\DataContext.cs" />
+    <Compile Include="Entities\CourtBookingEntity.cs" />
     <Compile Include="Entities\CourtEntity.cs" />
     <Compile Include="Entities\CourtWorkingHoursEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
@@ -77,6 +79,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\CourtBookingDataRepository.cs" />
     <Compile Include="Repositories\CourtDataRepository.cs" />
     <Compile Include="Repositories\CourtWorkingHoursDataRepository.cs" />
     <Compile Include="Repositories\UserDataRepository.cs" />

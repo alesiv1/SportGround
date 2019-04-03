@@ -9,5 +9,6 @@ namespace SportGround.Data.Entities
 		public string Name { get; set; }
 
 		public List<CourtWorkingHoursEntity> WorkingHours { get; set; }
+		public List<CourtBookingEntity> BookingCourt { get; set; }
 	}
 }

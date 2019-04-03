@@ -12,6 +12,9 @@ namespace SportGround.Data.Configurations
 
 			HasKey(x => x.Id);
 
+			HasOptional(x => x.BookingCourt)
+				.WithMany();
+
 			Property(x => x.FirstName)
 				.HasMaxLength(255)
 				.IsRequired();

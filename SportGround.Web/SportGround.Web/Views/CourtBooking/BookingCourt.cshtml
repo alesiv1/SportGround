@@ -1,6 +1,5 @@
 ﻿@model SportGround.BusinessLogic.Models.CreateCourtBookingModel
 
-@*Поміняти повертаючу модель*@
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
@@ -29,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.AvailableDate, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.DropDownList("Date", new SelectList(Model.AvailableDate), new {style = "width: 100px; height : 30px; border-radius: 5px;"})
+                @Html.DropDownList("AvailableDate", new SelectList(Model.AvailableDate), new {style = "width: 100px; height : 30px; border-radius: 5px;"})
                 @Html.ValidationMessageFor(model => model.AvailableDate, "", new {@class = "text-danger"})
             </div>
         </div>

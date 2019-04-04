@@ -3,7 +3,7 @@
 <table class="table">
     <tr>
         <th>
-            Court Name
+            @Html.DisplayNameFor(model => model.CourtName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Date)
@@ -17,13 +17,13 @@
     {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.CourtName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Court.Name)
-            </td>
-            <td>
-                @Html.ActionLink("Decline", "DeclineBookingCourt", new { id = item.Id })
+                @Html.ActionLink("Decline", "DeclineBookingCourt", new {id = item.Id})
             </td>
         </tr>
     }

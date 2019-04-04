@@ -15,8 +15,8 @@ namespace SportGround.Data.Configurations
 			HasOptional(x => x.User)
 				.WithRequired();
 
-			HasOptional(x => x.Court)
-				.WithRequired();
+			Property(x => x.CourtId)
+				.IsRequired();
 
 			Property(x => x.Date)
 				.IsRequired();

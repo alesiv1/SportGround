@@ -7,7 +7,7 @@ namespace SportGround.Data.Entities
 	{
 		public int Id { get; set; }
 		public UserEntity User { get; set; }
-		public CourtEntity Court { get; set; }
+		public int CourtId { get; set; }
 		public DateTimeOffset Date { get; set; }
 	}
 }

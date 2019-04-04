@@ -9,6 +9,7 @@
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>Operations</th>
+        <th>Booking</th>
     @if (this.User.IsInRole("Admin"))
     {
         <th>Working hourse</th>
@@ -30,6 +31,13 @@
             {
                 @Html.ActionLink("Delete", "Delete", new {id = item.Id})
             }
+        </td>
+        <td>
+            <a href="@Url.Action("BookingCourt", "CourtBooking", new {courtId = item.Id})" class="btn btn-primary">
+                <span>
+                    <strong>Booking this court</strong>
+                </span>
+            </a>
         </td>
         @if (this.User.IsInRole("Admin"))
         {

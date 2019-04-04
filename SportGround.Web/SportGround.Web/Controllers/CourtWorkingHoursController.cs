@@ -55,10 +55,6 @@ namespace SportGround.Web.Controllers
         public ActionResult Create(CourtWorkingHoursModel model)
         {
 	        var id = model.Court.Id;
-	        if (!ModelState.IsValid)
-	        {
-		        return View();
-	        }
 	        _courtWorkingHoursOperations.Create(id, model);
 	        return RedirectToAction("Index","CourtWorkingHours", new { courtId = id });
 		}

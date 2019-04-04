@@ -37,7 +37,10 @@ namespace SportGround.Web.Controllers
 			var user = _userOperations.GetAll().FirstOrDefault(em => em.Email == email);
 			var court = _courtOperations.GetCourtById(courtId);
 			var availableDataTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
-
+			if (availableDataTime.Count < 1)
+			{
+				return View("Index");
+			}
 			CreateCourtBookingModel booking = new CreateCourtBookingModel()
 			{
 				User = user,
@@ -49,13 +52,21 @@ namespace SportGround.Web.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public ActionResult BookingCourt(CourtBookingModel model)
+		public ActionResult BookingCourt(CreateCourtBookingModel model)
         {
-	        if (!ModelState.IsValid)
+			//if (!ModelState.IsValid)
+			//{
+			//	return View();
+			//}
+
+			CourtBookingModel booking = new CourtBookingModel()
 	        {
-		        return View();
-	        }
-	        _bookingOperations.Create(model);
+				Id = model.Id,
+				User = model.User,
+				CourtId = model.Court.Id,
+				Date = model.AvailableDate.FirstOrDefault()
+	        };
+	        _bookingOperations.Create(booking);
 	        return RedirectToAction("Index", "Court");
         }
 

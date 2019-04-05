@@ -77,13 +77,17 @@ namespace SportGround.Data.Repositories
 
 		public void Delete(CourtEntity entity)
 		{
-			if (entity == null)
+			CourtEntity entityToDelete = this._context.Courts
+				.Include(include => include.WorkingHours)
+				.FirstOrDefault(en => en == entity);
+
+			if (entityToDelete == null)
 			{
 				throw new NullReferenceException("The court doesn't exist in the database!");
 			}
 			try
-			{
-				this._context.Courts.Remove(entity);
+			{				
+				this._context.Courts.Remove(entityToDelete);
 				this._context.SaveChanges();
 			}
 			catch (Exception e)
@@ -96,7 +100,9 @@ namespace SportGround.Data.Repositories
 		{
 			try
 			{
-				CourtEntity entityToDelete = this._context.Courts.Find(id);
+				CourtEntity entityToDelete = this._context.Courts
+					.Include(include => include.WorkingHours)
+					.FirstOrDefault(entity => entity.Id == (int)id);
 
 				if (entityToDelete == null)
 				{

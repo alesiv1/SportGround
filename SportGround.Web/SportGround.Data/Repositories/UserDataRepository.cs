@@ -65,13 +65,17 @@ namespace SportGround.Data.Repositories
 
 		public void Delete(UserEntity entity)
 		{
-			if (entity == null)
+			UserEntity entityToDelete = this._context.Users
+				.Include(include => include.BookingCourt)
+				.FirstOrDefault(en => en == entity);
+
+			if (entityToDelete == null)
 			{
 				throw new NullReferenceException("The user doesn't exist in the database!");
 			}
 			try
 			{
-				this._context.Users.Remove(entity);
+				this._context.Users.Remove(entityToDelete);
 				this._context.SaveChanges();
 			}
 			catch (Exception e)
@@ -84,7 +88,9 @@ namespace SportGround.Data.Repositories
 		{
 			try
 			{
-				UserEntity entityToDelete = this._context.Users.Find(id);
+				UserEntity entityToDelete = this._context.Users
+					.Include(include => include.BookingCourt)
+					.FirstOrDefault(entity => entity.Id == (int)id);
 
 				if (entityToDelete == null)
 				{

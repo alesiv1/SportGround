@@ -1,4 +1,5 @@
-﻿@model SportGround.BusinessLogic.Models.CourtWithWorkingHoursModel
+﻿@using WebGrease.Css.Extensions
+@model SportGround.BusinessLogic.Models.CourtWithWorkingHoursModel
 
 <td>
     <a href="@Url.Action("Create", "CourtWorkingHours", new {courtId = Model.Id})" class="btn btn-primary">
@@ -21,17 +22,17 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.AllWorkingHours)
+    @foreach (var item in @Model.AllWorkingHours )
     {
              <tr>
                  <td>
                      @Html.DisplayFor(modelItem => item.Day)
                  </td>
                  <td>
-                     @Html.DisplayFor(modelItem => item.StartTime)
+                     @Html.DisplayFor(modelItem => @item.StartTime.TimeOfDay)
                  </td>
                  <td>
-                     @Html.DisplayFor(modelItem => item.EndTime)
+                     @Html.DisplayFor(modelItem => item.EndTime.TimeOfDay)
                  </td>
                  <td>
                      @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |

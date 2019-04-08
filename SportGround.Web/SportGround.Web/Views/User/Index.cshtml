@@ -1,10 +1,28 @@
 ﻿@model IEnumerable<SportGround.BusinessLogic.Models.UserModelWithRole>
-<p>
-
-</p>
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@if (this.User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+else
+{
+        <a href="@Url.Action("EditAuthorizedUser", "User")" class="btn btn-primary fa fa-pencil">
+            <span>
+                <strong>Edit my data</strong>
+            </span>
+        </a>
+        <a href="@Url.Action("DeleteAuthorizedUser", "User")" class="btn btn-primary">
+            <span>
+                <strong>Delete my data</strong>
+            </span>
+        </a>
+        <a href="@Url.Action("ResetPasswordAuthorizedUser", "User")" class="btn btn-primary">
+            <span>
+                <strong>Reset password</strong>
+            </span>
+        </a>
+}
 <table class="table">
     <tr>
         <th>
@@ -19,13 +37,13 @@
         <th>
             @Html.DisplayNameFor(model => model.Role)
         </th>
-        <th>Edit</th>
         <th>Details</th>
-        <th>Delete</th>
-        <th>Reset password</th>
         @if (this.User.IsInRole("Admin"))
         {
-            <th>Change role</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>Reset password</th>
+        <th>Change role</th>
         }
     </tr>
 
@@ -44,36 +62,36 @@
             @Html.DisplayFor(modelItem => item.Role)
         </td>
         <td>
-            <a href="@Url.Action("Edit", "User", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
-                <span>
-                    <strong>Edit</strong>
-                </span>
-            </a>
-        </td>
-        <td>
             <a href="@Url.Action("Details", "User", new {id = item.Id})" class="btn btn-primary">
                 <span>
                     <strong>Details</strong>
                 </span>
             </a>
         </td>
-        <td>
-            <a href="@Url.Action("Delete", "User", new {id = item.Id})" class="btn btn-primary">
-                <span>
-                    <strong>Delete</strong>
-                </span>
-            </a>
-        </td>
-        <td>
-            <a href="@Url.Action("ResetPassword", "User", new {id = item.Id})" class="btn btn-primary">
-                <span>
-                    <strong>Reset password</strong>
-                </span>
-            </a>
-        </td>
 
         @if (this.User.IsInRole("Admin"))
         {
+            <td>
+                <a href="@Url.Action("Edit", "User", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
+                    <span>
+                        <strong>Edit</strong>
+                    </span>
+                </a>
+            </td>
+            <td>
+                <a href="@Url.Action("Delete", "User", new {id = item.Id})" class="btn btn-primary">
+                    <span>
+                        <strong>Delete</strong>
+                    </span>
+                </a>
+            </td>
+            <td>
+                <a href="@Url.Action("ResetPassword", "User", new {id = item.Id})" class="btn btn-primary">
+                    <span>
+                        <strong>Reset password</strong>
+                    </span>
+                </a>
+            </td>
             <td>
                 <a href="@Url.Action("Changerole", "User", new {id = item.Id})" class="btn btn-primary">
                     <span>

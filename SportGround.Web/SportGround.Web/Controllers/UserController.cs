@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
+using System.Security.Claims;
+using SportGround.Data.entities;
 
 namespace SportGround.Web.Controllers
 {
@@ -56,9 +58,20 @@ namespace SportGround.Web.Controllers
 		}
 
 		[Authorize]
+		public ActionResult EditAuthorizedUser()
+		{
+			var id = GetIdForAuthorizedUser();
+			return RedirectToAction("Edit", new {id});
+		}
+
+		[Authorize]
 		public ActionResult Edit(int id)
 		{
-			var user= _userOperations.GetUserById(id);
+			if (GetIdForAuthorizedUser() != id && this.User.IsInRole("User"))
+			{
+				return View("Index");
+			}
+			var user = _userOperations.GetUserById(id);
 			return View(user);
 		}
 
@@ -81,21 +94,39 @@ namespace SportGround.Web.Controllers
 			}
 		}
 
-		[Authorize(Roles = "Admin")]
+		[Authorize]
+		public ActionResult DeleteAuthorizedUser()
+		{
+			var id = GetIdForAuthorizedUser();
+			return RedirectToAction("Delete", new { id });
+		}
+
+		[Authorize]
 		public ActionResult Delete(int id)
 		{
+			if (GetIdForAuthorizedUser() != id && this.User.IsInRole("User"))
+			{
+				return View("Index");
+			}
 			var user = _userOperations.GetUserById(id);
 			return View(user);
 		}
 
-		[Authorize(Roles = "Admin")]
 		[HttpPost]
         public ActionResult Delete(int id, UserModelWithRole user)
         {
 			try
-	        {
-		        _userOperations.Delete(id);
-		        return RedirectToAction("Index");
+			{
+				var activeId = GetIdForAuthorizedUser();
+				if (activeId == id || this.User.IsInRole("Admin"))
+		        {
+					_userOperations.Delete(id);
+				}
+				if (activeId == id)
+				{
+					return RedirectToAction("LogOut", "Authorisation");
+				}
+				return RedirectToAction("Index");
 	        }
 	        catch
 	        {
@@ -104,20 +135,33 @@ namespace SportGround.Web.Controllers
 		}
 
         [Authorize]
-		public ActionResult ResetPassword(int id)
+        public ActionResult ResetPasswordAuthorizedUser()
         {
-			var user = _userOperations.Users().FirstOrDefault();
+	        var id = GetIdForAuthorizedUser();
+	        return RedirectToAction("ResetPassword", new { id });
+        }
+
+		[Authorize]
+		public ActionResult ResetPassword(int id)
+		{
+			if (GetIdForAuthorizedUser() != id && this.User.IsInRole("User"))
+			{
+				return View("Index");
+			}
+			var user = _userOperations
+				.Users()
+				.FirstOrDefault(x => x.Id == id);
 			if (user == null)
 			{
 				throw new ArgumentException("User does'nt exist in database!");
 			}
 			var userForChange = new UserModelWithPassword()
 			{
-				Id = id,
+				Id = user.Id,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				Email = user.Email,
-				Password = _userOperations.GetPasswordHashCode(user.Password, user.Salt),
+				Password = _userOperations.GetDecodePassword(user.Password, user.Salt),
 				ConfirmPassword = "",
 			};
 			return View(userForChange);
@@ -159,5 +203,14 @@ namespace SportGround.Web.Controllers
 				return View();
 			}
 		}
+
+        private int GetIdForAuthorizedUser()
+        {
+	        var email = ((ClaimsIdentity)this.User.Identity)
+		        .FindFirst(ClaimTypes.Email)?.Value;
+	        var user = _userOperations.GetAll()
+		        .FirstOrDefault(em => em.Email == email);
+	        return user != null ? user.Id : -1;
+        }
 	}
 }

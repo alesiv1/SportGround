@@ -31,7 +31,8 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			var user = _userOperations.Users()
+			var user = _userOperations
+				.Users()
 				.FirstOrDefault(m => m.Email == model.Email);
 			if (user != null)
 			{
@@ -47,12 +48,9 @@ namespace SportGround.Web.Controllers
 						new Claim(ClaimTypes.Role, user.Role.ToString())
 					},
 					DefaultAuthenticationTypes.ApplicationCookie);
-
 				var ctx = Request.GetOwinContext();
 				var authManager = ctx.Authentication;
-
 				authManager.SignIn(identity);
-
 				return Redirect(GetRedirectUrl(returnUrl));
 			}
 			ModelState.AddModelError("Email", "Invalid email. Chack your email and try again!");
@@ -63,7 +61,6 @@ namespace SportGround.Web.Controllers
 		{
 			var ctx = Request.GetOwinContext();
 			var authManager = ctx.Authentication;
-
 			authManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
 			return RedirectToAction("Login", "Authorisation");
 		}
@@ -80,25 +77,26 @@ namespace SportGround.Web.Controllers
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
+
 	        try
 	        {
 		        _userOperations.Create(user);
-				var identity = new ClaimsIdentity(new[] {
-						new Claim(ClaimTypes.Name, user.FirstName),
-						new Claim(ClaimTypes.Email, user.Email),
-						new Claim(ClaimTypes.Role, "User")
-					},
-					DefaultAuthenticationTypes.ApplicationCookie);
-
-				var ctx = Request.GetOwinContext();
-				var authManager = ctx.Authentication;
-
-				authManager.SignIn(identity);
-
-				return Redirect(GetRedirectUrl(null));
+		        var identity = new ClaimsIdentity(new[]
+			        {
+				        new Claim(ClaimTypes.Name, user.FirstName),
+				        new Claim(ClaimTypes.Email, user.Email),
+				        new Claim(ClaimTypes.Role, "User")
+			        },
+			        DefaultAuthenticationTypes.ApplicationCookie);
+		        var ctx = Request.GetOwinContext();
+		        var authManager = ctx.Authentication;
+		        authManager.SignIn(identity);
+		        return Redirect(GetRedirectUrl(null));
+	        }
+	        catch
+	        {
+		        return RedirectToAction("Registration", "Authorisation");
 			}
-	        catch { }
-			return RedirectToAction("Registration", "Authorisation");
 		}
 
         private string GetRedirectUrl(string returnUrl)
@@ -107,7 +105,6 @@ namespace SportGround.Web.Controllers
 	        {
 		        return Url.Action("Index", "User");
 	        }
-
 	        return returnUrl;
         }
 	}

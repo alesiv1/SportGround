@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\CourtBookingStatus.cs" />
     <Compile Include="Interfaces\ICourtBookingOperations.cs" />
     <Compile Include="Interfaces\ICourtOperations.cs" />
     <Compile Include="Interfaces\ICourtWorkingHoursOperations.cs" />

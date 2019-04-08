@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Entities;
-using SportGround.Data.Enums;
 using SportGround.Data.Interfaces;
 
 namespace SportGround.BusinessLogic.Operations
@@ -22,7 +21,7 @@ namespace SportGround.BusinessLogic.Operations
 			CourtEntity court = new CourtEntity()
 			{
 				Id = model.Id,
-				Name = model.Name,		
+				Name = model.Name,
 			};
 			_courtRepository.Insert(court);
 		}
@@ -36,13 +35,15 @@ namespace SportGround.BusinessLogic.Operations
 		{
 			var allCourt = new List<CourtModel>();
 
-			var query = _courtRepository.GetAll();
-			foreach (var court in query)
+			var courtWithWorkingHours = _courtRepository
+				.Include(x => x.WorkingHours);
+			foreach (var court in courtWithWorkingHours)
 			{
 				allCourt.Add(new CourtModel()
 				{
 					Id = court.Id,
-					Name = court.Name
+					Name = court.Name,
+					CanBooking = court.WorkingHours.Count > 0
 				});
 			}
 
@@ -52,12 +53,12 @@ namespace SportGround.BusinessLogic.Operations
 		public CourtModel GetCourtById(int id)
 		{
 			var courtEntity = _courtRepository.GetById(id);
-
-			return new CourtModel()
-			{
-				Id = courtEntity.Id,
-				Name = courtEntity.Name
-			};
+			return courtEntity != null ? 
+				new CourtModel()
+				{
+					Id = courtEntity.Id,
+					Name = courtEntity.Name
+				} : null;
 		}
 
 		public void Update(int id, CourtModel model)

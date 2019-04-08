@@ -23,6 +23,8 @@ namespace SportGround.BusinessLogic.Models
 		[Required]
 		[DataType(DataType.DateTime)]
 		public DateTimeOffset Date { get; set; }
+
+		public bool IsActive { get; set; }
 	}
 
 	public class CreateCourtBookingModel : BaseCourtBookingModel

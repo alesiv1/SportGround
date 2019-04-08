@@ -1,6 +1,6 @@
-﻿using SportGround.Data.Entities;
-using SportGround.Data.Enums;
+﻿using SportGround.Data.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SportGround.BusinessLogic.Models
@@ -15,6 +15,9 @@ namespace SportGround.BusinessLogic.Models
 
 		[Required]
 		public DaysOfTheWeek Day { get; set; }
+
+		[Required]
+		public List<DaysOfTheWeek> AvailableDays { get; set; }
 
 		[Required]
 		[DataType(DataType.DateTime)]

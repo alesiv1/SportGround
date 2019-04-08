@@ -1,6 +1,5 @@
 ﻿using SportGround.BusinessLogic.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Security.Claims;
@@ -24,22 +23,31 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index()
 		{
-			var email = ((ClaimsIdentity)this.User.Identity).FindFirst(ClaimTypes.Email)?.Value;
-			var userId = _userOperations.GetAll().FirstOrDefault(em => em.Email == email)?.Id;
-			var bookingCourts = _bookingOperations.GetAll().Where(user => user.User.Id == userId).ToList();
+			var email = ((ClaimsIdentity)this.User.Identity)
+				.FindFirst(ClaimTypes.Email)?.Value;
+			var userId = _userOperations
+				.GetAll()
+				.FirstOrDefault(em => em.Email == email)?.Id;
+			var bookingCourts = _bookingOperations
+				.GetAll()
+				.Where(user => user.User.Id == userId)
+				.ToList();
+			bookingCourts.ForEach(booking => booking.IsActive = booking.Date.Date >= DateTimeOffset.Now.Date);
 		    return View(bookingCourts);
 	    }
 
 		[Authorize]
 		public ActionResult BookingCourt(int courtId)
 		{
-			var email = ((ClaimsIdentity)this.User.Identity).FindFirst(ClaimTypes.Email)?.Value;
-			var user = _userOperations.GetAll().FirstOrDefault(em => em.Email == email);
+			var email = ((ClaimsIdentity)this.User.Identity)
+				.FindFirst(ClaimTypes.Email)?.Value;
+			var user = _userOperations.GetAll()
+				.FirstOrDefault(em => em.Email == email);
 			var court = _courtOperations.GetCourtById(courtId);
 			var availableDataTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
 			if (availableDataTime.Count < 1)
 			{
-				return View("Index");
+				RedirectToAction("Index", "Court");
 			}
 			CreateCourtBookingModel booking = new CreateCourtBookingModel()
 			{
@@ -54,11 +62,6 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
 		public ActionResult BookingCourt(CreateCourtBookingModel model)
         {
-			//if (!ModelState.IsValid)
-			//{
-			//	return View();
-			//}
-
 			CourtBookingModel booking = new CourtBookingModel()
 	        {
 				Id = model.Id,

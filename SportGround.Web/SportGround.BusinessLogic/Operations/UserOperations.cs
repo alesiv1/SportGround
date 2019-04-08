@@ -28,10 +28,8 @@ namespace SportGround.BusinessLogic.Operations
 			{
 				throw new ArgumentException("User already exist with this email -> {0} ", model.Email);
 			}
-
 			var salt = CreateSaltForPasscode();
 			var passcode = GetCodeForPassword(model.Password, salt);
-
 			UserEntity user = new UserEntity()
 			{
 				Id = model.Id,
@@ -42,7 +40,6 @@ namespace SportGround.BusinessLogic.Operations
 				Password = passcode,
 				Salt = salt
 			};
-
 			_userRepository.Insert(user);
 		}
 
@@ -54,8 +51,8 @@ namespace SportGround.BusinessLogic.Operations
 		public List<UserModelWithRole> GetAll()
 		{
 			var allUsers = new List<UserModelWithRole>();
-			var query = _userRepository.GetAll();
-			foreach (var user in query)
+			var users = _userRepository.GetAll();
+			foreach (var user in users)
 			{
 				allUsers.Add(new UserModelWithRole()
 				{
@@ -66,7 +63,6 @@ namespace SportGround.BusinessLogic.Operations
 					Role = user.Role,
 				});
 			}
-
 			return allUsers;
 		}
 
@@ -78,7 +74,6 @@ namespace SportGround.BusinessLogic.Operations
 		public UserModelWithRole GetUserById(int id)
 		{
 			var userEntity = _userRepository.GetById(id);
-
 			return new UserModelWithRole()
 			{
 				Id = userEntity.Id,
@@ -124,7 +119,9 @@ namespace SportGround.BusinessLogic.Operations
 
 		private bool UserAlreadyExist(string email)
 		{
-			return _userRepository.GetAll().Any(em => em.Email == email);
+			return _userRepository
+				.GetAll()
+				.Any(em => em.Email == email);
 		}
 
 		private string CreateSaltForPasscode()
@@ -160,7 +157,6 @@ namespace SportGround.BusinessLogic.Operations
 							cs.Write(clearBytes, 0, clearBytes.Length);
 							cs.Close();
 						}
-
 						password = Convert.ToBase64String(ms.ToArray());
 					}
 				}
@@ -169,7 +165,6 @@ namespace SportGround.BusinessLogic.Operations
 					password = null;
 				}
 			}
-
 			return password;
 		}
 
@@ -202,7 +197,6 @@ namespace SportGround.BusinessLogic.Operations
 					password = null;
 				}
 			}
-
 			return password;
 		}
 	}

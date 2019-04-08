@@ -12,7 +12,7 @@
         <th>Booking</th>
     @if (this.User.IsInRole("Admin"))
     {
-        <th>Working hourse</th>
+        <th>Working days</th>
     }
     </tr>
 
@@ -32,6 +32,8 @@
                 @Html.ActionLink("Delete", "Delete", new {id = item.Id})
             }
         </td>
+        @if (item.CanBooking)
+        { 
         <td>
             <a href="@Url.Action("BookingCourt", "CourtBooking", new {courtId = item.Id})" class="btn btn-primary">
                 <span>
@@ -39,12 +41,19 @@
                 </span>
             </a>
         </td>
+        }
+        else
+        {
+            <td>
+                <p>This court doesn't have working days</p>
+            </td>
+        }
         @if (this.User.IsInRole("Admin"))
         {
             <td>
                 <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = item.Id})" class="btn btn-primary">
                     <span>
-                        <strong>Working hours</strong>
+                        <strong>Working days</strong>
                     </span>
                 </a>
             </td>

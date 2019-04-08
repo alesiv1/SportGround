@@ -1,13 +1,15 @@
 ﻿@using WebGrease.Css.Extensions
 @model SportGround.BusinessLogic.Models.CourtWithWorkingHoursModel
-
-<td>
-    <a href="@Url.Action("Create", "CourtWorkingHours", new {courtId = Model.Id})" class="btn btn-primary">
-        <span>
-            <strong>Create new</strong>
-        </span>
-    </a>
-</td>
+@if(@Model.IsAvailableDays)
+{
+    <td>
+        <a href="@Url.Action("Create", "CourtWorkingHours", new {courtId = Model.Id})" class="btn btn-primary">
+            <span>
+                <strong>Create new</strong>
+            </span>
+        </a>
+    </td>
+}
 <table class="table">
     <tr>
         <th>

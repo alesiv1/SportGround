@@ -24,7 +24,9 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(CourtBookingModel model)
 		{
-			var user = _userRepository.Include(include => include.BookingCourt).FirstOrDefault(id => id.Id == model.User.Id);
+			var user = _userRepository
+				.Include(include => include.BookingCourt)
+				.FirstOrDefault(id => id.Id == model.User.Id);
 			if (user == null)
 			{
 				throw new Exception();
@@ -35,7 +37,6 @@ namespace SportGround.BusinessLogic.Operations
 				CourtId = model.CourtId,
 				Date =  model.Date
 			};
-
 			user.BookingCourt.Add(booking);
 			_userRepository.Update(user);
 		}
@@ -48,9 +49,9 @@ namespace SportGround.BusinessLogic.Operations
 		public List<CourtBookingModel> GetAll()
 		{
 			var allCourt = new List<CourtBookingModel>();
-
-			var query = _bookingRepository.Include(include => include.User);
-			foreach (var field in query)
+			var courtBookingEntity = _bookingRepository
+				.Include(include => include.User);
+			foreach (var field in courtBookingEntity)
 			{
 				allCourt.Add(new CourtBookingModel()
 				{
@@ -67,53 +68,57 @@ namespace SportGround.BusinessLogic.Operations
 					Date = field.Date
 				});
 			}
-
 			return allCourt;
 		}
 
 		public List<DateTimeOffset> GetAllAvailableDataTime(int courtId)
 		{
-			var dayNow = (int) DateTimeOffset.Now.Day;
+			var dateNow = DateTimeOffset.Now;
 			List<DateTimeOffset> allAvailableDataTime = new List<DateTimeOffset>();
-			List<CourtWorkingHoursEntity> workingHours = _courtRepository
+			List<CourtWorkingHoursEntity> courtsWithWorkingHours = _courtRepository
 				.Include(wh => wh.WorkingHours)
 				.FirstOrDefault(id => id.Id == courtId)
 				.WorkingHours;
-
-			if (workingHours != null)
+			if (courtsWithWorkingHours.Count > 0)
 			{
-				foreach (var data in workingHours)
+				foreach (var data in courtsWithWorkingHours)
 				{
-					var dayPlas = (int) data.Day < dayNow ? 7 - (dayNow - (int) data.Day) : (int) data.Day - dayNow;
-					var date = DateTimeOffset.Now.AddDays(dayPlas).Date;
+					var add_Days = (int) data.Day < (int) dateNow.Day
+						? 7 - ((int) dateNow.Day - (int) data.Day)
+						: (int) data.Day - (int) dateNow.Day;
+					var date = DateTimeOffset.Now.AddDays(add_Days).Date;
 					allAvailableDataTime.Add(date);
 					for (int i = 1; i < 4; i++)
 					{
-						allAvailableDataTime.Add(date.AddDays(7*i));
+						allAvailableDataTime.Add(date.AddDays(7 * i));
 					}
 				}
 			}
+			else return allAvailableDataTime;
 
-			var bookedCourtDateTime = _bookingRepository
+			var bookedCourtDate = _bookingRepository
 				.GetAll()
 				.Where(ci => ci.CourtId == courtId)
-				.Select(x => x.Date.Date).ToList();
-
+				.Select(x => x.Date.Date)
+				.ToList();
 			allAvailableDataTime = allAvailableDataTime
-				.FindAll(x => !bookedCourtDateTime.Contains(x.Date));
+				.FindAll(x => !bookedCourtDate.Contains(x.Date) && x.Date >= dateNow.Date)
+				.OrderBy(date => date.Date)
+				.ToList();
 			return allAvailableDataTime;
 		}
 
 		public List<CourtBookingModel> GetAllForUser(int userId)
 		{
-			var allCourt = new List<CourtBookingModel>();
-
-			var query = _userRepository.Include(x => x.BookingCourt).FirstOrDefault(id => id.Id == userId);
-			if (query != null)
+			var allBookedCourt = new List<CourtBookingModel>();
+			var userWithBooking = _userRepository
+				.Include(x => x.BookingCourt)
+				.FirstOrDefault(id => id.Id == userId);
+			if (userWithBooking != null)
 			{
-				foreach (var booking in query.BookingCourt)
+				foreach (var booking in userWithBooking.BookingCourt)
 				{
-					allCourt.Add(new CourtBookingModel()
+					allBookedCourt.Add(new CourtBookingModel()
 					{
 						Id = booking.Id,
 						User = new UserModel()
@@ -129,12 +134,13 @@ namespace SportGround.BusinessLogic.Operations
 					});
 				}
 			}
-			return allCourt;
+			return allBookedCourt;
 		}
 
 		public CourtBookingModel GetById(int id)
 		{
-			var booking = _bookingRepository.Include(user => user.User)
+			var booking = _bookingRepository
+				.Include(user => user.User)
 				.FirstOrDefault(i => i.Id == id);
 			return booking != null
 				? new CourtBookingModel()

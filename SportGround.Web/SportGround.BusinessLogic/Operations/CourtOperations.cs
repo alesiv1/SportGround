@@ -33,13 +33,13 @@ namespace SportGround.BusinessLogic.Operations
 
 		public List<CourtModel> GetAll()
 		{
-			var allCourt = new List<CourtModel>();
+			var allCourtModel = new List<CourtModel>();
 
-			var courtWithWorkingHours = _courtRepository
+			var courtEntity = _courtRepository
 				.Include(x => x.WorkingHours);
-			foreach (var court in courtWithWorkingHours)
+			foreach (var court in courtEntity)
 			{
-				allCourt.Add(new CourtModel()
+				allCourtModel.Add(new CourtModel()
 				{
 					Id = court.Id,
 					Name = court.Name,
@@ -47,7 +47,7 @@ namespace SportGround.BusinessLogic.Operations
 				});
 			}
 
-			return allCourt;
+			return allCourtModel;
 		}
 
 		public CourtModel GetCourtById(int id)
@@ -63,9 +63,9 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, CourtModel model)
 		{
-			var court = _courtRepository.GetById(id);
-			court.Name = model.Name;
-			_courtRepository.Update(court);
+			var courtEntity = _courtRepository.GetById(id);
+			courtEntity.Name = model.Name;
+			_courtRepository.Update(courtEntity);
 		}
 
 		public CourtEntity GetCourtEntityById(int id)

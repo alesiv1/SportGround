@@ -34,6 +34,7 @@ namespace SportGround.Web.Controllers
 			var user = _userOperations
 				.Users()
 				.FirstOrDefault(m => m.Email == model.Email);
+
 			if (user != null)
 			{
 				var pass = _userOperations.GetPasswordHashCode(model.Password, user.Salt);
@@ -77,8 +78,12 @@ namespace SportGround.Web.Controllers
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
-
-	        try
+	        if (_userOperations.Users().Any(em => em.Email == user.Email))
+	        {
+		        ModelState.AddModelError("Email", "This email  " + user.Email + "  already exist!");
+		        return View();
+			}
+			try
 	        {
 		        _userOperations.Create(user);
 		        var identity = new ClaimsIdentity(new[]

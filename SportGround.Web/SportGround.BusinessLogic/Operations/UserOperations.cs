@@ -50,11 +50,11 @@ namespace SportGround.BusinessLogic.Operations
 
 		public List<UserModelWithRole> GetAll()
 		{
-			var allUsers = new List<UserModelWithRole>();
-			var users = _userRepository.GetAll();
-			foreach (var user in users)
+			var usersModels = new List<UserModelWithRole>();
+			var usersEntities = _userRepository.GetAll();
+			foreach (var user in usersEntities)
 			{
-				allUsers.Add(new UserModelWithRole()
+				usersModels.Add(new UserModelWithRole()
 				{
 					Id = user.Id,
 					FirstName = user.FirstName,
@@ -63,7 +63,7 @@ namespace SportGround.BusinessLogic.Operations
 					Role = user.Role,
 				});
 			}
-			return allUsers;
+			return usersModels;
 		}
 
 		public List<UserEntity> Users()
@@ -86,25 +86,25 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, UserModel model)
 		{
-			var user = _userRepository.GetById(id);
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
-			user.Email = model.Email;
-			_userRepository.Update(user);
+			var userEntity = _userRepository.GetById(id);
+			userEntity.FirstName = model.FirstName;
+			userEntity.LastName = model.LastName;
+			userEntity.Email = model.Email;
+			_userRepository.Update(userEntity);
 		}
 
 		public void Update(int id, UserModelWithRole model)
 		{
-			var user = _userRepository.GetById(id);
-			user.Role = model.Role;
-			_userRepository.Update(user);
+			var userEntity = _userRepository.GetById(id);
+			userEntity.Role = model.Role;
+			_userRepository.Update(userEntity);
 		}
 
 		public void Update(int id, UserModelWithPassword model)
 		{
-			var user = _userRepository.GetById(id);
-			user.Password = GetCodeForPassword(model.Password, user.Salt);
-			_userRepository.Update(user);
+			var userEntity = _userRepository.GetById(id);
+			userEntity.Password = GetCodeForPassword(model.Password, userEntity.Salt);
+			_userRepository.Update(userEntity);
 		}
 
 		public string GetPasswordHashCode(string password, string salt)
@@ -129,8 +129,8 @@ namespace SportGround.BusinessLogic.Operations
 			var random = new RNGCryptoServiceProvider();
 			byte[] salt = new byte[40];
 			random.GetNonZeroBytes(salt);
-			var s = Convert.ToBase64String(salt);
-			return s;
+			var saltInString = Convert.ToBase64String(salt);
+			return saltInString;
 		}
 
 		private byte[] GetSaltForPasscode(string salt)
@@ -188,7 +188,6 @@ namespace SportGround.BusinessLogic.Operations
 							cs.Write(cipherBytes, 0, cipherBytes.Length);
 							cs.Close();
 						}
-
 						password = Encoding.Unicode.GetString(ms.ToArray());
 					}
 				}

@@ -1,8 +1,12 @@
 ﻿@model IEnumerable<SportGround.BusinessLogic.Models.CourtModel>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@if (this.User.IsInRole("Admin"))
+{
+    <a href="@Url.Action("Create", "Court")" class="btn btn-primary fa fa-pencil">
+        <span>
+            <strong>Create new</strong>
+        </span>
+    </a>
+}
 <table class="table">
     <tr>
         <th>
@@ -10,10 +14,7 @@
         </th>
         <th>Operations</th>
         <th>Booking</th>
-    @if (this.User.IsInRole("Admin"))
-    {
         <th>Working days</th>
-    }
     </tr>
 
 @foreach (var item in Model) {
@@ -22,14 +23,23 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
+            <a href="@Url.Action("Details", "Court", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
+                <span>
+                    <strong>Details</strong>
+                </span>
+            </a>
             @if (this.User.IsInRole("Admin"))
             {
-                @Html.ActionLink("Edit", "Edit", new {id = item.Id}) 
-            } |
-            @Html.ActionLink("Details", "Details", new {id = item.Id}) |
-            @if (this.User.IsInRole("Admin"))
-            {
-                @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                <a href="@Url.Action("Edit", "Court", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
+                    <span>
+                        <strong>Edit</strong>
+                    </span>
+                </a>
+                <a href="@Url.Action("Delete", "Court", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
+                    <span>
+                        <strong>Delete</strong>
+                    </span>
+                </a>
             }
         </td>
         @if (item.CanBooking)
@@ -45,11 +55,9 @@
         else
         {
             <td>
-                <p>This court doesn't have working days</p>
+                <p>You can't booking this court</p>
             </td>
         }
-        @if (this.User.IsInRole("Admin"))
-        {
             <td>
                 <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = item.Id})" class="btn btn-primary">
                     <span>
@@ -57,7 +65,6 @@
                     </span>
                 </a>
             </td>
-        }
     </tr>
 }
 </table>

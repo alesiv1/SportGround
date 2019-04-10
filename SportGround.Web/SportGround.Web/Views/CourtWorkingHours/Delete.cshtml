@@ -26,7 +26,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-default"   style="background-color: red"/> |
         </div>
         <div>
             <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = Model.Court.Id})" class="btn btn-primary">

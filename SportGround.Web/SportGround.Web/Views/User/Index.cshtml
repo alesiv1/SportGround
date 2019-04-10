@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<SportGround.BusinessLogic.Models.UserModelWithRole>
 @if (this.User.IsInRole("Admin"))
 {
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
+    <a href="@Url.Action("Create", "User")" class="btn btn-primary fa fa-pencil">
+        <span>
+            <strong>Create new</strong>
+        </span>
+    </a>
 }
 else
 {

@@ -7,7 +7,7 @@
             @Html.DisplayNameFor(model => model.CourtName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Date)
+            Date
         </th>
         <th>
             Status
@@ -24,7 +24,7 @@
                 @Html.DisplayFor(modelItem => item.CourtName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date.Date)
+                @Html.DisplayFor(modelItem => item.DateInString)
             </td>
             <td>
                 @if (item.IsActive)
@@ -36,10 +36,14 @@
                     <p>Done</p>
                 }
             </td>
-            @if (item.IsActive)
+            @if (item.IsActive || this.User.IsInRole("Admin"))
             {
                 <td>
-                    @Html.ActionLink("Decline", "DeclineBookingCourt", new { id = item.Id })
+                    <a href="@Url.Action("DeclineBookingCourt", "CourtBooking")" class="btn btn-primary fa fa-pencil">
+                        <span>
+                            <strong>Decline</strong>
+                        </span>
+                    </a>
                 </td>
             }
             else
@@ -49,4 +53,8 @@
         </tr>
     }
 </table>
-@Html.ActionLink("Back to users", "Index", "User")
+<a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil">
+    <span>
+        <strong>Back to users</strong>
+    </span>
+</a>

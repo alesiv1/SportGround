@@ -1,4 +1,6 @@
-﻿@model SportGround.BusinessLogic.Models.CreateCourtBookingModel
+﻿@using System.Drawing
+@using WebGrease.Css.Extensions
+@model SportGround.BusinessLogic.Models.CreateCourtBookingModel
 
 @using (Html.BeginForm()) 
 {
@@ -35,14 +37,18 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default"  style="background-color: chartreuse"/>
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Action("Index", "Court")" class="btn btn-primary fa fa-pencil">
+        <span>
+            <strong>Back to List</strong>
+        </span>
+    </a>
 </div>
 
 @section Scripts {

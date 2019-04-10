@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Security.Claims;
 using SportGround.BusinessLogic.Models;
+using System.Collections.Generic;
 
 namespace SportGround.Web.Controllers
 {
@@ -25,16 +26,18 @@ namespace SportGround.Web.Controllers
 		{
 			var email = ((ClaimsIdentity)this.User.Identity)
 				.FindFirst(ClaimTypes.Email)?.Value;
-			var userId = _userOperations
-				.GetAll()
-				.FirstOrDefault(em => em.Email == email)?.Id;
-			var bookingCourts = _bookingOperations
-				.GetAll()
-				.Where(user => user.User.Id == userId)
-				.ToList();
-			bookingCourts.ForEach(booking => booking.IsActive = booking.Date.Date >= DateTimeOffset.Now.Date);
-		    return View(bookingCourts);
-	    }
+			if (email != null)
+			{
+				var allUserBookings = new List<CourtBookingModel>();
+				try
+				{
+					allUserBookings = _bookingOperations.GetAllUserBooking(email);
+				}
+				catch { }
+				return View(allUserBookings);
+			}
+			return RedirectToAction("Index", "User");
+		}
 
 		[Authorize]
 		public ActionResult BookingCourt(int courtId)
@@ -44,16 +47,21 @@ namespace SportGround.Web.Controllers
 			var user = _userOperations.GetAll()
 				.FirstOrDefault(em => em.Email == email);
 			var court = _courtOperations.GetCourtById(courtId);
-			var availableDataTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
-			if (availableDataTime.Count < 1)
+			var availableDateTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
+			if (availableDateTime.Count < 1)
 			{
 				RedirectToAction("Index", "Court");
+			}
+			List<string> availableDate = new List<string>();
+			foreach (var date in availableDateTime)
+			{
+				availableDate.Add(date.Date.ToString("yyyy-M-d dddd"));
 			}
 			CreateCourtBookingModel booking = new CreateCourtBookingModel()
 			{
 				User = user,
 				Court = court,
-				AvailableDate = availableDataTime
+				AvailableDate = availableDate
 			};
 			return View(booking);
 		}
@@ -67,7 +75,7 @@ namespace SportGround.Web.Controllers
 				Id = model.Id,
 				User = model.User,
 				CourtId = model.Court.Id,
-				Date = model.AvailableDate.FirstOrDefault()
+				Date = Convert.ToDateTime(model.AvailableDate.FirstOrDefault())
 	        };
 	        _bookingOperations.Create(booking);
 	        return RedirectToAction("Index", "Court");

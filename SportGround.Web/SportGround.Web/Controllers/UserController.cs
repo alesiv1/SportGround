@@ -46,6 +46,10 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
+			if (_userOperations.Users().Any(em => em.Email == user.Email))
+			{
+				ModelState.AddModelError("Email", "This email   " + user.Email + "   already exist!");
+			}
 			try
 			{
 				_userOperations.Create(user);
@@ -82,6 +86,11 @@ namespace SportGround.Web.Controllers
 			if (!ModelState.IsValid)
 			{
 				return View();
+			}
+			if (_userOperations.Users().Any(em => em.Email == user.Email))
+			{
+				ModelState.AddModelError("Email", "This email already using! You can nott edit your email on email like this " + user.Email + " ! Write another email.");
+				return View(user);
 			}
 			try
 			{
@@ -121,10 +130,10 @@ namespace SportGround.Web.Controllers
 				if (activeId == id || this.User.IsInRole("Admin"))
 		        {
 					_userOperations.Delete(id);
-				}
-				if (activeId == id)
-				{
-					return RedirectToAction("LogOut", "Authorisation");
+					if (activeId == id)
+					{
+						return RedirectToAction("LogOut", "Authorisation");
+					}
 				}
 				return RedirectToAction("Index");
 	        }

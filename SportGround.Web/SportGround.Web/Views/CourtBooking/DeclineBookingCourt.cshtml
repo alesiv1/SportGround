@@ -27,7 +27,11 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <a href="@Url.Action("Index", "Court")" class="btn btn-primary fa fa-pencil"  style="background-color: red">
+                <span>
+                    <strong>Back to List</strong>
+                </span>
+            </a>
         </div>
     }
 </div>

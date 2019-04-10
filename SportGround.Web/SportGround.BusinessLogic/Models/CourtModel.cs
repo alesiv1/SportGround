@@ -6,12 +6,10 @@ namespace SportGround.BusinessLogic.Models
 {
     public class CourtModel
     {
-	    [Required]
 		public int Id { get; set; }
 	    [Required]
 	    [StringLength(50, MinimumLength = 3)]
 		public string Name { get; set; }
-
 		public bool CanBooking { get; set; }
 	}
 
@@ -19,7 +17,6 @@ namespace SportGround.BusinessLogic.Models
     {
 	    [Required]
 		public List<CourtWorkingHoursModel> AllWorkingHours { get; set; }
-
 		public bool IsAvailableDays { get; set; }
 	}
 }

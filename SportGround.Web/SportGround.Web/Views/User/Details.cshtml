@@ -38,9 +38,17 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Back to List", "Index") |
+    <a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil">
+        <span>
+            <strong>Back to List</strong>
+        </span>
+    </a>
     @if (this.User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+    {    
+        <a href="@Url.Action("Edit", "User", new {id = Model.Id})" class="btn btn-primary fa fa-pencil">
+             <span>
+                 <strong>Edit</strong>
+             </span>
+         </a>
     }
 </p>

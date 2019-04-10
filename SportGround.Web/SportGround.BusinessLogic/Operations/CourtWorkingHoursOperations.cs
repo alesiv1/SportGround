@@ -22,17 +22,25 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(int courtId, CourtWorkingHoursModel model)
 		{
-			var courtWithWorkingHours = _courtRepository
+			var courtEntity = _courtRepository
 				.Include(include => include.WorkingHours)
-				.FirstOrDefault(id => id.Id == courtId);			
+				.FirstOrDefault(id => id.Id == courtId);
+			if (courtEntity == null)
+			{
+				throw new ArgumentNullException("This court doesn't exist in database!");
+			}
+			if (model.StartTime >= model.EndTime)
+			{
+				throw new Exception("Start time can't be less then end time");
+			}
 			var workingHours = new CourtWorkingHoursEntity()
 			{
 				Day = model.Day,
 				StartTime = model.StartTime,
 				EndTime = model.EndTime
 			};
-			courtWithWorkingHours.WorkingHours.Add(workingHours);
-			_courtRepository.Update(courtWithWorkingHours);
+			courtEntity.WorkingHours.Add(workingHours);
+			_courtRepository.Update(courtEntity);
 		}
 
 		public void Delete(int id)
@@ -42,11 +50,11 @@ namespace SportGround.BusinessLogic.Operations
 
 		public List<CourtWorkingHoursModel> GetAll()
 		{
-			var allHours = new List<CourtWorkingHoursModel>();
-			var allWorkingHours = _courtWorkingHoursRepository.GetAll();
-			foreach (var workingHours in allWorkingHours)
+			var allHoursModel = new List<CourtWorkingHoursModel>();
+			var allWorkingHoursEntity = _courtWorkingHoursRepository.GetAll();
+			foreach (var workingHours in allWorkingHoursEntity)
 			{
-				allHours.Add(new CourtWorkingHoursModel()
+				allHoursModel.Add(new CourtWorkingHoursModel()
 				{
 					Id = workingHours.Id,
 					Day = workingHours.Day,
@@ -54,47 +62,47 @@ namespace SportGround.BusinessLogic.Operations
 					EndTime = workingHours.EndTime
 				});
 			}
-			return allHours;
+			return allHoursModel;
 		}
 
 		public CourtWorkingHoursModel GetById(int id)
 		{
-			var workingHours = _courtWorkingHoursRepository
+			var workingHoursEntity = _courtWorkingHoursRepository
 				.Include(court => court.CourtId)
 				.FirstOrDefault(i => i.Id == id);
-			return workingHours != null ?
+			return workingHoursEntity != null ?
 				new CourtWorkingHoursModel()
 				{
-					Id = workingHours.Id,
+					Id = workingHoursEntity.Id,
 					Court = new CourtModel()
 					{
-						Id = workingHours.CourtId.Id,
-						Name = workingHours.CourtId.Name
+						Id = workingHoursEntity.CourtId.Id,
+						Name = workingHoursEntity.CourtId.Name
 					},
-					Day = workingHours.Day,
-					StartTime = workingHours.StartTime,
-					EndTime = workingHours.EndTime
+					Day = workingHoursEntity.Day,
+					StartTime = workingHoursEntity.StartTime,
+					EndTime = workingHoursEntity.EndTime
 				} : null;
 		}
 
 		public void Update(int id, CourtWorkingHoursModel model)
 		{
-			var workingHours = _courtWorkingHoursRepository.GetById(id);
-			workingHours.Day = model.Day;
-			workingHours.StartTime = model.StartTime;
-			workingHours.EndTime = model.EndTime;
-			_courtWorkingHoursRepository.Update(workingHours);
+			var workingHoursEntity = _courtWorkingHoursRepository.GetById(id);
+			workingHoursEntity.Day = model.Day;
+			workingHoursEntity.StartTime = model.StartTime;
+			workingHoursEntity.EndTime = model.EndTime;
+			_courtWorkingHoursRepository.Update(workingHoursEntity);
 		}
 
 		public List<CourtWorkingHoursModel> GetAllForCourt(int courtId)
 		{
-			var allHours = new List<CourtWorkingHoursModel>();
-			var courtWithCourtWorkingHours = _courtWorkingHoursRepository
+			var allWorkingHoursModel = new List<CourtWorkingHoursModel>();
+			var courtWorkingHoursEntity = _courtWorkingHoursRepository
 				.Include(court => court.CourtId)
 				.Where(id => id.CourtId.Id == courtId);
-			foreach (var workingHours in courtWithCourtWorkingHours)
+			foreach (var workingHours in courtWorkingHoursEntity)
 			{
-				allHours.Add(new CourtWorkingHoursModel()
+				allWorkingHoursModel.Add(new CourtWorkingHoursModel()
 				{
 					Id = workingHours.Id,
 					Court = new CourtModel()
@@ -107,7 +115,7 @@ namespace SportGround.BusinessLogic.Operations
 					EndTime = workingHours.EndTime
 				});
 			}
-			return allHours;
+			return allWorkingHoursModel;
 		}
 
 		public List<DaysOfTheWeek> GetAllAvailableDays(int courtId)

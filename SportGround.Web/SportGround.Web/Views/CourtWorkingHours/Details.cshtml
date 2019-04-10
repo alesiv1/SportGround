@@ -1,7 +1,6 @@
 ﻿@model SportGround.BusinessLogic.Models.CourtWorkingHoursModel
 
 <div>
-    <h4>CourtWorkingHoursModel</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -30,9 +29,12 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
 <div>
+    <a href="@Url.Action("Edit", "CourtWorkingHours", new {id = Model.Id})" class="btn btn-primary">
+        <span>
+            <strong>Edit</strong>
+        </span>
+    </a>
     <a href="@Url.Action("Index", "CourtWorkingHours", new {courtId = Model.Court.Id})" class="btn btn-primary">
         <span>
             <strong>Back to list</strong>

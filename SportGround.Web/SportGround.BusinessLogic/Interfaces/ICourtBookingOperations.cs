@@ -8,10 +8,10 @@ namespace SportGround.BusinessLogic.Interfaces
 	{
 		CourtBookingModel GetById(int id);
 		List<CourtBookingModel> GetAll();
-		List<CourtBookingModel> GetAllForUser(int userId);
 		void Create(CourtBookingModel model);
 		void Update(int id, CourtBookingModel model);
 		void Delete(int id);
 		List<DateTimeOffset> GetAllAvailableDataTime(int courtId);
+		List<CourtBookingModel> GetAllUserBooking(string email);
 	}
 }

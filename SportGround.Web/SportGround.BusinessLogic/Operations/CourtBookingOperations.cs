@@ -6,6 +6,7 @@ using SportGround.BusinessLogic.Models;
 using SportGround.Data.entities;
 using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
+using SportGround.Data.Migrations;
 
 namespace SportGround.BusinessLogic.Operations
 {
@@ -24,10 +25,10 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(CourtBookingModel model)
 		{
-			var user = _userRepository
+			var userEntity = _userRepository
 				.Include(include => include.BookingCourt)
 				.FirstOrDefault(id => id.Id == model.User.Id);
-			if (user == null)
+			if (userEntity == null)
 			{
 				throw new Exception();
 			}
@@ -37,8 +38,8 @@ namespace SportGround.BusinessLogic.Operations
 				CourtId = model.CourtId,
 				Date =  model.Date
 			};
-			user.BookingCourt.Add(booking);
-			_userRepository.Update(user);
+			userEntity.BookingCourt.Add(booking);
+			_userRepository.Update(userEntity);
 		}
 
 		public void Delete(int id)
@@ -73,7 +74,7 @@ namespace SportGround.BusinessLogic.Operations
 
 		public List<DateTimeOffset> GetAllAvailableDataTime(int courtId)
 		{
-			var dateNow = DateTimeOffset.Now;
+			var dateNow = DateTimeOffset.UtcNow;
 			List<DateTimeOffset> allAvailableDataTime = new List<DateTimeOffset>();
 			List<CourtWorkingHoursEntity> courtsWithWorkingHours = _courtRepository
 				.Include(wh => wh.WorkingHours)
@@ -108,35 +109,6 @@ namespace SportGround.BusinessLogic.Operations
 			return allAvailableDataTime;
 		}
 
-		public List<CourtBookingModel> GetAllForUser(int userId)
-		{
-			var allBookedCourt = new List<CourtBookingModel>();
-			var userWithBooking = _userRepository
-				.Include(x => x.BookingCourt)
-				.FirstOrDefault(id => id.Id == userId);
-			if (userWithBooking != null)
-			{
-				foreach (var booking in userWithBooking.BookingCourt)
-				{
-					allBookedCourt.Add(new CourtBookingModel()
-					{
-						Id = booking.Id,
-						User = new UserModel()
-						{
-							Id = booking.User.Id,
-							Email = booking.User.Email,
-							FirstName = booking.User.FirstName,
-							LastName = booking.User.LastName
-						},
-						CourtId = booking.CourtId,
-						CourtName = _courtRepository.GetById(booking.CourtId).Name,
-						Date = booking.Date
-					});
-				}
-			}
-			return allBookedCourt;
-		}
-
 		public CourtBookingModel GetById(int id)
 		{
 			var booking = _bookingRepository
@@ -165,6 +137,45 @@ namespace SportGround.BusinessLogic.Operations
 			var booking = _bookingRepository.GetById(id);
 			booking.Date = model.Date;
 			_bookingRepository.Update(booking);
+		}
+
+		public List<CourtBookingModel> GetAllUserBooking(string email)
+		{
+			var allBookingCourts = new List<CourtBookingModel>();
+			var userId = _userRepository
+				.GetAll()
+				.FirstOrDefault(em => em.Email == email)?.Id;
+			if (userId == null)
+			{
+				throw new NullReferenceException("This email doesn't exist in database!");
+			}
+			var courtBookingEntity = GetAll()
+				.Where(user => user.User.Id == userId)
+				.ToList();
+			if (courtBookingEntity.Count < 1)
+			{
+				throw new NullReferenceException("This user doesn't have any booking court!");
+			}
+			foreach (var field in courtBookingEntity)
+			{
+				allBookingCourts.Add(new CourtBookingModel()
+				{
+					Id = field.Id,
+					User = new UserModel()
+					{
+						Id = field.User.Id,
+						Email = field.User.Email,
+						FirstName = field.User.FirstName,
+						LastName = field.User.LastName
+					},
+					CourtId = field.CourtId,
+					CourtName = _courtRepository.GetById(field.CourtId).Name,
+					Date = field.Date,
+					IsActive = field.Date.Date >= DateTimeOffset.Now.Date,
+					DateInString = field.Date.ToString("yyyy-M-d dddd")
+				});
+			}
+			return allBookingCourts.OrderBy(date => date.Date).ToList();
 		}
 	}
 }

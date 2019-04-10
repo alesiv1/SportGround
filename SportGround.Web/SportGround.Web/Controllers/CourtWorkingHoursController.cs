@@ -53,10 +53,10 @@ namespace SportGround.Web.Controllers
 			return View(new CourtWorkingHoursModel()
             {
 				Court = court,
-				Day = (DaysOfTheWeek) DateTime.UtcNow.Day,
+				Day = (DaysOfTheWeek) DateTime.Now.Day,
 				AvailableDays = days,
-				StartTime = DateTimeOffset.UtcNow,
-				EndTime = DateTimeOffset.UtcNow,
+				StartTime = DateTimeOffset.Now,
+				EndTime = DateTimeOffset.Now,
             });
         }
 
@@ -66,8 +66,9 @@ namespace SportGround.Web.Controllers
         {
 	        if (model.StartTime >= model.EndTime)
 	        {
-		        return RedirectToAction("Create", "CourtWorkingHours", new { courtId = model.Court.Id });
-	        }
+		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
+				return View(model);
+			}
 	        var id = model.Court.Id;
 	        _courtWorkingHoursOperations.Create(id, model);
 	        return RedirectToAction("Index","CourtWorkingHours", new { courtId = id });
@@ -86,8 +87,9 @@ namespace SportGround.Web.Controllers
         {
 	        if (model.StartTime >= model.EndTime)
 	        {
-		        return RedirectToAction("Create", "CourtWorkingHours", new { courtId = model.Court.Id });
-	        }
+		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
+		        return View(model);
+			}
 			_courtWorkingHoursOperations.Update(id, model);
 	        return RedirectToAction("Index", new { courtId = model.Court.Id});
 		}

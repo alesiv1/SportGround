@@ -1,6 +1,6 @@
 ﻿@using WebGrease.Css.Extensions
 @model SportGround.BusinessLogic.Models.CourtWithWorkingHoursModel
-@if(@Model.IsAvailableDays)
+@if(@Model.IsAvailableDays && this.User.IsInRole("Admin"))
 {
     <td>
         <a href="@Url.Action("Create", "CourtWorkingHours", new {courtId = Model.Id})" class="btn btn-primary">
@@ -21,7 +21,7 @@
         <th>
             @Html.DisplayName("EndTime")
         </th>
-        <th></th>
+        <th>Actions</th>
     </tr>
 
     @foreach (var item in @Model.AllWorkingHours )
@@ -37,9 +37,24 @@
                      @Html.DisplayFor(modelItem => item.EndTime.TimeOfDay)
                  </td>
                  <td>
-                     @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
-                     @Html.ActionLink("Details", "Details", new {id = item.Id}) |
-                     @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                     <a href="@Url.Action("Details", "CourtWorkingHours", new {id = item.Id})" class="btn btn-primary">
+                         <span>
+                             <strong>Details</strong>
+                         </span>
+                     </a>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                            <a href="@Url.Action("Edit", "CourtWorkingHours", new {id = item.Id})" class="btn btn-primary">
+                                <span>
+                                    <strong>Edit</strong>
+                                </span>
+                            </a>
+                            <a href="@Url.Action("Delete", "CourtWorkingHours", new {id = item.Id})" class="btn btn-primary">
+                                <span>
+                                    <strong>Delete</strong>
+                                </span>
+                            </a>
+                    }
                  </td>
              </tr>
     }

@@ -173,7 +173,7 @@
     <Compile Include="Controllers\AuthorisationController.cs" />
     <Compile Include="Controllers\CourtController.cs" />
     <Compile Include="Controllers\CourtBookingController.cs" />
-    <Compile Include="Controllers\CourtWorkingHoursController.cs" />
+    <Compile Include="Controllers\CourtWorkingDaysController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -234,14 +234,14 @@
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\User\ChangeRole.cshtml" />
     <Content Include="Views\User\ResetPassword.cshtml" />
-    <Content Include="Views\CourtWorkingHours\Index.cshtml" />
-    <Content Include="Views\CourtWorkingHours\Create.cshtml" />
-    <Content Include="Views\CourtWorkingHours\Edit.cshtml" />
-    <Content Include="Views\CourtWorkingHours\Details.cshtml" />
-    <Content Include="Views\CourtWorkingHours\Delete.cshtml" />
+    <Content Include="Views\CourtWorkingDays\Index.cshtml" />
+    <Content Include="Views\CourtWorkingDays\Edit.cshtml" />
     <Content Include="Views\CourtBooking\Index.cshtml" />
     <Content Include="Views\CourtBooking\DeclineBookingCourt.cshtml" />
     <Content Include="Views\CourtBooking\BookingCourt.cshtml" />
+    <Content Include="Views\CourtWorkingDays\Create.cshtml" />
+    <Content Include="Views\CourtWorkingDays\Delete.cshtml" />
+    <Content Include="Views\CourtWorkingDays\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

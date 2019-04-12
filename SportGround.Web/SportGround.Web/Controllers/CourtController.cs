@@ -7,9 +7,9 @@ namespace SportGround.Web.Controllers
 {
     public class CourtController : Controller
     {
-		private ICourtOperations _courtOperations;
+		private ICourtService _courtOperations;
 
-		public CourtController(ICourtOperations operations)
+		public CourtController(ICourtService operations)
 	    {
 		    _courtOperations = operations;
 	    }
@@ -18,7 +18,7 @@ namespace SportGround.Web.Controllers
 		[Route("Court")]
 		public ActionResult Index()
 		{
-			var allCourt = _courtOperations.GetAll();
+			var allCourt = _courtOperations.GetCourtList();
 			return View(allCourt);
         }
 

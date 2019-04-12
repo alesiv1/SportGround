@@ -4,24 +4,24 @@ using SportGround.Data.Entities;
 
 namespace SportGround.Data.Configurations
 {
-	public class CourtWorkingHoursConfiguration : EntityTypeConfiguration<CourtWorkingHoursEntity>
+	public class CourtWorkingDaysConfiguration : EntityTypeConfiguration<CourtWorkingDaysEntity>
 	{
-		public CourtWorkingHoursConfiguration()
+		public CourtWorkingDaysConfiguration()
 		{
 			ToTable("CourtWorkingHours");
 
 			HasKey(x => x.Id);
 
-			HasOptional(x => x.CourtId)
+			HasOptional(x => x.Court)
 				.WithRequired();
 
 			Property(x => x.Day)
 				.IsRequired();
 
-			Property(x => x.StartTime)
+			Property(x => x.StartTimeOfDay)
 				.IsRequired();
 
-			Property(x => x.EndTime)
+			Property(x => x.EndTimeOfDay)
 				.IsRequired();
 		}
 	}

@@ -10,11 +10,11 @@ namespace SportGround.Web.Controllers
 {
     public class CourtBookingController : Controller
     {
-	    private ICourtBookingOperations _bookingOperations;
-	    private IUserOperations _userOperations;
-	    private ICourtOperations _courtOperations;
+	    private ICourtBookingService _bookingOperations;
+	    private IUserService _userOperations;
+	    private ICourtService _courtOperations;
 
-		public CourtBookingController(ICourtBookingOperations booking, IUserOperations user, ICourtOperations courtOperations)
+		public CourtBookingController(ICourtBookingService booking, IUserService user, ICourtService courtOperations)
 	    {
 		    _bookingOperations = booking;
 		    _userOperations = user;
@@ -44,7 +44,7 @@ namespace SportGround.Web.Controllers
 		{
 			var email = ((ClaimsIdentity)this.User.Identity)
 				.FindFirst(ClaimTypes.Email)?.Value;
-			var user = _userOperations.GetAll()
+			var user = _userOperations.GetUserList()
 				.FirstOrDefault(em => em.Email == email);
 			var court = _courtOperations.GetCourtById(courtId);
 			var availableDateTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
@@ -74,7 +74,7 @@ namespace SportGround.Web.Controllers
 	        {
 				Id = model.Id,
 				User = model.User,
-				CourtId = model.Court.Id,
+				Court = model.Court,
 				Date = Convert.ToDateTime(model.AvailableDate.FirstOrDefault())
 	        };
 	        _bookingOperations.Create(booking);
@@ -84,7 +84,7 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult DeclineBookingCourt(int id)
 		{
-			var booking = _bookingOperations.GetById(id);
+			var booking = _bookingOperations.GetCourtBookingById(id);
 			return View(booking);
 		}
 

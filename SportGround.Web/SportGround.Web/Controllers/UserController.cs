@@ -10,9 +10,9 @@ namespace SportGround.Web.Controllers
 {
     public class UserController : Controller
     {
-	    private IUserOperations _userOperations;
+	    private IUserService _userOperations;
 
-	    public UserController(IUserOperations operations)
+	    public UserController(IUserService operations)
 	    {
 		    _userOperations = operations;
 	    }
@@ -21,7 +21,7 @@ namespace SportGround.Web.Controllers
 		[Route("Users")]
 		public ActionResult Index()
 		{
-			var allUsers = _userOperations.GetAll();
+			var allUsers = _userOperations.GetUserList();
 			return View(allUsers);
 		}
 
@@ -46,7 +46,7 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			if (_userOperations.Users().Any(em => em.Email == user.Email))
+			if (_userOperations.UserExists(user.Email))
 			{
 				ModelState.AddModelError("Email", "This email   " + user.Email + "   already exist!");
 			}
@@ -87,7 +87,7 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			if (_userOperations.Users().Any(em => em.Email == user.Email))
+			if (_userOperations.UserExists(user.Email))
 			{
 				ModelState.AddModelError("Email", "This email already using! You can nott edit your email on email like this " + user.Email + " ! Write another email.");
 				return View(user);
@@ -157,9 +157,7 @@ namespace SportGround.Web.Controllers
 			{
 				return View("Index");
 			}
-			var user = _userOperations
-				.Users()
-				.FirstOrDefault(x => x.Id == id);
+			var user = _userOperations.GetUserEntity(id);
 			if (user == null)
 			{
 				throw new ArgumentException("User does'nt exist in database!");
@@ -217,7 +215,7 @@ namespace SportGround.Web.Controllers
         {
 	        var email = ((ClaimsIdentity)this.User.Identity)
 		        .FindFirst(ClaimTypes.Email)?.Value;
-	        var user = _userOperations.GetAll()
+	        var user = _userOperations.GetUserList()
 		        .FirstOrDefault(em => em.Email == email);
 	        return user != null ? user.Id : -1;
         }

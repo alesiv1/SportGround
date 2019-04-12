@@ -59,16 +59,19 @@
   <ItemGroup>
     <Compile Include="Configurations\CourtBookingConfiguration.cs" />
     <Compile Include="Configurations\CourtConfiguration.cs" />
-    <Compile Include="Configurations\CourtWorkingHoursConfiguration.cs" />
+    <Compile Include="Configurations\CourtWorkingDaysConfiguration.cs" />
     <Compile Include="Configurations\UserConfiguration.cs" />
     <Compile Include="Context\DataContext.cs" />
     <Compile Include="Entities\CourtBookingEntity.cs" />
     <Compile Include="Entities\CourtEntity.cs" />
-    <Compile Include="Entities\CourtWorkingHoursEntity.cs" />
+    <Compile Include="Entities\CourtWorkingDaysEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="Enums\DeysOfTheWeek.cs" />
     <Compile Include="Enums\UserRole.cs" />
-    <Compile Include="Interfaces\IDataRepository.cs" />
+    <Compile Include="Interfaces\ICourtBookingRepository.cs" />
+    <Compile Include="Interfaces\ICourtRepository.cs" />
+    <Compile Include="Interfaces\ICourtWorkingDaysRepository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Migrations\201903291410191_CreateDataBase.cs" />
     <Compile Include="Migrations\201903291410191_CreateDataBase.Designer.cs">
       <DependentUpon>201903291410191_CreateDataBase.cs</DependentUpon>
@@ -85,12 +88,16 @@
     <Compile Include="Migrations\201904041326369_ChangeTableForCourtBooking.Designer.cs">
       <DependentUpon>201904041326369_ChangeTableForCourtBooking.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904121352580_ChangeDataBase.cs" />
+    <Compile Include="Migrations\201904121352580_ChangeDataBase.Designer.cs">
+      <DependentUpon>201904121352580_ChangeDataBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\CourtBookingDataRepository.cs" />
-    <Compile Include="Repositories\CourtDataRepository.cs" />
-    <Compile Include="Repositories\CourtWorkingHoursDataRepository.cs" />
-    <Compile Include="Repositories\UserDataRepository.cs" />
+    <Compile Include="Repositories\CourtBookingRepository.cs" />
+    <Compile Include="Repositories\CourtRepository.cs" />
+    <Compile Include="Repositories\CourtWorkingDaysRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="UnityConfig.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904041326369_ChangeTableForCourtBooking.resx">
       <DependentUpon>201904041326369_ChangeTableForCourtBooking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904121352580_ChangeDataBase.resx">
+      <DependentUpon>201904121352580_ChangeDataBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

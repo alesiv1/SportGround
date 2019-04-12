@@ -15,6 +15,6 @@ namespace SportGround.Data.entities
 		public string Password { get; set; }
 		public string Salt { get; set; }
 
-		public List<CourtBookingEntity> BookingCourt { get; set; }
+		public List<CourtBookingEntity> BookingCourts { get; set; }
 	}
 }

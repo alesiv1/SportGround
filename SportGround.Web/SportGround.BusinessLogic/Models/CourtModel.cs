@@ -13,10 +13,10 @@ namespace SportGround.BusinessLogic.Models
 		public bool CanBooking { get; set; }
 	}
 
-    public class CourtWithWorkingHoursModel : CourtModel
+    public class CourtWithWorkingDaysModel : CourtModel
     {
 	    [Required]
-		public List<CourtWorkingHoursModel> AllWorkingHours { get; set; }
+		public List<CourtWorkingDaysModel> AllWorkingHours { get; set; }
 		public bool IsAvailableDays { get; set; }
 	}
 }

@@ -12,7 +12,7 @@ namespace SportGround.Data.Configurations
 
 			HasKey(x => x.Id);
 
-			HasOptional(x => x.BookingCourt)
+			HasOptional(x => x.BookingCourts)
 				.WithMany();
 
 			Property(x => x.FirstName)

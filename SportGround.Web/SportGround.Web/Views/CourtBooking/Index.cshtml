@@ -4,7 +4,7 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CourtName)
+            @Html.DisplayNameFor(model => model.Court.Name)
         </th>
         <th>
             Date
@@ -21,7 +21,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CourtName)
+                @Html.DisplayFor(modelItem => item.Court.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateInString)
@@ -39,7 +39,7 @@
             @if (item.IsActive || this.User.IsInRole("Admin"))
             {
                 <td>
-                    <a href="@Url.Action("DeclineBookingCourt", "CourtBooking")" class="btn btn-primary fa fa-pencil">
+                    <a href="@Url.Action("DeclineBookingCourt", "CourtBooking", new {id = item.Id})" class="btn btn-primary fa fa-pencil">
                         <span>
                             <strong>Decline</strong>
                         </span>

@@ -4,7 +4,7 @@ namespace SportGround.Data.Enums
 {
 	public enum  UserRole
 	{
-		Admin,
-		User
+		User,
+		Admin
 	}
 }

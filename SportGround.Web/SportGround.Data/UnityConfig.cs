@@ -1,6 +1,4 @@
 ﻿using System;
-using SportGround.Data.entities;
-using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 using SportGround.Data.Repositories;
 using Unity;
@@ -11,10 +9,10 @@ namespace SportGround.Data
 	{
 		public static void RegisterTypes(IUnityContainer container)
 		{
-			container.RegisterType<IDataRepository<CourtEntity>, CourtDataRepository>();
-			container.RegisterType<IDataRepository<UserEntity>, UserDataRepository>();
-			container.RegisterType<IDataRepository<CourtWorkingHoursEntity>, CourtWorkingHoursDataRepository>();
-			container.RegisterType<IDataRepository<CourtBookingEntity>, CourtBookingDataRepository>();
+			container.RegisterType<ICourtRepository, CourtRepository>();
+			container.RegisterType<IUserRepository, UserRepository>();
+			container.RegisterType<ICourtWorkingDaysRepository, CourtWorkingDaysRepository>();
+			container.RegisterType<ICourtBookingRepository, CourtBookingRepository>();
 		}
 	}
 }

@@ -12,9 +12,9 @@ namespace SportGround.Web.Controllers
 {
     public class AuthorisationController : Controller
     {
-	    private IUserOperations _userOperations;
+	    private IUserService _userOperations;
 
-	    public AuthorisationController(IUserOperations operations)
+	    public AuthorisationController(IUserService operations)
 	    {
 		    _userOperations = operations;
 	    }
@@ -32,9 +32,7 @@ namespace SportGround.Web.Controllers
 				return View();
 			}
 			var user = _userOperations
-				.Users()
-				.FirstOrDefault(m => m.Email == model.Email);
-
+				.GetUserByEmail(model.Email);
 			if (user != null)
 			{
 				var pass = _userOperations.GetPasswordHashCode(model.Password, user.Salt);
@@ -78,7 +76,7 @@ namespace SportGround.Web.Controllers
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
-	        if (_userOperations.Users().Any(em => em.Email == user.Email))
+	        if (_userOperations.UserExists(user.Email))
 	        {
 		        ModelState.AddModelError("Email", "This email  " + user.Email + "  already exist!");
 		        return View();

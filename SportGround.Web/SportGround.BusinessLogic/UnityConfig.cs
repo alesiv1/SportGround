@@ -9,10 +9,10 @@ namespace SportGround.BusinessLogic
 	{
 		public static void RegisterTypes(IUnityContainer container)
 		{
-			container.RegisterType<ICourtOperations, CourtOperations>();
-			container.RegisterType<IUserOperations, UserOperations>();
-			container.RegisterType<ICourtWorkingHoursOperations, CourtWorkingHoursOperations>();
-			container.RegisterType<ICourtBookingOperations, CourtBookingOperations>();
+			container.RegisterType<ICourtService, CourtOperations>();
+			container.RegisterType<IUserService, UserService>();
+			container.RegisterType<ICourtWorkingDaysService, CourtWorkingDaysService>();
+			container.RegisterType<ICourtBookingService, CourtBookingService>();
 		}
 	}
 }

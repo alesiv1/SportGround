@@ -9,15 +9,12 @@ namespace SportGround.BusinessLogic.Models
 		public int Id { get; set; }
 		[Required]
 		public UserModel User { get; set; }
+		[Required]
+		public CourtModel Court { get; set; }
 	}
 
 	public class CourtBookingModel : BaseCourtBookingModel
 	{
-		[Required]
-		public int CourtId { get; set; }
-		[Required]
-		[StringLength(50, MinimumLength = 3)]
-		public string CourtName { get; set; }
 		[Required]
 		[DataType(DataType.DateTime)]
 		public DateTimeOffset Date { get; set; }
@@ -26,9 +23,7 @@ namespace SportGround.BusinessLogic.Models
 	}
 
 	public class CreateCourtBookingModel : BaseCourtBookingModel
-	{
-		[Required]
-		public CourtModel Court { get; set; }
+	{ 
 		[Required]
 		public List<string> AvailableDate { get; set; }
 	}

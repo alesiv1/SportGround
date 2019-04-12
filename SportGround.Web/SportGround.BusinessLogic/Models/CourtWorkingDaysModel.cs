@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SportGround.BusinessLogic.Models
 {
-	public class CourtWorkingHoursModel
+	public class CourtWorkingDaysModel
 	{
 		public int Id { get; set; }
 		[Required]

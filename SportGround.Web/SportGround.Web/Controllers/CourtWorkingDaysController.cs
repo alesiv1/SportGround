@@ -67,6 +67,16 @@ namespace SportGround.Web.Controllers
 		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
 				return View(model);
 			}
+	        if (model.StartTime.Hour < 0)
+	        {
+		        ModelState.AddModelError("StartTime", "Incorect time format!");
+		        return View(model);
+			}
+	        if (model.EndTime.Hour > 24)
+	        {
+		        ModelState.AddModelError("EndTime", "Incorect time format!");
+		        return View(model);
+			}
 	        var id = model.Court.Id;
 	        _courtWorkingDaysOperations.Create(id, model);
 	        return RedirectToAction("Index","CourtWorkingDays", new { courtId = id });

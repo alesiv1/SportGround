@@ -62,7 +62,9 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Create(CourtWorkingDaysModel model)
         {
-	        if (model.StartTime >= model.EndTime)
+	        var days = _courtWorkingDaysOperations.GetAllAvailableDays(model.Court.Id);
+	        model.AvailableDays = days;
+			if (model.StartTime >= model.EndTime)
 	        {
 		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
 				return View(model);

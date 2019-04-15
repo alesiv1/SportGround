@@ -8,10 +8,12 @@ namespace SportGround.Web.Controllers
     public class CourtController : Controller
     {
 		private ICourtService _courtServices;
+		private ICourtBookingService _bookingServices;
 
-		public CourtController(ICourtService services)
+		public CourtController(ICourtService services, ICourtBookingService bookingServices)
 	    {
 		    _courtServices = services;
+		    _bookingServices = bookingServices;
 	    }
 
 		[Authorize]
@@ -19,6 +21,7 @@ namespace SportGround.Web.Controllers
 		public ActionResult Index()
 		{
 			var allCourt = _courtServices.GetCourtList();
+			allCourt.ForEach(canbook => canbook.CanBooking = _bookingServices.GetAllAvailableDataTime(canbook.Id).Count > 0);
 			return View(allCourt);
         }
 

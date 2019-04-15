@@ -6,13 +6,11 @@ namespace SportGround.Data.Interfaces
 {
 	public interface ICourtRepository
 	{
-		void Add(CourtEntity court);
+		void Add(string name);
 		void Delete(int id);
-		void Delete(CourtEntity court);
 		ICollection<CourtEntity> GetCourts();
-		CourtEntity GetCourtWithWorkingDays(int id);
 		CourtEntity GetCourtById(int id);
-		void Update(CourtEntity entity);
+		void Update(int id, string name);
 		bool CourtExists(string name);
 	}
 }

@@ -10,15 +10,15 @@ namespace SportGround.Web.Controllers
 {
     public class CourtBookingController : Controller
     {
-	    private ICourtBookingService _bookingOperations;
-	    private IUserService _userOperations;
-	    private ICourtService _courtOperations;
+	    private ICourtBookingService _bookingServices;
+	    private IUserService _userServices;
+	    private ICourtService _courtServices;
 
-		public CourtBookingController(ICourtBookingService booking, IUserService user, ICourtService courtOperations)
+		public CourtBookingController(ICourtBookingService bookingServices, IUserService userServices, ICourtService courtServices)
 	    {
-		    _bookingOperations = booking;
-		    _userOperations = user;
-		    _courtOperations = courtOperations;
+		    _bookingServices = bookingServices;
+		    _userServices = userServices;
+		    _courtServices = courtServices;
 	    }
 
 		[Authorize]
@@ -31,7 +31,7 @@ namespace SportGround.Web.Controllers
 				var allUserBookings = new List<CourtBookingModel>();
 				try
 				{
-					allUserBookings = _bookingOperations.GetAllUserBooking(email);
+					allUserBookings = _bookingServices.GetAllUserBooking(email);
 				}
 				catch { }
 				return View(allUserBookings);
@@ -44,13 +44,13 @@ namespace SportGround.Web.Controllers
 		{
 			var email = ((ClaimsIdentity)this.User.Identity)
 				.FindFirst(ClaimTypes.Email)?.Value;
-			var user = _userOperations.GetUserList()
+			var user = _userServices.GetUserList()
 				.FirstOrDefault(em => em.Email == email);
-			var court = _courtOperations.GetCourtById(courtId);
-			var availableDateTime = _bookingOperations.GetAllAvailableDataTime(court.Id);
+			var court = _courtServices.GetCourtById(courtId);
+			var availableDateTime = _bookingServices.GetAllAvailableDataTime(court.Id);
 			if (availableDateTime.Count < 1)
 			{
-				RedirectToAction("Index", "Court");
+				return RedirectToAction("Index", "Court");
 			}
 			List<string> availableDate = new List<string>();
 			foreach (var date in availableDateTime)
@@ -77,14 +77,14 @@ namespace SportGround.Web.Controllers
 				Court = model.Court,
 				Date = Convert.ToDateTime(model.AvailableDate.FirstOrDefault())
 	        };
-	        _bookingOperations.Create(booking);
+	        _bookingServices.Create(booking);
 	        return RedirectToAction("Index", "Court");
         }
 
 		[Authorize]
 		public ActionResult DeclineBookingCourt(int id)
 		{
-			var booking = _bookingOperations.GetCourtBookingById(id);
+			var booking = _bookingServices.GetCourtBookingById(id);
 			return View(booking);
 		}
 
@@ -94,7 +94,7 @@ namespace SportGround.Web.Controllers
         {
 			try
 			{
-				_bookingOperations.Delete(id);
+				_bookingServices.Delete(id);
 				return RedirectToAction("Index");
 			}
 			catch

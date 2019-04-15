@@ -12,11 +12,11 @@ namespace SportGround.Web.Controllers
 {
     public class AuthorisationController : Controller
     {
-	    private IUserService _userOperations;
+	    private IUserService _userServices;
 
-	    public AuthorisationController(IUserService operations)
+	    public AuthorisationController(IUserService service)
 	    {
-		    _userOperations = operations;
+		    _userServices = service;
 	    }
 
 		public ActionResult Login(string returnUrl)
@@ -31,11 +31,11 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			var user = _userOperations
+			var user = _userServices
 				.GetUserByEmail(model.Email);
 			if (user != null)
 			{
-				var pass = _userOperations.GetPasswordHashCode(model.Password, user.Salt);
+				var pass = _userServices.GetPasswordHashCode(model.Password, user.Salt);
 				if (user.Password != pass)
 				{
 					ModelState.AddModelError("Password", "Invalid password. Chack your password and try again!");
@@ -76,14 +76,14 @@ namespace SportGround.Web.Controllers
 	        {
 		        return RedirectToAction("Registration", "Authorisation");
 			}
-	        if (_userOperations.UserExists(user.Email))
+	        if (_userServices.UserExists(user.Email))
 	        {
 		        ModelState.AddModelError("Email", "This email  " + user.Email + "  already exist!");
 		        return View();
 			}
 			try
 	        {
-		        _userOperations.Create(user);
+		        _userServices.Create(user);
 		        var identity = new ClaimsIdentity(new[]
 			        {
 				        new Claim(ClaimTypes.Name, user.FirstName),

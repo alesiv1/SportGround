@@ -23,12 +23,7 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(CourtBookingModel model)
 		{
-			CourtBookingEntity booking = new CourtBookingEntity()
-			{
-				Id = model.Id,
-				BookingDate =  model.Date
-			};
-			_bookingRepository.Add(booking, model.Court.Id, model.User.Id);
+			_bookingRepository.Add(model.Date, model.Court.Id, model.User.Id);
 		}
 
 		public void Delete(int id)
@@ -39,8 +34,7 @@ namespace SportGround.BusinessLogic.Operations
 		public List<CourtBookingModel> GetBookingList()
 		{
 			var bookingList = new List<CourtBookingModel>();
-			var bookings = _bookingRepository
-				.GetCourtBookingWithCourtAndUser();
+			var bookings = _bookingRepository.GetCourtBookings();
 			foreach (var booking in bookings)
 			{
 				bookingList.Add(new CourtBookingModel()
@@ -69,7 +63,7 @@ namespace SportGround.BusinessLogic.Operations
 			var dateNow = DateTimeOffset.UtcNow;
 			List<DateTimeOffset> allAvailableDataTime = new List<DateTimeOffset>();
 			List<CourtWorkingDaysEntity> courtsWithWorkingHours = _courtRepository
-				.GetCourtWithWorkingDays(courtId).WorkingDays;
+				.GetCourtById(courtId).WorkingDays;
 			if (courtsWithWorkingHours.Count > 0)
 			{
 				foreach (var data in courtsWithWorkingHours)
@@ -88,7 +82,7 @@ namespace SportGround.BusinessLogic.Operations
 			else return allAvailableDataTime;
 
 			var bookedCourtDate = _bookingRepository
-				.GetCourtBookingWithCourtAndUser()
+				.GetCourtBookings()
 				.Select(x => x.BookingDate.Date)
 				.ToList();
 			allAvailableDataTime = allAvailableDataTime
@@ -102,32 +96,32 @@ namespace SportGround.BusinessLogic.Operations
 		{
 			var booking = _bookingRepository
 				.GetCourtBookingById(id);
-			return booking != null
-				? new CourtBookingModel()
+			if (booking == null)
+			{
+				throw new ArgumentException("Booking doesn't exists in database");
+			}
+			return new CourtBookingModel()
+			{
+				Id = booking.Id,
+				User = new UserModel()
+					{
+					Id = booking.User.Id,
+					Email = booking.User.Email,
+					FirstName = booking.User.FirstName,
+					LastName = booking.User.LastName
+				},
+				Court = new CourtModel()
 				{
-					Id = booking.Id,
-					User = new UserModel()
-					{
-						Id = booking.User.Id,
-						Email = booking.User.Email,
-						FirstName = booking.User.FirstName,
-						LastName = booking.User.LastName
-					},
-					Court = new CourtModel()
-					{
-						Id = booking.Court.Id,
-						Name = booking.Court.Name
-					},
-					Date = booking.BookingDate
-				}
-				: new CourtBookingModel();
+					Id = booking.Court.Id,
+					Name = booking.Court.Name
+				},
+				Date = booking.BookingDate
+			};
 		}
 
 		public void Update(int id, CourtBookingModel model)
 		{
-			var booking = _bookingRepository.GetCourtBookingById(id);
-			booking.BookingDate = model.Date;
-			_bookingRepository.Update(booking);
+			_bookingRepository.Update(id, model.Date);
 		}
 
 		public List<CourtBookingModel> GetAllUserBooking(string email)

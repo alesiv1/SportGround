@@ -3,8 +3,8 @@ using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
+using SportGround.Data.Enums;
 
 namespace SportGround.Data.Repositories
 {
@@ -17,23 +17,23 @@ namespace SportGround.Data.Repositories
 			this._context = context;
 		}
 
-		public void Add(CourtWorkingDaysEntity workingDays, int courtId)
+		public void Add(DaysOfTheWeek day, DateTimeOffset startTime, DateTimeOffset endTime, int courtId)
 		{
 			var court = _context.Courts.Find(courtId);
-			workingDays.Court = court;
-			_context.CourtWorkingDays.Add(workingDays);
+			CourtWorkingDaysEntity workingDay = new CourtWorkingDaysEntity()
+			{
+				Day = day,
+				StartTimeOfDay = startTime,
+				EndTimeOfDay = endTime,
+				Court = court
+			};
+			_context.CourtWorkingDays.Add(workingDay);
 			_context.SaveChanges();
 		}
 
 		public void Delete(int id)
 		{
 			var workingDays = _context.CourtWorkingDays.Find(id);
-			_context.CourtWorkingDays.Remove(workingDays);
-			_context.SaveChanges();
-		}
-
-		public void Delete(CourtWorkingDaysEntity workingDays)
-		{
 			_context.CourtWorkingDays.Remove(workingDays);
 			_context.SaveChanges();
 		}
@@ -45,13 +45,15 @@ namespace SportGround.Data.Repositories
 
 		public CourtWorkingDaysEntity GetCourtWorkingDayById(int id)
 		{
-			return _context.CourtWorkingDays
-				.Include(court => court.Court)
-				.FirstOrDefault(workingDay => workingDay.Id == id);
+			return _context.CourtWorkingDays.Find(id);
 		}
 
-		public void Update(CourtWorkingDaysEntity workingDays)
+		public void Update(int id, DaysOfTheWeek day, DateTimeOffset startTime, DateTimeOffset endTime)
 		{
+			var workingDay = _context.CourtWorkingDays.Find(id);
+			workingDay.Day = day;
+			workingDay.StartTimeOfDay = startTime;
+			workingDay.EndTimeOfDay = endTime;
 			_context.SaveChanges();
 		}
 	}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.Data.Entities;
 using SportGround.Data.Enums;
 using SportGround.Data.Interfaces;
 
@@ -26,13 +25,7 @@ namespace SportGround.BusinessLogic.Operations
 			{
 				throw new Exception("Start time can't be less then end time");
 			}
-			var workingDay = new CourtWorkingDaysEntity()
-			{
-				Day = model.Day,
-				StartTimeOfDay = model.StartTime,
-				EndTimeOfDay = model.EndTime
-			};
-			_courtWorkingDaysRepository.Add(workingDay, courtId);
+			_courtWorkingDaysRepository.Add(model.Day, model.StartTime, model.EndTime, courtId);
 		}
 
 		public void Delete(int id)
@@ -60,34 +53,33 @@ namespace SportGround.BusinessLogic.Operations
 		public CourtWorkingDaysModel GetWorkingDay(int id)
 		{
 			var workingDay = _courtWorkingDaysRepository.GetCourtWorkingDayById(id);
-			return workingDay != null ?
-				new CourtWorkingDaysModel()
+			if (workingDay == null)
+			{
+				throw new ArgumentException("Court doesn't exists in database!");
+			}
+			return new CourtWorkingDaysModel()
+			{
+				Id = workingDay.Id,
+				Court = new CourtModel()
 				{
-					Id = workingDay.Id,
-					Court = new CourtModel()
-					{
-						Id = workingDay.Court.Id,
-						Name = workingDay.Court.Name
-					},
-					Day = workingDay.Day,
-					StartTime = workingDay.StartTimeOfDay,
-					EndTime = workingDay.EndTimeOfDay
-				} : new CourtWorkingDaysModel();
+					Id = workingDay.Court.Id,
+					Name = workingDay.Court.Name
+				},
+				Day = workingDay.Day,
+				StartTime = workingDay.StartTimeOfDay,
+				EndTime = workingDay.EndTimeOfDay
+			};
 		}
 
 		public void Update(int id, CourtWorkingDaysModel model)
 		{
-			var workingDay = _courtWorkingDaysRepository.GetCourtWorkingDayById(id);
-			workingDay.Day = model.Day;
-			workingDay.StartTimeOfDay = model.StartTime;
-			workingDay.EndTimeOfDay = model.EndTime;
-			_courtWorkingDaysRepository.Update(workingDay);
+			_courtWorkingDaysRepository.Update(id, model.Day, model.StartTime, model.EndTime);
 		}
 
 		public List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId)
 		{
 			var workingDays = new List<CourtWorkingDaysModel>();
-			var court = _courtRepository.GetCourtWithWorkingDays(courtId);
+			var court = _courtRepository.GetCourtById(courtId);
 			foreach (var workingDay in court.WorkingDays)
 			{
 				workingDays.Add(new CourtWorkingDaysModel()

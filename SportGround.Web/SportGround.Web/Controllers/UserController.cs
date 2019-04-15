@@ -4,31 +4,30 @@ using System.Linq;
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
-using SportGround.Data.entities;
 
 namespace SportGround.Web.Controllers
 {
     public class UserController : Controller
     {
-	    private IUserService _userOperations;
+	    private IUserService _userServices;
 
-	    public UserController(IUserService operations)
+	    public UserController(IUserService services)
 	    {
-		    _userOperations = operations;
+		    _userServices = services;
 	    }
 
 		[Authorize]
 		[Route("Users")]
 		public ActionResult Index()
 		{
-			var allUsers = _userOperations.GetUserList();
+			var allUsers = _userServices.GetUserList();
 			return View(allUsers);
 		}
 
 		[Authorize]
 		public ActionResult Details(int id)
 		{
-			var user = _userOperations.GetUserById(id);
+			var user = _userServices.GetUserById(id);
 			return View(user);
 		}
 
@@ -46,13 +45,13 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			if (_userOperations.UserExists(user.Email))
+			if (_userServices.UserExists(user.Email))
 			{
 				ModelState.AddModelError("Email", "This email   " + user.Email + "   already exist!");
 			}
 			try
 			{
-				_userOperations.Create(user);
+				_userServices.Create(user);
 				return RedirectToAction("Index");
 			}
 			catch
@@ -75,7 +74,7 @@ namespace SportGround.Web.Controllers
 			{
 				return View("Index");
 			}
-			var user = _userOperations.GetUserById(id);
+			var user = _userServices.GetUserById(id);
 			return View(user);
 		}
 
@@ -87,14 +86,15 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			if (_userOperations.UserExists(user.Email))
+			var userEmail = _userServices.GetUserById(id)?.Email;
+			if (_userServices.UserExists(user.Email) && userEmail != user.Email)
 			{
 				ModelState.AddModelError("Email", "This email already using! You can nott edit your email on email like this " + user.Email + " ! Write another email.");
 				return View(user);
 			}
 			try
 			{
-				_userOperations.Update(id, user);
+				_userServices.Update(id, user);
 				return RedirectToAction("Index");
 			}
 			catch
@@ -117,7 +117,7 @@ namespace SportGround.Web.Controllers
 			{
 				return View("Index");
 			}
-			var user = _userOperations.GetUserById(id);
+			var user = _userServices.GetUserById(id);
 			return View(user);
 		}
 
@@ -129,7 +129,7 @@ namespace SportGround.Web.Controllers
 				var activeId = GetIdForAuthorizedUser();
 				if (activeId == id || this.User.IsInRole("Admin"))
 		        {
-					_userOperations.Delete(id);
+					_userServices.Delete(id);
 					if (activeId == id)
 					{
 						return RedirectToAction("LogOut", "Authorisation");
@@ -157,21 +157,12 @@ namespace SportGround.Web.Controllers
 			{
 				return View("Index");
 			}
-			var user = _userOperations.GetUserEntity(id);
+			var user = _userServices.GetUserWithPassword(id);
 			if (user == null)
 			{
 				throw new ArgumentException("User does'nt exist in database!");
 			}
-			var userForChange = new UserModelWithPassword()
-			{
-				Id = user.Id,
-				FirstName = user.FirstName,
-				LastName = user.LastName,
-				Email = user.Email,
-				Password = _userOperations.GetDecodePassword(user.Password, user.Salt),
-				ConfirmPassword = "",
-			};
-			return View(userForChange);
+			return View(user);
 		}
 
 		[Authorize]
@@ -180,7 +171,7 @@ namespace SportGround.Web.Controllers
         {
 			try
 	        {		        
-		        _userOperations.Update(id, user);
+		        _userServices.Update(id, user);
 		        return RedirectToAction("Index");
 	        }
 	        catch
@@ -192,7 +183,7 @@ namespace SportGround.Web.Controllers
         [Authorize(Roles = "Admin")]
 		public ActionResult ChangeRole(int id)
         {
-			var user = _userOperations.GetUserById(id);
+			var user = _userServices.GetUserById(id);
 			return View(user);
 		}
 
@@ -202,7 +193,7 @@ namespace SportGround.Web.Controllers
         {
 			try
 			{
-				_userOperations.Update(id, user);
+				_userServices.Update(id, user);
 				return RedirectToAction("Index");
 			}
 			catch
@@ -215,7 +206,7 @@ namespace SportGround.Web.Controllers
         {
 	        var email = ((ClaimsIdentity)this.User.Identity)
 		        .FindFirst(ClaimTypes.Email)?.Value;
-	        var user = _userOperations.GetUserList()
+	        var user = _userServices.GetUserList()
 		        .FirstOrDefault(em => em.Email == email);
 	        return user != null ? user.Id : -1;
         }

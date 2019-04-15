@@ -1,7 +1,7 @@
-﻿using SportGround.Data.Context;
+﻿using System;
+using SportGround.Data.Context;
 using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -17,8 +17,12 @@ namespace SportGround.Data.Repositories
 			this._context = context;
 		}
 
-		public void Add(CourtEntity court)
+		public void Add(string name)
 		{
+			CourtEntity court = new CourtEntity()
+			{
+				Name = name
+			};
 			_context.Courts.Add(court);
 			_context.SaveChanges();
 		}
@@ -27,30 +31,16 @@ namespace SportGround.Data.Repositories
 		{
 			var court = _context
 				.Courts
-				.Include(wd => wd.WorkingDays)
-				.Include(booking => booking.Bookings)
-				.FirstOrDefault(x => x.Id == id);
+				.Include(wh => wh.WorkingDays)
+				.Include(bookings => bookings.Bookings)
+				.FirstOrDefault(us => us.Id == id);
 			_context.Courts.Remove(court);
 			_context.SaveChanges();
-		}
-
-		public void Delete(CourtEntity court)
-		{
-			_context.Courts.Remove(court);
-			_context.SaveChanges();
-
 		}
 
 		public ICollection<CourtEntity> GetCourts()
 		{
-			return _context.Courts.Include(court => court.WorkingDays).ToList();
-		}
-
-		public CourtEntity GetCourtWithWorkingDays(int id)
-		{
-			return _context.Courts
-				.Include(court => court.WorkingDays)
-				.FirstOrDefault(court => court.Id == id);
+			return _context.Courts.ToList();
 		}
 
 		public CourtEntity GetCourtById(int id)
@@ -58,14 +48,16 @@ namespace SportGround.Data.Repositories
 			return _context.Courts.Find(id);
 		}
 
-		public void Update(CourtEntity entity)
+		public void Update(int id, string name)
 		{
+			var court = _context.Courts.Find(id);
+			court.Name = name;
 			this._context.SaveChanges();
 		}
 
 		public bool CourtExists(string name)
 		{
-			return _context.Courts.Any(court => court.Name == name);
+			return _context.Courts.Any(court => court.Name.ToLower() == name.ToLower());
 		}
 	}
 }

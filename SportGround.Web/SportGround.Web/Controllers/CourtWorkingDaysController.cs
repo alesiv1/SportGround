@@ -8,24 +8,24 @@ namespace SportGround.Web.Controllers
 {
     public class CourtWorkingDaysController : Controller
     {
-	    private ICourtWorkingDaysService _courtWorkingDaysOperations;
-	    private ICourtService _courtOperations;
+	    private ICourtWorkingDaysService _courtWorkingDaysServices;
+	    private ICourtService _courtServices;
 
-		public CourtWorkingDaysController(ICourtWorkingDaysService operationsDays, ICourtService operations)
+		public CourtWorkingDaysController(ICourtWorkingDaysService servicesDays, ICourtService services)
 	    {
-		    _courtWorkingDaysOperations = operationsDays;
-		    _courtOperations = operations;
+		    _courtWorkingDaysServices = servicesDays;
+		    _courtServices = services;
 	    }
 
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allHours = _courtWorkingDaysOperations.GetWorkingDaysForCourt(courtId);
-			var isAvaAvailableDays = _courtWorkingDaysOperations.GetAllAvailableDays(courtId).Count > 0;
+			var allHours = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
+			var isAvaAvailableDays = _courtWorkingDaysServices.GetAllAvailableDays(courtId).Count > 0;
 			CourtWithWorkingDaysModel courtWithWorkingHours = new CourtWithWorkingDaysModel()
 			{
 				Id = courtId,
-				Name = _courtOperations.GetCourtById(courtId).Name,
+				Name = _courtServices.GetCourtById(courtId).Name,
 				AllWorkingHours = allHours,
 				IsAvailableDays = isAvaAvailableDays
 			};
@@ -35,15 +35,15 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Details(int id)
         {
-	        var hours = _courtWorkingDaysOperations.GetWorkingDay(id);
+	        var hours = _courtWorkingDaysServices.GetWorkingDay(id);
 			return View(hours);
         }
 
 		[Authorize(Roles = "Admin")]
 		public ActionResult Create(int courtId)
 		{
-			var court = _courtOperations.GetCourtById(courtId);
-			var days = _courtWorkingDaysOperations.GetAllAvailableDays(courtId);
+			var court = _courtServices.GetCourtById(courtId);
+			var days = _courtWorkingDaysServices.GetAllAvailableDays(courtId);
 			if (days.Count < 1)
 			{
 				return View("Index", new { courtId});
@@ -62,7 +62,7 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Create(CourtWorkingDaysModel model)
         {
-	        var days = _courtWorkingDaysOperations.GetAllAvailableDays(model.Court.Id);
+	        var days = _courtWorkingDaysServices.GetAllAvailableDays(model.Court.Id);
 	        model.AvailableDays = days;
 			if (model.StartTime >= model.EndTime)
 	        {
@@ -80,14 +80,14 @@ namespace SportGround.Web.Controllers
 		        return View(model);
 			}
 	        var id = model.Court.Id;
-	        _courtWorkingDaysOperations.Create(id, model);
+	        _courtWorkingDaysServices.Create(id, model);
 	        return RedirectToAction("Index","CourtWorkingDays", new { courtId = id });
 		}
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Edit(int id)
         {
-			var hours = _courtWorkingDaysOperations.GetWorkingDay(id);
+			var hours = _courtWorkingDaysServices.GetWorkingDay(id);
 			return View(hours);
         }
 
@@ -100,14 +100,14 @@ namespace SportGround.Web.Controllers
 		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
 		        return View(model);
 			}
-			_courtWorkingDaysOperations.Update(id, model);
+			_courtWorkingDaysServices.Update(id, model);
 	        return RedirectToAction("Index", new { courtId = model.Court.Id});
 		}
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
         {
-	        var hours = _courtWorkingDaysOperations.GetWorkingDay(id);
+	        var hours = _courtWorkingDaysServices.GetWorkingDay(id);
 	        return View(hours);
 		}
 
@@ -115,8 +115,8 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtWorkingDaysModel model)
         {
-	        var Id = _courtWorkingDaysOperations.GetWorkingDay(id).Court.Id;
-	        _courtWorkingDaysOperations.Delete(id);
+	        var Id = _courtWorkingDaysServices.GetWorkingDay(id).Court.Id;
+	        _courtWorkingDaysServices.Delete(id);
 			return RedirectToAction("Index", new { courtId = Id});
 		}
     }

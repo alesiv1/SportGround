@@ -7,25 +7,25 @@ namespace SportGround.Web.Controllers
 {
     public class CourtController : Controller
     {
-		private ICourtService _courtOperations;
+		private ICourtService _courtServices;
 
-		public CourtController(ICourtService operations)
+		public CourtController(ICourtService services)
 	    {
-		    _courtOperations = operations;
+		    _courtServices = services;
 	    }
 
 		[Authorize]
 		[Route("Court")]
 		public ActionResult Index()
 		{
-			var allCourt = _courtOperations.GetCourtList();
+			var allCourt = _courtServices.GetCourtList();
 			return View(allCourt);
         }
 
 		[Authorize]
 		public ActionResult Details(int id)
         {
-	        var court = _courtOperations.GetCourtById(id);
+	        var court = _courtServices.GetCourtById(id);
             return View(court);
         }
 
@@ -43,14 +43,14 @@ namespace SportGround.Web.Controllers
 	        {
 		        return View();
 	        }
-			_courtOperations.Create(court);
+			_courtServices.Create(court);
             return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Edit(int id)
         {
-	        var court = _courtOperations.GetCourtById(id);
+	        var court = _courtServices.GetCourtById(id);
             return View(court);
         }
 
@@ -62,14 +62,14 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			_courtOperations.Update(id, court);
+			_courtServices.Update(id, court);
 			return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
         {
-	        var court = _courtOperations.GetCourtById(id);
+	        var court = _courtServices.GetCourtById(id);
 			return View(court);
         }
 
@@ -77,7 +77,7 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtModel court)
         {
-			_courtOperations.Delete(id);
+			_courtServices.Delete(id);
 			return RedirectToAction("Index");
         }
     }

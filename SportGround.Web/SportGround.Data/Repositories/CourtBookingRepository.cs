@@ -1,9 +1,8 @@
-﻿using SportGround.Data.Context;
+﻿using System;
+using SportGround.Data.Context;
 using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace SportGround.Data.Repositories
@@ -17,12 +16,16 @@ namespace SportGround.Data.Repositories
 			this._context = context;
 		}
 
-		public void Add(CourtBookingEntity booking, int courtId, int userId)
+		public void Add(DateTimeOffset date, int courtId, int userId)
 		{
 			var court = _context.Courts.Find(courtId);
 			var user = _context.Users.Find(userId);
-			booking.Court = court;
-			booking.User = user;
+			CourtBookingEntity booking = new CourtBookingEntity()
+			{
+				BookingDate = date,
+				Court = court,
+				User = user
+			};
 			_context.BookingCourts.Add(booking);
 			_context.SaveChanges();
 		}
@@ -34,32 +37,20 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public void Delete(CourtBookingEntity booking)
-		{
-			_context.BookingCourts.Remove(booking);
-			_context.SaveChanges();
-		}
-
 		public ICollection<CourtBookingEntity> GetCourtBookings()
 		{
 			return _context.BookingCourts.ToList();
 		}
 
-		public ICollection<CourtBookingEntity> GetCourtBookingWithCourtAndUser()
-		{
-			return _context.BookingCourts.Include(booking => booking.User).Include(court => court.Court).ToList();
-		}
-
 		public CourtBookingEntity GetCourtBookingById(int id)
 		{
-			return _context.BookingCourts
-				.Include(user => user.User)
-				.Include(court => court.Court)
-				.FirstOrDefault(booking => booking.Id == id);
+			return _context.BookingCourts.Find(id);
 		}
 
-		public void Update(CourtBookingEntity booking)
+		public void Update(int id, DateTimeOffset date)
 		{
+			var booking = _context.BookingCourts.Find(id);
+			booking.BookingDate = date;
 			_context.SaveChanges();
 		}
 	}

@@ -1,7 +1,7 @@
-﻿using SportGround.Data.Enums;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using SportGround.Data.Enums;
 using SportGround.Data.Entities;
+using System.Collections.Generic;
 
 namespace SportGround.Data.entities
 {
@@ -15,6 +15,6 @@ namespace SportGround.Data.entities
 		public string Password { get; set; }
 		public string Salt { get; set; }
 
-		public List<CourtBookingEntity> BookingCourts { get; set; }
+		public virtual List<CourtBookingEntity> BookingCourts { get; set; }
 	}
 }

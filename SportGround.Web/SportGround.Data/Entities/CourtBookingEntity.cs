@@ -6,8 +6,9 @@ namespace SportGround.Data.Entities
 	public class CourtBookingEntity
 	{
 		public int Id { get; set; }
-		public UserEntity User { get; set; }
-		public CourtEntity Court { get; set; }
 		public DateTimeOffset BookingDate { get; set; }
+
+		public virtual UserEntity User { get; set; }
+		public virtual CourtEntity Court { get; set; }
 	}
 }

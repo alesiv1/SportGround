@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.Data.entities;
 using SportGround.Data.Interfaces;
 using System.IO;
 using System.Security.Cryptography;
+using SportGround.Data.entities;
 using SportGround.Data.Enums;
 
 namespace SportGround.BusinessLogic.Operations
@@ -26,21 +26,15 @@ namespace SportGround.BusinessLogic.Operations
 		{
 			if (UserExists(model.Email))
 			{
-				throw new ArgumentException("User already exist with this email {0} ", model.Email);
+				throw new ArgumentException("User already exist with this email {0} .", model.Email);
 			}
-			var salt = CreateSaltForPasscode();
-			var passcode = GetCodeForPassword(model.Password, salt);
-			UserEntity user = new UserEntity()
+			if(string.IsNullOrEmpty(model.Password))
 			{
-				Id = model.Id,
-				FirstName = model.FirstName,
-				LastName = model.LastName,
-				Email = model.Email,
-				Role = UserRole.User,
-				Password = passcode,
-				Salt = salt
-			};
-			_userRepository.Add(user);
+				throw new ArgumentException("User email can't be empty.");
+			}
+			var salt = CreateSaltForPasscode(); 
+			var passcode = GetCodeForPassword(model.Password, salt);
+			_userRepository.Add(model.FirstName, model.LastName, model.Email, UserRole.User, passcode, salt);
 		}
 
 		public void Delete(int id)
@@ -72,11 +66,11 @@ namespace SportGround.BusinessLogic.Operations
 
 		public UserModelWithRole GetUserById(int id)
 		{
-			if (!UserExists(id))
+			var user = _userRepository.GetUserById(id);
+			if (user == null)
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			var user = _userRepository.GetUserById(id);
 			return new UserModelWithRole()
 			{
 				Id = user.Id,
@@ -89,26 +83,33 @@ namespace SportGround.BusinessLogic.Operations
 
 		public UserEntity GetUserByEmail(string email)
 		{
-			if (!UserExists(email))
+			var user = _userRepository
+				.GetUsers()
+				.FirstOrDefault(us => us.Email == email);
+			if (user == null)
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			var user = _userRepository
-				.GetUsers()
-				.FirstOrDefault(m => m.Email == email);
+
 			return user;
 		}
 
-		public UserEntity GetUserEntity(int id)
+		public UserModelWithPassword GetUserWithPassword(int id)
 		{
-			if (!UserExists(id))
+			var user = _userRepository.GetUserById(id);
+			if (user == null)
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			var user = _userRepository
-				.GetUsers()
-				.FirstOrDefault(m => m.Id == id);
-			return user;
+			return new UserModelWithPassword()
+			{
+				Id = user.Id,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				Email = user.Email,
+				Password = GetDecodePassword(user.Password, user.Salt),
+				ConfirmPassword = ""
+			};
 		}
 
 		public bool UserExists(string email)
@@ -123,37 +124,29 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, UserModel model)
 		{
-			var user = _userRepository.GetUserById(id);
-			if (user == null)
+			if (!UserExists(id))
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			user.FirstName = model.FirstName;
-			user.LastName = model.LastName;
-			user.Email = model.Email;
-			_userRepository.Update(user);
+			_userRepository.Update(id, model.FirstName, model.LastName, model.Email);
 		}
 
 		public void Update(int id, UserModelWithRole model)
 		{
-			var user = _userRepository.GetUserById(id);
-			if (user == null)
+			if (!UserExists(id))
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			user.Role = model.Role;
-			_userRepository.Update(user);
+			_userRepository.Update(id, model.Role);
 		}
 
 		public void Update(int id, UserModelWithPassword model)
 		{
-			var user = _userRepository.GetUserById(id);
-			if (user == null)
+			if (!UserExists(id))
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			user.Password = GetCodeForPassword(model.Password, user.Salt);
-			_userRepository.Update(user);
+			_userRepository.Update(id, model.Password);
 		}
 
 		public string GetPasswordHashCode(string password, string salt)

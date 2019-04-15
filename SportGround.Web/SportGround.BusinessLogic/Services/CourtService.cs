@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 
 namespace SportGround.BusinessLogic.Operations
@@ -18,16 +17,15 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(CourtModel model)
 		{
+			if (String.IsNullOrEmpty(model.Name))
+			{
+				throw new ArgumentException("Field Name can't be null!");
+			}
 			if (CourtExists(model.Name))
 			{
 				throw new ArgumentException("Court with name {0}  already exists!", model.Name);
 			}
-			CourtEntity court = new CourtEntity()
-			{
-				Id = model.Id,
-				Name = model.Name
-			};
-			_courtRepository.Add(court);
+			_courtRepository.Add(model.Name);
 		}
 
 		public void Delete(int id)
@@ -54,23 +52,24 @@ namespace SportGround.BusinessLogic.Operations
 		public CourtModel GetCourtById(int id)
 		{
 			var court = _courtRepository.GetCourtById(id);
-			return court != null ? 
-				new CourtModel()
-				{
-					Id = court.Id,
-					Name = court.Name
-				} : new CourtModel();
+			if (court == null)
+			{
+				throw new ArgumentException("This court doesn't exists in database!");
+			}
+			return new CourtModel()
+			{
+				Id = court.Id,
+				Name = court.Name
+			};
 		}
 
 		public void Update(int id, CourtModel model)
 		{
-			var court = _courtRepository.GetCourtById(id);
-			if (court == null)
+			if (String.IsNullOrEmpty(model.Name))
 			{
-				throw new ArgumentException("Court doesn't exists!");
+				throw new ArgumentException("Court name can't be empty!");
 			}
-			court.Name = model.Name;
-			_courtRepository.Update(court);
+			_courtRepository.Update(id, model.Name);
 		}
 
 		public bool CourtExists(string name)

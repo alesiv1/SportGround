@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SportGround.BusinessLogic.Interfaces
 {
-	public interface ICourtBookingService
+	public interface IBookingService
 	{
 		CourtBookingModel GetCourtBookingById(int id);
 		List<CourtBookingModel> GetBookingList();
@@ -12,6 +12,6 @@ namespace SportGround.BusinessLogic.Interfaces
 		void Update(int id, CourtBookingModel model);
 		void Delete(int id);
 		List<DateTimeOffset> GetAllAvailableDataTime(int courtId);
-		List<CourtBookingModel> GetAllUserBooking(string email);
+		List<CourtBookingModel> GetAllUserBooking(int userId);
 	}
 }

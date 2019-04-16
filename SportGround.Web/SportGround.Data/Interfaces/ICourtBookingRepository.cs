@@ -8,7 +8,9 @@ namespace SportGround.Data.Interfaces
 	{
 		void Add(DateTimeOffset date, int courtId, int userId);
 		void Delete(int id);
-		ICollection<CourtBookingEntity> GetCourtBookings();
+		void DeleteRangeByUserId(int userId);
+		void DeleteRangeByCourtId(int courtId);
+		IReadOnlyList<CourtBookingEntity> GetCourtBookings();
 		CourtBookingEntity GetCourtBookingById(int id);
 		void Update(int id, DateTimeOffset date);
 	}

@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Identity;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.Web.Models;
-using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
@@ -42,6 +41,7 @@ namespace SportGround.Web.Controllers
 					return View();
 				}
 				var identity = new ClaimsIdentity(new[] {
+						new Claim("Id", user.Id.ToString()),
 						new Claim(ClaimTypes.Email, user.Email),
 						new Claim(ClaimTypes.Name, user.FirstName),
 						new Claim(ClaimTypes.Role, user.Role.ToString())
@@ -84,13 +84,15 @@ namespace SportGround.Web.Controllers
 			try
 	        {
 		        _userServices.Create(user);
-		        var identity = new ClaimsIdentity(new[]
-			        {
-				        new Claim(ClaimTypes.Name, user.FirstName),
-				        new Claim(ClaimTypes.Email, user.Email),
-				        new Claim(ClaimTypes.Role, "User")
+		        var newUser = _userServices
+			        .GetUserByEmail(user.Email);
+		        var identity = new ClaimsIdentity(new[] {
+				        new Claim("Id", user.Id.ToString()),
+				        new Claim(ClaimTypes.Email, newUser.Email),
+				        new Claim(ClaimTypes.Name, newUser.FirstName),
+				        new Claim(ClaimTypes.Role, newUser.Role.ToString())
 			        },
-			        DefaultAuthenticationTypes.ApplicationCookie);
+					DefaultAuthenticationTypes.ApplicationCookie);
 		        var ctx = Request.GetOwinContext();
 		        var authManager = ctx.Authentication;
 		        authManager.SignIn(identity);

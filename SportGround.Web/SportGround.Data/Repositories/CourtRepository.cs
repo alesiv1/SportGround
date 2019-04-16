@@ -38,7 +38,7 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public ICollection<CourtEntity> GetCourts()
+		public IReadOnlyList<CourtEntity> GetCourts()
 		{
 			return _context.Courts.ToList();
 		}

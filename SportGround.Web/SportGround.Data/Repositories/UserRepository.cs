@@ -36,10 +36,7 @@ namespace SportGround.Data.Repositories
 
 		public void Delete(int id)
 		{
-			var user = _context
-				.Users
-				.Include(booking => booking.BookingCourts)
-				.FirstOrDefault(us => us.Id == id);
+			var user = _context.Users.Find(id);
 			_context.Users.Remove(user);
 			_context.SaveChanges();
 		}
@@ -67,7 +64,7 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public ICollection<UserEntity> GetUsers()
+		public IReadOnlyList<UserEntity> GetUsers()
 		{
 			return _context.Users.ToList();
 		}
@@ -75,6 +72,11 @@ namespace SportGround.Data.Repositories
 		public UserEntity GetUserById(int id)
 		{
 			return _context.Users.Find(id);
+		}
+
+		public UserEntity GetUserByEmail(string email)
+		{
+			return _context.Users.FirstOrDefault(user => user.Email.ToLower() == email.ToLower());
 		}
 
 		public bool UserExists(string email)

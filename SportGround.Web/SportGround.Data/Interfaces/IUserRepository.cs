@@ -12,8 +12,9 @@ namespace SportGround.Data.Interfaces
 		void Update(int id, string firstName, string lastName, string email);
 		void Update(int id, string password);
 		void Update(int id, UserRole role);
-		ICollection<UserEntity> GetUsers();
+		IReadOnlyList<UserEntity> GetUsers();
 		UserEntity GetUserById(int id);
+		UserEntity GetUserByEmail(string email);
 		bool UserExists(string email);
 		bool UserExists(int id);
 	}

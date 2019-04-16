@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
@@ -16,10 +15,12 @@ namespace SportGround.BusinessLogic.Operations
 	{
 		private readonly string ProjectKey = "SportGround";
 		private IUserRepository _userRepository;
+		private ICourtBookingRepository _bookingRepository;
 
-		public UserService(IUserRepository userRepository)
+		public UserService(IUserRepository userRepository, ICourtBookingRepository bookingRepository)
 		{
 			_userRepository = userRepository;
+			_bookingRepository = bookingRepository;
 		}
 
 		public void Create(UserModelWithPassword model)
@@ -43,6 +44,7 @@ namespace SportGround.BusinessLogic.Operations
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
+			_bookingRepository.DeleteRangeByUserId(id);
 			_userRepository.Delete(id);
 		}
 
@@ -83,9 +85,7 @@ namespace SportGround.BusinessLogic.Operations
 
 		public UserEntity GetUserByEmail(string email)
 		{
-			var user = _userRepository
-				.GetUsers()
-				.FirstOrDefault(us => us.Email == email);
+			var user = _userRepository.GetUserByEmail(email);
 			if (user == null)
 			{
 				throw new ArgumentException("User doesn't exist!");
@@ -146,7 +146,10 @@ namespace SportGround.BusinessLogic.Operations
 			{
 				throw new ArgumentException("User doesn't exist!");
 			}
-			_userRepository.Update(id, model.Password);
+
+			var salt = _userRepository.GetUserById(id).Salt;
+			var password = GetCodeForPassword(model.Password, salt);
+			_userRepository.Update(id, password);
 		}
 
 		public string GetPasswordHashCode(string password, string salt)

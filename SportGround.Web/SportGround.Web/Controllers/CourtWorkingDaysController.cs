@@ -116,7 +116,7 @@ namespace SportGround.Web.Controllers
         public ActionResult Delete(int id, CourtWorkingDaysModel model)
         {
 	        var Id = _courtWorkingDaysServices.GetWorkingDay(id).Court.Id;
-	        _courtWorkingDaysServices.Delete(id);
+	        _courtWorkingDaysServices.DeleteCourt(id);
 			return RedirectToAction("Index", new { courtId = Id});
 		}
     }

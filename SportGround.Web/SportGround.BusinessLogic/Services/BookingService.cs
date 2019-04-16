@@ -8,13 +8,13 @@ using SportGround.Data.Interfaces;
 
 namespace SportGround.BusinessLogic.Operations
 {
-	public class CourtBookingService : ICourtBookingService
+	public class BookingService : IBookingService
 	{
 		private ICourtBookingRepository _bookingRepository;
 		private IUserRepository _userRepository;
 		private ICourtRepository _courtRepository;
 
-		public CourtBookingService(ICourtBookingRepository bookingRepository, IUserRepository userRepository, ICourtRepository courtRepository)
+		public BookingService(ICourtBookingRepository bookingRepository, IUserRepository userRepository, ICourtRepository courtRepository)
 		{
 			_bookingRepository = bookingRepository;
 			_userRepository = userRepository;
@@ -124,25 +124,37 @@ namespace SportGround.BusinessLogic.Operations
 			_bookingRepository.Update(id, model.Date);
 		}
 
-		public List<CourtBookingModel> GetAllUserBooking(string email)
+		public List<CourtBookingModel> GetAllUserBooking(int userId)
 		{
-			var userId = _userRepository
-				.GetUsers()
-				.FirstOrDefault(em => em.Email == email)?.Id;
-			if (userId == null)
+			if (userId < 0)
 			{
-				throw new NullReferenceException("This email doesn't exist in database!");
+				throw new NullReferenceException("This user doesn't exist in database!");
 			}
-			var bookingsForUser = GetBookingList()
-				.Where(user => user.User.Id == userId)
-				.ToList();
-			if (bookingsForUser.Count < 1)
+			var bookingList = new List<CourtBookingModel>();
+			var bookings = _userRepository.GetUserById(userId).BookingCourts;
+			foreach (var booking in bookings)
 			{
-				throw new NullReferenceException("This user doesn't have any booking court!");
+				bookingList.Add(new CourtBookingModel()
+				{
+					Id = booking.Id,
+					User = new UserModel()
+					{
+						Id = booking.User.Id,
+						Email = booking.User.Email,
+						FirstName = booking.User.FirstName,
+						LastName = booking.User.LastName
+					},
+					Court = new CourtModel()
+					{
+						Id = booking.Court.Id,
+						Name = booking.Court.Name
+					},
+					Date = booking.BookingDate,
+					IsActive = booking.BookingDate.Date >= DateTimeOffset.Now.Date,
+					DateInString = booking.BookingDate.ToString("yyyy-M-d dddd")
+				});
 			}
-			bookingsForUser.ForEach(x => x.IsActive = x.Date.Date >= DateTimeOffset.Now.Date);
-			bookingsForUser.ForEach(x => x.DateInString = x.Date.ToString("yyyy-M-d dddd"));		
-			return bookingsForUser.OrderBy(date => date.Date).ToList();
+			return bookingList;
 		}
 	}
 }

@@ -8,9 +8,9 @@ namespace SportGround.Web.Controllers
     public class CourtController : Controller
     {
 		private ICourtService _courtServices;
-		private ICourtBookingService _bookingServices;
+		private IBookingService _bookingServices;
 
-		public CourtController(ICourtService services, ICourtBookingService bookingServices)
+		public CourtController(ICourtService services, IBookingService bookingServices)
 	    {
 		    _courtServices = services;
 		    _bookingServices = bookingServices;
@@ -80,7 +80,7 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Delete(int id, CourtModel court)
         {
-			_courtServices.Delete(id);
+			_courtServices.DeleteCourt(id);
 			return RedirectToAction("Index");
         }
     }

@@ -38,7 +38,14 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public ICollection<CourtWorkingDaysEntity> GetWorkingDays()
+		public void DeleteRangeByCourtId(int courtId)
+		{
+			var workingDays = _context.CourtWorkingDays.Where(wd => wd.Court.Id == courtId);
+			_context.CourtWorkingDays.RemoveRange(workingDays);
+			_context.SaveChanges();
+		}
+
+		public IReadOnlyList<CourtWorkingDaysEntity> GetWorkingDays()
 		{
 			return _context.CourtWorkingDays.ToList();
 		}

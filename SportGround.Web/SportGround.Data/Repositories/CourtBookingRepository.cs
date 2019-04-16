@@ -37,7 +37,21 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public ICollection<CourtBookingEntity> GetCourtBookings()
+		public void DeleteRangeByUserId(int userId)
+		{
+			var bookings = _context.BookingCourts.Where(book => book.User.Id == userId);
+			_context.BookingCourts.RemoveRange(bookings);
+			_context.SaveChanges();
+		}
+
+		public void DeleteRangeByCourtId(int courtId)
+		{
+			var bookings = _context.BookingCourts.Where(book => book.Court.Id == courtId);
+			_context.BookingCourts.RemoveRange(bookings);
+			_context.SaveChanges();
+		}
+
+		public IReadOnlyList<CourtBookingEntity> GetCourtBookings()
 		{
 			return _context.BookingCourts.ToList();
 		}

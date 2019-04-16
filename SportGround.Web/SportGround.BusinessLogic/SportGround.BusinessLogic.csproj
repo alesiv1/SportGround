@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\CourtBookingStatus.cs" />
-    <Compile Include="Interfaces\ICourtBookingService.cs" />
+    <Compile Include="Interfaces\IBookingService.cs" />
     <Compile Include="Interfaces\ICourtService.cs" />
     <Compile Include="Interfaces\ICourtWorkingDaysService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
@@ -66,9 +66,8 @@
     <Compile Include="Models\CourtModel.cs" />
     <Compile Include="Models\CourtWorkingDaysModel.cs" />
     <Compile Include="Models\UserModel.cs" />
-    <Compile Include="Services\CourtBookingService.cs" />
+    <Compile Include="Services\BookingService.cs" />
     <Compile Include="Services\CourtService.cs" />
-    <Compile Include="Services\CourtWorkingDaysService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnityConfig.cs" />

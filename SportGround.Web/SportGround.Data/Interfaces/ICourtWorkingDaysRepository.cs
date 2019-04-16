@@ -9,7 +9,8 @@ namespace SportGround.Data.Interfaces
 	{
 		void Add(DaysOfTheWeek day, DateTimeOffset startTime, DateTimeOffset endTime, int courtId);
 		void Delete(int id);
-		ICollection<CourtWorkingDaysEntity> GetWorkingDays();
+		void DeleteRangeByCourtId(int courtId);
+		IReadOnlyList<CourtWorkingDaysEntity> GetWorkingDays();
 		CourtWorkingDaysEntity GetCourtWorkingDayById(int id);
 		void Update(int id, DaysOfTheWeek day, DateTimeOffset startTime, DateTimeOffset endTime);
 	}

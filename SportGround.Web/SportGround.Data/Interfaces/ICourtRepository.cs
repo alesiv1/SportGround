@@ -8,7 +8,7 @@ namespace SportGround.Data.Interfaces
 	{
 		void Add(string name);
 		void Delete(int id);
-		ICollection<CourtEntity> GetCourts();
+		IReadOnlyList<CourtEntity> GetCourts();
 		CourtEntity GetCourtById(int id);
 		void Update(int id, string name);
 		bool CourtExists(string name);

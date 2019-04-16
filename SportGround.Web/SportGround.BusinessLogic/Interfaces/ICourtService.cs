@@ -10,7 +10,7 @@ namespace SportGround.BusinessLogic.Interfaces
 		List<CourtModel> GetCourtList();
 		void Create(CourtModel model);
 		void Update(int id, CourtModel model);
-		void Delete(int id);
+		void DeleteCourt(int id);
 		bool CourtExists(string name);
 	}
 }

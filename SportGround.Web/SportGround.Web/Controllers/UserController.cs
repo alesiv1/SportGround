@@ -1,9 +1,9 @@
 ﻿using SportGround.BusinessLogic.Interfaces;
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 
 namespace SportGround.Web.Controllers
 {
@@ -20,8 +20,8 @@ namespace SportGround.Web.Controllers
 		[Route("Users")]
 		public ActionResult Index()
 		{
-			var allUsers = _userServices.GetUserList();
-			return View(allUsers);
+			var users = _userServices.GetUserList();
+			return View(users);
 		}
 
 		[Authorize]
@@ -204,11 +204,13 @@ namespace SportGround.Web.Controllers
 
         private int GetIdForAuthorizedUser()
         {
-	        var email = ((ClaimsIdentity)this.User.Identity)
-		        .FindFirst(ClaimTypes.Email)?.Value;
-	        var user = _userServices.GetUserList()
-		        .FirstOrDefault(em => em.Email == email);
-	        return user != null ? user.Id : -1;
+	        var id = -1;
+	        try
+	        {
+		        id = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
+			}
+			catch { }
+			return id;
         }
 	}
 }

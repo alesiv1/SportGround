@@ -5,16 +5,17 @@ using System.Web.Mvc;
 using System.Security.Claims;
 using SportGround.BusinessLogic.Models;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
 
 namespace SportGround.Web.Controllers
 {
     public class CourtBookingController : Controller
     {
-	    private ICourtBookingService _bookingServices;
+	    private IBookingService _bookingServices;
 	    private IUserService _userServices;
 	    private ICourtService _courtServices;
 
-		public CourtBookingController(ICourtBookingService bookingServices, IUserService userServices, ICourtService courtServices)
+		public CourtBookingController(IBookingService bookingServices, IUserService userServices, ICourtService courtServices)
 	    {
 		    _bookingServices = bookingServices;
 		    _userServices = userServices;
@@ -24,14 +25,18 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index()
 		{
-			var email = ((ClaimsIdentity)this.User.Identity)
-				.FindFirst(ClaimTypes.Email)?.Value;
-			if (email != null)
+			var userId = -1;
+			try
+			{
+				userId = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
+			}
+			catch { }
+			if (userId != -1)
 			{
 				var allUserBookings = new List<CourtBookingModel>();
 				try
 				{
-					allUserBookings = _bookingServices.GetAllUserBooking(email);
+					allUserBookings = _bookingServices.GetAllUserBooking(userId);
 				}
 				catch { }
 				return View(allUserBookings);
@@ -42,10 +47,13 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult BookingCourt(int courtId)
 		{
-			var email = ((ClaimsIdentity)this.User.Identity)
-				.FindFirst(ClaimTypes.Email)?.Value;
-			var user = _userServices.GetUserList()
-				.FirstOrDefault(em => em.Email == email);
+			var userId = -1;
+			try
+			{
+				userId = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
+			}
+			catch { }
+			var user = _userServices.GetUserById(userId);
 			var court = _courtServices.GetCourtById(courtId);
 			var availableDateTime = _bookingServices.GetAllAvailableDataTime(court.Id);
 			if (availableDateTime.Count < 1)

@@ -29,12 +29,7 @@ namespace SportGround.Data.Repositories
 
 		public void Delete(int id)
 		{
-			var court = _context
-				.Courts
-				.Include(wh => wh.WorkingDays)
-				.Include(bookings => bookings.Bookings)
-				.FirstOrDefault(us => us.Id == id);
-			_context.Courts.Remove(court);
+			var court = _context.Courts.Find(id);
 			_context.SaveChanges();
 		}
 

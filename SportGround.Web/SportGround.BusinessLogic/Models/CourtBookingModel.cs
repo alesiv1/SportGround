@@ -18,6 +18,7 @@ namespace SportGround.BusinessLogic.Models
 		[Required]
 		[DataType(DataType.DateTime)]
 		public DateTimeOffset Date { get; set; }
+
 		public string DateInString { get; set; }
 		public bool IsActive { get; set; }
 	}

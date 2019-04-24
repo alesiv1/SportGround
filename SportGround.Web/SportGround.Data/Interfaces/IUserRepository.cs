@@ -16,6 +16,5 @@ namespace SportGround.Data.Interfaces
 		UserEntity GetUserById(int id);
 		UserEntity GetUserByEmail(string email);
 		bool UserExists(string email);
-		bool UserExists(int id);
 	}
 }

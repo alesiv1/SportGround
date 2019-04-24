@@ -25,14 +25,6 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(UserModelWithPassword model)
 		{
-			if (UserExists(model.Email))
-			{
-				throw new ArgumentException("User already exist with this email {0} .", model.Email);
-			}
-			if(string.IsNullOrEmpty(model.Password))
-			{
-				throw new ArgumentException("User email can't be empty.");
-			}
 			var salt = CreateSaltForPasscode(); 
 			var passcode = GetCodeForPassword(model.Password, salt);
 			_userRepository.Add(model.FirstName, model.LastName, model.Email, UserRole.User, passcode, salt);
@@ -40,10 +32,6 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Delete(int id)
 		{
-			if (!UserExists(id))
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
 			_bookingRepository.DeleteRangeByUserId(id);
 			_userRepository.Delete(id);
 		}
@@ -69,10 +57,6 @@ namespace SportGround.BusinessLogic.Operations
 		public UserModelWithRole GetUserById(int id)
 		{
 			var user = _userRepository.GetUserById(id);
-			if (user == null)
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
 			return new UserModelWithRole()
 			{
 				Id = user.Id,
@@ -86,21 +70,12 @@ namespace SportGround.BusinessLogic.Operations
 		public UserEntity GetUserByEmail(string email)
 		{
 			var user = _userRepository.GetUserByEmail(email);
-			if (user == null)
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
-
 			return user;
 		}
 
 		public UserModelWithPassword GetUserWithPassword(int id)
 		{
 			var user = _userRepository.GetUserById(id);
-			if (user == null)
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
 			return new UserModelWithPassword()
 			{
 				Id = user.Id,
@@ -117,36 +92,18 @@ namespace SportGround.BusinessLogic.Operations
 			return _userRepository.UserExists(email);
 		}
 
-		public bool UserExists(int id)
-		{
-			return _userRepository.UserExists(id);
-		}
-
 		public void Update(int id, UserModel model)
 		{
-			if (!UserExists(id))
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
 			_userRepository.Update(id, model.FirstName, model.LastName, model.Email);
 		}
 
 		public void Update(int id, UserModelWithRole model)
 		{
-			if (!UserExists(id))
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
 			_userRepository.Update(id, model.Role);
 		}
 
 		public void Update(int id, UserModelWithPassword model)
 		{
-			if (!UserExists(id))
-			{
-				throw new ArgumentException("User doesn't exist!");
-			}
-
 			var salt = _userRepository.GetUserById(id).Salt;
 			var password = GetCodeForPassword(model.Password, salt);
 			_userRepository.Update(id, password);

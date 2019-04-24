@@ -50,9 +50,12 @@ namespace SportGround.Web.Controllers
 			var userId = -1;
 			try
 			{
-				userId = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
+				userId = Int32.Parse(((ClaimsIdentity) this.User.Identity).FindFirstValue("Id"));
 			}
-			catch { }
+			catch
+			{
+				return RedirectToAction("Index", "Court");
+			}
 			var user = _userServices.GetUserById(userId);
 			var court = _courtServices.GetCourtById(courtId);
 			var availableDateTime = _bookingServices.GetAllAvailableDataTime(court.Id);

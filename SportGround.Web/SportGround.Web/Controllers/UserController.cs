@@ -48,16 +48,10 @@ namespace SportGround.Web.Controllers
 			if (_userServices.UserExists(user.Email))
 			{
 				ModelState.AddModelError("Email", "This email   " + user.Email + "   already exist!");
-			}
-			try
-			{
-				_userServices.Create(user);
-				return RedirectToAction("Index");
-			}
-			catch
-			{
 				return View();
 			}
+			_userServices.Create(user);
+			return RedirectToAction("Index");
 		}
 
 		[Authorize]
@@ -92,15 +86,8 @@ namespace SportGround.Web.Controllers
 				ModelState.AddModelError("Email", "This email already using! You can nott edit your email on email like this " + user.Email + " ! Write another email.");
 				return View(user);
 			}
-			try
-			{
-				_userServices.Update(id, user);
-				return RedirectToAction("Index");
-			}
-			catch
-			{
-				return View();
-			}
+			_userServices.Update(id, user);
+			return RedirectToAction("Index");
 		}
 
 		[Authorize]
@@ -160,7 +147,7 @@ namespace SportGround.Web.Controllers
 			var user = _userServices.GetUserWithPassword(id);
 			if (user == null)
 			{
-				throw new ArgumentException("User does'nt exist in database!");
+				return View("Index");
 			}
 			return View(user);
 		}

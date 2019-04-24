@@ -6,26 +6,24 @@ namespace SportGround.Web.Models
 	public class RegistrationModel
 	{
 		[Required]
-		[DataType(DataType.Text)]
+		[StringLength(50, MinimumLength = 3)]
 		public string FirstName { get; set; }
 
 		[Required]
-		[DataType(DataType.Text)]
+		[StringLength(50, MinimumLength = 3)]
 		public string LastName { get; set; }
 
 		[Required]
 		[EmailAddress]
-		[DataType(DataType.EmailAddress)]
+		[RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "E-mail is not valid")]
 		public string Email { get; set; }
 
 		[Required]
-		[DataType(DataType.Password)]
 		[StringLength(50, MinimumLength = 6)]
 		public string Password { get; set; }
 
 		[Required]
 		[Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
-		[StringLength(50, MinimumLength = 6)]
 		public string ConfirmPassword { get; set; }
 	}
 }

@@ -24,14 +24,6 @@ namespace SportGround.BusinessLogic.Operations
 		// Methods for courts
 		public void Create(CourtModel model)
 		{
-			if (String.IsNullOrEmpty(model.Name))
-			{
-				throw new ArgumentException("Field Name can't be null!");
-			}
-			if (CourtExists(model.Name))
-			{
-				throw new ArgumentException("Court with name {0}  already exists!", model.Name);
-			}
 			_courtRepository.Add(model.Name);
 		}
 
@@ -61,10 +53,6 @@ namespace SportGround.BusinessLogic.Operations
 		public CourtModel GetCourtById(int id)
 		{
 			var court = _courtRepository.GetCourtById(id);
-			if (court == null)
-			{
-				throw new ArgumentException("This court doesn't exists in database!");
-			}
 			return new CourtModel()
 			{
 				Id = court.Id,
@@ -74,10 +62,6 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, CourtModel model)
 		{
-			if (String.IsNullOrEmpty(model.Name))
-			{
-				throw new ArgumentException("Court name can't be empty!");
-			}
 			_courtRepository.Update(id, model.Name);
 		}
 
@@ -89,10 +73,6 @@ namespace SportGround.BusinessLogic.Operations
 		// Methods for working days
 		public void Create(int courtId, CourtWorkingDaysModel model)
 		{
-			if (model.StartTime >= model.EndTime)
-			{
-				throw new Exception("Start time can't be less then end time");
-			}
 			_courtWorkingDaysRepository.Add(model.Day, model.StartTime, model.EndTime, courtId);
 		}
 
@@ -121,10 +101,6 @@ namespace SportGround.BusinessLogic.Operations
 		public CourtWorkingDaysModel GetWorkingDay(int id)
 		{
 			var workingDay = _courtWorkingDaysRepository.GetCourtWorkingDayById(id);
-			if (workingDay == null)
-			{
-				throw new ArgumentException("Court doesn't exists in database!");
-			}
 			return new CourtWorkingDaysModel()
 			{
 				Id = workingDay.Id,

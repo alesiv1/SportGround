@@ -96,10 +96,6 @@ namespace SportGround.BusinessLogic.Operations
 		{
 			var booking = _bookingRepository
 				.GetCourtBookingById(id);
-			if (booking == null)
-			{
-				throw new ArgumentException("Booking doesn't exists in database");
-			}
 			return new CourtBookingModel()
 			{
 				Id = booking.Id,
@@ -126,10 +122,6 @@ namespace SportGround.BusinessLogic.Operations
 
 		public List<CourtBookingModel> GetAllUserBooking(int userId)
 		{
-			if (userId < 0)
-			{
-				throw new NullReferenceException("This user doesn't exist in database!");
-			}
 			var bookingList = new List<CourtBookingModel>();
 			var bookings = _userRepository.GetUserById(userId).BookingCourts;
 			foreach (var booking in bookings)

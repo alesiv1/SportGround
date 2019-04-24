@@ -3,7 +3,6 @@ using SportGround.Data.Context;
 using SportGround.Data.entities;
 using SportGround.Data.Interfaces;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using SportGround.Data.Enums;
 
@@ -82,11 +81,6 @@ namespace SportGround.Data.Repositories
 		public bool UserExists(string email)
 		{
 			return _context.Users.Any(user => user.Email.ToLower() == email.ToLower());
-		}
-
-		public bool UserExists(int id)
-		{
-			return _context.Users.Any(user => user.Id == id);
 		}
 	}
 }

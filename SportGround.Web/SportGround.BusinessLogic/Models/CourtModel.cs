@@ -10,6 +10,7 @@ namespace SportGround.BusinessLogic.Models
 	    [Required]
 	    [StringLength(50, MinimumLength = 3)]
 		public string Name { get; set; }
+
 		public bool CanBooking { get; set; }
 	}
 
@@ -17,6 +18,7 @@ namespace SportGround.BusinessLogic.Models
     {
 	    [Required]
 		public List<CourtWorkingDaysModel> AllWorkingHours { get; set; }
+
 		public bool IsAvailableDays { get; set; }
 	}
 }

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Interfaces;
-using System.IO;
-using System.Security.Cryptography;
 using SportGround.Data.entities;
 using SportGround.Data.Enums;
+using SportGround.Helpers;
 
 namespace SportGround.BusinessLogic.Operations
 {
@@ -16,6 +14,7 @@ namespace SportGround.BusinessLogic.Operations
 		private readonly string ProjectKey = "SportGround";
 		private IUserRepository _userRepository;
 		private ICourtBookingRepository _bookingRepository;
+		private HashingHelper hashHelper = new HashingHelper();
 
 		public UserService(IUserRepository userRepository, ICourtBookingRepository bookingRepository)
 		{
@@ -25,9 +24,16 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(UserModelWithPassword model)
 		{
-			var salt = CreateSaltForPasscode(); 
-			var passcode = GetCodeForPassword(model.Password, salt);
+			var salt = hashHelper.CreateSaltForPasscode(); 
+			var passcode = hashHelper.GetCodeForPassword(model.Password, salt);
 			_userRepository.Add(model.FirstName, model.LastName, model.Email, UserRole.User, passcode, salt);
+		}
+
+		public void CreateDefaultUser()
+		{
+			var salt = hashHelper.CreateSaltForPasscode();
+			var passcode = hashHelper.GetCodeForPassword("admin1", salt);
+			_userRepository.Add("Admin", "Admin", "admin@admin.com", UserRole.Admin, passcode, salt);
 		}
 
 		public void Delete(int id)
@@ -105,93 +111,18 @@ namespace SportGround.BusinessLogic.Operations
 		public void Update(int id, UserModelWithPassword model)
 		{
 			var salt = _userRepository.GetUserById(id).Salt;
-			var password = GetCodeForPassword(model.Password, salt);
+			var password = hashHelper.GetCodeForPassword(model.Password, salt);
 			_userRepository.Update(id, password);
 		}
 
 		public string GetPasswordHashCode(string password, string salt)
 		{
-			return GetCodeForPassword(password, salt);
+			return hashHelper.GetCodeForPassword(password, salt);
 		}
 
-		public string GetDecodePassword(string password, string salt)
+		private string GetDecodePassword(string password, string salt)
 		{
-			return GetPasswordByDecode(password, salt);
-		}
-
-		private string CreateSaltForPasscode()
-		{
-			var random = new RNGCryptoServiceProvider();
-			byte[] salt = new byte[40];
-			random.GetNonZeroBytes(salt);
-			var saltInString = Convert.ToBase64String(salt);
-			return saltInString;
-		}
-
-		private byte[] GetSaltForPasscode(string salt)
-		{
-			return Convert.FromBase64String(salt);
-		}
-
-		private string GetCodeForPassword(string password, string salt)
-		{
-			string EncryptionKey = ProjectKey;
-			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
-			using (Aes encryptor = Aes.Create())
-			{
-				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));
-				encryptor.Key = pdb.GetBytes(32);
-				encryptor.IV = pdb.GetBytes(16);
-				try
-				{
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(),
-							CryptoStreamMode.Write))
-						{
-							cs.Write(clearBytes, 0, clearBytes.Length);
-							cs.Close();
-						}
-						password = Convert.ToBase64String(ms.ToArray());
-					}
-				}
-				catch
-				{
-					password = null;
-				}
-			}
-			return password;
-		}
-
-		private string GetPasswordByDecode(string password, string salt)
-		{
-			string EncryptionKey = ProjectKey;
-			password = password.Replace(" ", "+");
-			byte[] cipherBytes = Convert.FromBase64String(password);
-			using (Aes encryptor = Aes.Create())
-			{
-				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));
-				encryptor.Key = pdb.GetBytes(32);
-				encryptor.IV = pdb.GetBytes(16);
-				try
-				{
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(),
-							CryptoStreamMode.Write))
-						{
-							cs.Write(cipherBytes, 0, cipherBytes.Length);
-							cs.Close();
-						}
-						password = Encoding.Unicode.GetString(ms.ToArray());
-					}
-				}
-				catch
-				{
-					password = null;
-				}
-			}
-			return password;
+			return hashHelper.GetPasswordByDecode(password, salt);
 		}
 	}
 }

@@ -46,11 +46,6 @@ namespace SportGround.Web.Controllers
 	        {
 		        return View();
 	        }
-	        if (String.IsNullOrEmpty(court.Name))
-	        {
-		        ModelState.AddModelError("Name", "Field Name can't be null!");
-		        return View();
-	        }
 	        if (_courtServices.CourtExists(court.Name))
 			{
 				ModelState.AddModelError("Name", "Court with name " + court.Name + "  already exists!");

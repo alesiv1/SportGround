@@ -3,6 +3,8 @@ using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
 using SportGround.Data.Enums;
+using FluentValidation.Results;
+using SportGround.BusinessLogic.Validation;
 
 namespace SportGround.Web.Controllers
 {
@@ -10,6 +12,7 @@ namespace SportGround.Web.Controllers
     {
 	    private ICourtWorkingDaysService _courtWorkingDaysServices;
 	    private ICourtService _courtServices;
+	    private WorkingDaysValidation workingDaysValid = new WorkingDaysValidation();
 
 		public CourtWorkingDaysController(ICourtWorkingDaysService servicesDays, ICourtService services)
 	    {
@@ -64,22 +67,16 @@ namespace SportGround.Web.Controllers
         {
 	        var days = _courtWorkingDaysServices.GetAllAvailableDays(model.Court.Id);
 	        model.AvailableDays = days;
-			if (model.StartTime >= model.EndTime)
-	        {
-		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
-				return View(model);
-			}
-	        if (model.StartTime.Hour < 0)
-	        {
-		        ModelState.AddModelError("StartTime", "Incorect time format!");
-		        return View(model);
-			}
-	        if (model.EndTime.Hour > 24)
-	        {
-		        ModelState.AddModelError("EndTime", "Incorect time format!");
-		        return View(model);
-			}
 	        var id = model.Court.Id;
+			var validationResult = workingDaysValid.Validate(model);
+	        if (!validationResult.IsValid)
+	        {
+		        foreach (ValidationFailure data in validationResult.Errors)
+		        {
+			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+		        }
+		        return View(model);
+	        }
 	        _courtWorkingDaysServices.Create(id, model);
 	        return RedirectToAction("Index","CourtWorkingDays", new { courtId = id });
 		}
@@ -95,11 +92,15 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Edit(int id, CourtWorkingDaysModel model)
         {
-	        if (model.StartTime >= model.EndTime)
+	        var validationResult = workingDaysValid.Validate(model);
+	        if (!validationResult.IsValid)
 	        {
-		        ModelState.AddModelError("StartTime", "Start time must be less then ent time!");
+		        foreach (ValidationFailure data in validationResult.Errors)
+		        {
+			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+		        }
 		        return View(model);
-			}
+	        }
 			_courtWorkingDaysServices.Update(id, model);
 	        return RedirectToAction("Index", new { courtId = model.Court.Id});
 		}

@@ -29,7 +29,7 @@ namespace SportGround.BusinessLogic.Models
 	public class UserModelWithPassword : UserModel
 	{
 		[Required]
-		[StringLength(50, MinimumLength = 6)]
+		[StringLength(50, MinimumLength = 3)]
 		public string Password { get; set; }
 		[Required]
 		[Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]

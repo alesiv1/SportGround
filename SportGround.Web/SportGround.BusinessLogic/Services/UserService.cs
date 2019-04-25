@@ -5,7 +5,7 @@ using SportGround.BusinessLogic.Models;
 using SportGround.Data.Interfaces;
 using SportGround.Data.entities;
 using SportGround.Data.Enums;
-using SportGround.Helpers;
+using SportGround.Core;
 
 namespace SportGround.BusinessLogic.Operations
 {

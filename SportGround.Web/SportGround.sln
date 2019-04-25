@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportGround.Data", "SportGr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportGround.Web", "SportGround.Web\SportGround.Web.csproj", "{43E1B8D3-4320-4703-957F-7ACDDE857A72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportGround.Helpers", "SportGround.Helpers\SportGround.Helpers.csproj", "{8DA5845F-DCA0-4590-845A-8E8B82DF2236}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportGround.Core", "SportGround.Core\SportGround.Core.csproj", "{68707FBB-E7FB-4082-8558-4091838575E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{43E1B8D3-4320-4703-957F-7ACDDE857A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43E1B8D3-4320-4703-957F-7ACDDE857A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43E1B8D3-4320-4703-957F-7ACDDE857A72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DA5845F-DCA0-4590-845A-8E8B82DF2236}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DA5845F-DCA0-4590-845A-8E8B82DF2236}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DA5845F-DCA0-4590-845A-8E8B82DF2236}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DA5845F-DCA0-4590-845A-8E8B82DF2236}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68707FBB-E7FB-4082-8558-4091838575E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68707FBB-E7FB-4082-8558-4091838575E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68707FBB-E7FB-4082-8558-4091838575E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68707FBB-E7FB-4082-8558-4091838575E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,11 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SportGround.Helpers
+namespace SportGround.Core
 {
-    public class HashingHelper
-    {
-	    private readonly string ProjectKey = "SportGround";
+	public class HashingHelper
+	{
+		private readonly string ProjectKey = "SportGround";
 
 		public string CreateSaltForPasscode()
 		{

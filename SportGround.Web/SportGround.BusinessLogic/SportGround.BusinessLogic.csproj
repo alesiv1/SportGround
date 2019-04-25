@@ -73,13 +73,13 @@
     <Compile Include="UnityConfig.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SportGround.Core\SportGround.Core.csproj">
+      <Project>{68707FBB-E7FB-4082-8558-4091838575E2}</Project>
+      <Name>SportGround.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SportGround.Data\SportGround.Data.csproj">
       <Project>{bbe55e90-a359-438d-b138-f50e997b9b16}</Project>
       <Name>SportGround.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SportGround.Helpers\SportGround.Helpers.csproj">
-      <Project>{8DA5845F-DCA0-4590-845A-8E8B82DF2236}</Project>
-      <Name>SportGround.Helpers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

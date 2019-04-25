@@ -77,6 +77,8 @@
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnityConfig.cs" />
+    <Compile Include="Validations\CourtValidation.cs" />
+    <Compile Include="Validations\UserValidation.cs" />
     <Compile Include="Validations\WorkingDaysValidation.cs" />
   </ItemGroup>
   <ItemGroup>

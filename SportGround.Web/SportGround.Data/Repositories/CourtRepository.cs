@@ -30,6 +30,7 @@ namespace SportGround.Data.Repositories
 		public void Delete(int id)
 		{
 			var court = _context.Courts.Find(id);
+			_context.Courts.Remove(court);
 			_context.SaveChanges();
 		}
 

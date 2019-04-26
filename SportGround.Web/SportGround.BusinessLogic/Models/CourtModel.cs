@@ -7,9 +7,7 @@ namespace SportGround.BusinessLogic.Models
     public class CourtModel
     {
 		public int Id { get; set; }
-	    [Required]
 		public string Name { get; set; }
-
 		public bool CanBooking { get; set; }
 	}
 

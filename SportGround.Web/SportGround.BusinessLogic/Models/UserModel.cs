@@ -20,7 +20,9 @@ namespace SportGround.BusinessLogic.Models
 
 	public class UserModelWithPassword : UserModel
 	{
+		[DataType(DataType.Password)]
 		public string Password { get; set; }
+		[DataType(DataType.Password)]
 		[Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
 		public string ConfirmPassword { get; set; }
 	}

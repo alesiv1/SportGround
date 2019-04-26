@@ -19,7 +19,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Users", "Index", "User")</li>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("Users", "Index", "User")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Profile", "Profile", "User")</li>
+                    }
                     <li>@Html.ActionLink("Courts", "Index", "Court")</li>
                     <li>@Html.ActionLink("My court booking", "Index", "CourtBooking")</li>
                 </ul>

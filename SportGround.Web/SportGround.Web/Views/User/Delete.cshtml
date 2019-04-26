@@ -41,14 +41,26 @@
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
-
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default"   style="background-color: red"/> |
-            <a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil" >
-                <span>
-                    <strong>Back to List</strong>
-                </span>
-            </a>
+            <input type="submit" value="Delete" class="btn btn-default" style="background-color: red"/>
         </div>
+    }
+</div>
+<div>
+    @if (this.User.IsInRole("Admin"))
+    {
+        <a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil">
+            <span>
+                <strong>Back to List</strong>
+            </span>
+        </a>
+    }
+    else
+    {
+        <a href="@Url.Action("Profile", "User")" class="btn btn-primary fa fa-pencil">
+            <span>
+                <strong>Back to Profile</strong>
+            </span>
+        </a>
     }
 </div>

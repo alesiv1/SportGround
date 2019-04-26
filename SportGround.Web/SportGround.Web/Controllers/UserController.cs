@@ -21,6 +21,14 @@ namespace SportGround.Web.Controllers
 	    }
 
 		[Authorize]
+		[Route("Profile")]
+		public ActionResult Profile()
+		{
+			var user = _userServices.GetUserById(GetIdForAuthorizedUser());
+			return View(user);
+		}
+
+		[Authorize(Roles = "Admin")]
 		[Route("Users")]
 		public ActionResult Index()
 		{
@@ -28,7 +36,7 @@ namespace SportGround.Web.Controllers
 			return View(users);
 		}
 
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Details(int id)
 		{
 			var user = _userServices.GetUserById(id);
@@ -109,7 +117,7 @@ namespace SportGround.Web.Controllers
 				return View(user);
 			}
 			_userServices.Update(id, user);
-			return RedirectToAction("Index");
+			return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
 		}
 
 		[Authorize]
@@ -144,8 +152,8 @@ namespace SportGround.Web.Controllers
 						return RedirectToAction("LogOut", "Authorisation");
 					}
 				}
-				return RedirectToAction("Index");
-	        }
+				return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
+			}
 	        catch
 	        {
 		        return View();
@@ -181,8 +189,8 @@ namespace SportGround.Web.Controllers
 			try
 	        {		        
 		        _userServices.Update(id, user);
-		        return RedirectToAction("Index");
-	        }
+		        return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
+			}
 	        catch
 	        {
 		        return View();

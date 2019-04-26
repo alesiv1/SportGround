@@ -112,7 +112,14 @@ namespace SportGround.Web.Controllers
         {
 	        if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
 	        {
-		        return Url.Action("Index", "User");
+		        if (this.User.IsInRole("Admin"))
+		        {
+			        return Url.Action("Index", "User");
+				}
+		        else
+		        {
+			        return Url.Action("Profile", "User");
+				}
 	        }
 	        return returnUrl;
         }

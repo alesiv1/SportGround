@@ -82,8 +82,9 @@ namespace SportGround.Web.Controllers
 				Id = model.Id,
 				User = model.User,
 				Court = model.Court,
-				Date = Convert.ToDateTime(model.AvailableDate.FirstOrDefault())
-	        };
+				StartDate = Convert.ToDateTime(model.AvailableDate.FirstOrDefault()),
+				EndDate = Convert.ToDateTime(model.AvailableDate.FirstOrDefault()),
+			};
 	        _bookingServices.Create(booking);
 	        return RedirectToAction("Index", "Court");
         }

@@ -16,13 +16,14 @@ namespace SportGround.Data.Repositories
 			this._context = context;
 		}
 
-		public void Add(DateTimeOffset date, int courtId, int userId)
+		public void Add(DateTimeOffset startDate, DateTimeOffset EndDate, int courtId, int userId)
 		{
 			var court = _context.Courts.Find(courtId);
 			var user = _context.Users.Find(userId);
 			CourtBookingEntity booking = new CourtBookingEntity()
 			{
-				BookingDate = date,
+				StartDate = startDate,
+				EndDate = EndDate,
 				Court = court,
 				User = user
 			};
@@ -30,7 +31,7 @@ namespace SportGround.Data.Repositories
 			_context.SaveChanges();
 		}
 
-		public void Delete(int id)
+		public void Delete(long id)
 		{
 			var booking = _context.BookingCourts.Find(id);
 			_context.BookingCourts.Remove(booking);
@@ -56,15 +57,16 @@ namespace SportGround.Data.Repositories
 			return _context.BookingCourts.ToList();
 		}
 
-		public CourtBookingEntity GetCourtBookingById(int id)
+		public CourtBookingEntity GetCourtBookingById(long id)
 		{
 			return _context.BookingCourts.Find(id);
 		}
 
-		public void Update(int id, DateTimeOffset date)
+		public void Update(long id, DateTimeOffset startDate, DateTimeOffset EndDate)
 		{
 			var booking = _context.BookingCourts.Find(id);
-			booking.BookingDate = date;
+			booking.StartDate = startDate;
+			booking.EndDate = EndDate;
 			_context.SaveChanges();
 		}
 	}

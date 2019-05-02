@@ -23,10 +23,10 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(CourtBookingModel model)
 		{
-			_bookingRepository.Add(model.Date, model.Court.Id, model.User.Id);
+			_bookingRepository.Add(model.StartDate, model.EndDate, model.Court.Id, model.User.Id);
 		}
 
-		public void Delete(int id)
+		public void Delete(long id)
 		{
 			_bookingRepository.Delete(id);
 		}
@@ -52,7 +52,8 @@ namespace SportGround.BusinessLogic.Operations
 						Id = booking.Court.Id,
 						Name = booking.Court.Name
 					},
-					Date = booking.BookingDate
+					StartDate = booking.StartDate,
+					EndDate = booking.EndDate
 				});
 			}
 			return bookingList;
@@ -83,7 +84,7 @@ namespace SportGround.BusinessLogic.Operations
 
 			var bookedCourtDate = _bookingRepository
 				.GetCourtBookings()
-				.Select(x => x.BookingDate.Date)
+				.Select(x => x.StartDate)
 				.ToList();
 			allAvailableDataTime = allAvailableDataTime
 				.FindAll(x => !bookedCourtDate.Contains(x.Date) && x.Date >= dateNow.Date)
@@ -92,7 +93,7 @@ namespace SportGround.BusinessLogic.Operations
 			return allAvailableDataTime;
 		}
 
-		public CourtBookingModel GetCourtBookingById(int id)
+		public CourtBookingModel GetCourtBookingById(long id)
 		{
 			var booking = _bookingRepository
 				.GetCourtBookingById(id);
@@ -111,13 +112,14 @@ namespace SportGround.BusinessLogic.Operations
 					Id = booking.Court.Id,
 					Name = booking.Court.Name
 				},
-				Date = booking.BookingDate
+				StartDate = booking.StartDate,
+				EndDate = booking.EndDate
 			};
 		}
 
-		public void Update(int id, CourtBookingModel model)
+		public void Update(long id, CourtBookingModel model)
 		{
-			_bookingRepository.Update(id, model.Date);
+			_bookingRepository.Update(id, model.StartDate, model.EndDate);
 		}
 
 		public List<CourtBookingModel> GetAllUserBooking(int userId)
@@ -141,9 +143,10 @@ namespace SportGround.BusinessLogic.Operations
 						Id = booking.Court.Id,
 						Name = booking.Court.Name
 					},
-					Date = booking.BookingDate,
-					IsActive = booking.BookingDate.Date >= DateTimeOffset.Now.Date,
-					DateInString = booking.BookingDate.ToString("yyyy-M-d dddd")
+					StartDate = booking.StartDate,
+					EndDate = booking.EndDate,
+					IsActive = booking.StartDate.Date >= DateTimeOffset.Now.Date,
+					DateInString = booking.StartDate.ToString("yyyy-M-d dddd")
 				});
 			}
 			return bookingList;

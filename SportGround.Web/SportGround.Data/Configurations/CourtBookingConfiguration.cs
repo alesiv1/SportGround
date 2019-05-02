@@ -18,7 +18,10 @@ namespace SportGround.Data.Configurations
 			HasOptional(x => x.Court)
 				.WithRequired();
 
-			Property(x => x.BookingDate)
+			Property(x => x.StartDate)
+				.IsRequired();
+
+			Property(x => x.EndDate)
 				.IsRequired();
 		}
 	}

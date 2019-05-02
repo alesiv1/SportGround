@@ -34,11 +34,7 @@ namespace SportGround.Web.Controllers
 			if (userId != -1)
 			{
 				var allUserBookings = new List<CourtBookingModel>();
-				try
-				{
 					allUserBookings = _bookingServices.GetAllUserBooking(userId);
-				}
-				catch { }
 				return View(allUserBookings);
 			}
 			return RedirectToAction("Index", "User");

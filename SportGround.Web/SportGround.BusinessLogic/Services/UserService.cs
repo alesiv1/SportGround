@@ -11,7 +11,6 @@ namespace SportGround.BusinessLogic.Operations
 {
 	public class UserService : IUserService
 	{
-		private readonly string ProjectKey = "SportGround";
 		private IUserRepository _userRepository;
 		private ICourtBookingRepository _bookingRepository;
 		private HashingHelper hashHelper = new HashingHelper();

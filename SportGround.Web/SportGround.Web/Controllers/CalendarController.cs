@@ -34,7 +34,15 @@ namespace SportGround.Web.Controllers
 		public ContentResult Data()
 		{
 			var allBookings = _bookingServices.GetBookingList().ToList();
-			var date = new SchedulerAjaxData(allBookings.Select(e => new { e.Id, e.Court.Name, e.StartDate, e.EndDate }));
+			var date = new SchedulerAjaxData(allBookings
+				.Select(e => new
+				{
+					id = e.Id,
+					text = e.Court.Name,
+					start_date = e.StartDate,
+					end_date = e.EndDate,
+					court = e.Court.Id
+				}));
 			return date;
 		}
 
@@ -50,7 +58,7 @@ namespace SportGround.Web.Controllers
 				},
 				Court = new CourtModel()
 				{
-					Id = id ?? 1
+					Id = Convert.ToInt32(actionValues["court"])
 				},
 				StartDate = Convert.ToDateTime(actionValues["start_date"]),
 				EndDate = Convert.ToDateTime(actionValues["end_date"])
@@ -60,6 +68,7 @@ namespace SportGround.Web.Controllers
 				switch (action.Type)
 				{
 					case DataActionTypes.Insert:
+						changedBooking.Court.Id = 1;  /// bed place if i must fix
 						_bookingServices.Create(changedBooking);
 						break;
 					case DataActionTypes.Delete:

@@ -92,7 +92,7 @@ namespace SportGround.Web.Controllers
 			        .GetUserByEmail(user.Email);
 		        var identity = new ClaimsIdentity(new[] {
 				        new Claim("Id", user.Id.ToString()),
-				        new Claim(ClaimTypes.Email, newUser.Email),
+						new Claim(ClaimTypes.Email, newUser.Email),
 				        new Claim(ClaimTypes.Name, newUser.FirstName),
 				        new Claim(ClaimTypes.Role, newUser.Role.ToString())
 			        },

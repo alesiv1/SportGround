@@ -41,55 +41,6 @@ namespace SportGround.Web.Controllers
 		}
 
 		[Authorize]
-		public ActionResult BookingCourt(int courtId)
-		{
-			var userId = -1;
-			try
-			{
-				userId = Int32.Parse(((ClaimsIdentity) this.User.Identity).FindFirstValue("Id"));
-			}
-			catch
-			{
-				return RedirectToAction("Index", "Court");
-			}
-			var user = _userServices.GetUserById(userId);
-			var court = _courtServices.GetCourtById(courtId);
-			var availableDateTime = _bookingServices.GetAllAvailableDataTime(court.Id);
-			if (availableDateTime.Count < 1)
-			{
-				return RedirectToAction("Index", "Court");
-			}
-			List<string> availableDate = new List<string>();
-			foreach (var date in availableDateTime)
-			{
-				availableDate.Add(date.Date.ToString("yyyy-M-d dddd"));
-			}
-			CreateCourtBookingModel booking = new CreateCourtBookingModel()
-			{
-				User = user,
-				Court = court,
-				AvailableDate = availableDate
-			};
-			return View(booking);
-		}
-
-		[Authorize]
-		[HttpPost]
-		public ActionResult BookingCourt(CreateCourtBookingModel model)
-        {
-			CourtBookingModel booking = new CourtBookingModel()
-	        {
-				Id = model.Id,
-				User = model.User,
-				Court = model.Court,
-				StartDate = Convert.ToDateTime(model.AvailableDate.FirstOrDefault()),
-				EndDate = Convert.ToDateTime(model.AvailableDate.FirstOrDefault()),
-			};
-	        _bookingServices.Create(booking);
-	        return RedirectToAction("Index", "Court");
-        }
-
-		[Authorize]
 		public ActionResult DeclineBookingCourt(int id)
 		{
 			var booking = _bookingServices.GetCourtBookingById(id);

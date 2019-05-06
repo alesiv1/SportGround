@@ -455,7 +455,6 @@
     <Content Include="Views\CourtWorkingDays\Edit.cshtml" />
     <Content Include="Views\CourtBooking\Index.cshtml" />
     <Content Include="Views\CourtBooking\DeclineBookingCourt.cshtml" />
-    <Content Include="Views\CourtBooking\BookingCourt.cshtml" />
     <Content Include="Views\CourtWorkingDays\Create.cshtml" />
     <Content Include="Views\CourtWorkingDays\Delete.cshtml" />
     <Content Include="Views\CourtWorkingDays\Details.cshtml" />
@@ -508,6 +507,8 @@
           <DevelopmentServerPort>9095</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/SportGround.Web</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:2630/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

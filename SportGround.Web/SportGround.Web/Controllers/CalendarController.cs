@@ -14,22 +14,27 @@ namespace SportGround.Web.Controllers
     public class CalendarController : Controller
     {
 	    private IBookingService _bookingServices;
+	    private ICourtService _courtServices;
+	    private static int activeCourtId = -1;
 
-	    public CalendarController(IBookingService bookingServices)
+		public CalendarController(IBookingService bookingServices, ICourtService services)
 	    {
 		    _bookingServices = bookingServices;
-	    }
+		    _courtServices = services;
+		}
 
-		public ActionResult Index()
+		public ActionResult Index(int? courtId)
 	    {
+			if(courtId != null) SetCourtId(courtId);
 		    var dateTimeNow = DateTime.Now;
 		    var sched = new DHXScheduler(this);
 		    sched.Skin = DHXScheduler.Skins.Flat;
 		    sched.LoadData = true;
 		    sched.EnableDataprocessor = true;
 		    sched.InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day);
+		    var data = sched.InitialValues.Values;
 		    return View(sched);
-	    }
+		}
 
 		public ContentResult Data()
 		{
@@ -68,7 +73,11 @@ namespace SportGround.Web.Controllers
 				switch (action.Type)
 				{
 					case DataActionTypes.Insert:
-						changedBooking.Court.Id = 1;  /// bed place if i must fix
+						if (!IsCourt(activeCourtId))
+						{
+							throw new Exception("You cant book unknow court");
+						}
+						changedBooking.Court.Id = activeCourtId;
 						_bookingServices.Create(changedBooking);
 						break;
 					case DataActionTypes.Delete:
@@ -82,9 +91,20 @@ namespace SportGround.Web.Controllers
 			}
 			catch (Exception a)
 			{
-				action.Type = DataActionTypes.Error;
+				action.Type = DataActionTypes.Error; 
 			}
 			return (new AjaxSaveResponse(action));
+		}
+
+		private void SetCourtId(int? courtId)
+		{
+			var isCourt = IsCourt(courtId);
+				activeCourtId = isCourt ? (courtId ?? -1 ) : -1;
+		}
+
+		private bool IsCourt(int? courtId)
+		{
+			return courtId != -1 ? _courtServices.GetCourtList().Any(c => c.Id == courtId) : false;
 		}
 	}
 }

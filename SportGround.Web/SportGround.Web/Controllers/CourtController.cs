@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using FluentValidation.Results;
 using SportGround.BusinessLogic.Interfaces;
@@ -11,20 +12,22 @@ namespace SportGround.Web.Controllers
     {
 		private ICourtService _courtServices;
 		private IBookingService _bookingServices;
+		private ICourtWorkingDaysService _courtWorkingDaysServices;
 		private CourtValidation courtValid = new CourtValidation();
 
-		public CourtController(ICourtService services, IBookingService bookingServices)
+		public CourtController(ICourtService services, IBookingService bookingServices, ICourtWorkingDaysService servicesDays)
 	    {
 		    _courtServices = services;
 		    _bookingServices = bookingServices;
-	    }
+		    _courtWorkingDaysServices = servicesDays;
+		}
 
 		[Authorize]
 		[Route("Court")]
 		public ActionResult Index()
 		{
 			var allCourt = _courtServices.GetCourtList();
-			allCourt.ForEach(canbook => canbook.CanBooking = _bookingServices.GetAllAvailableDataTime(canbook.Id).Count > 0);
+			allCourt.ForEach(court => court.CanBooking = _courtWorkingDaysServices.GetWorkingDaysForCourt(court.Id).Count > 0);
 			return View(allCourt);
         }
 

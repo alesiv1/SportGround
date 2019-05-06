@@ -11,7 +11,6 @@ namespace SportGround.BusinessLogic.Interfaces
 		void Create(CourtBookingModel model);
 		void Update(long id, CourtBookingModel model);
 		void Delete(long id);
-		List<DateTimeOffset> GetAllAvailableDataTime(int courtId);
 		List<CourtBookingModel> GetAllUserBooking(int userId);
 	}
 }

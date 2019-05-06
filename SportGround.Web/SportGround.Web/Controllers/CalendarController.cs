@@ -3,10 +3,12 @@ using DHTMLX.Scheduler;
 using DHTMLX.Scheduler.Data;
 using SportGround.BusinessLogic.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
+using DHTMLX.Scheduler.Controls;
 using Microsoft.AspNet.Identity;
 
 namespace SportGround.Web.Controllers
@@ -15,13 +17,15 @@ namespace SportGround.Web.Controllers
     {
 	    private IBookingService _bookingServices;
 	    private ICourtService _courtServices;
-	    private static int activeCourtId = -1;
+	    private ICourtWorkingDaysService _courtWorkingDaysServices;
+		private static int activeCourtId = -1;
 
-		public CalendarController(IBookingService bookingServices, ICourtService services)
+		public CalendarController(IBookingService bookingServices, ICourtService services, ICourtWorkingDaysService courtWorkingDaysServices)
 	    {
 		    _bookingServices = bookingServices;
 		    _courtServices = services;
-		}
+		    _courtWorkingDaysServices = courtWorkingDaysServices;
+	    }
 
 		public ActionResult Index(int? courtId)
 	    {
@@ -32,7 +36,6 @@ namespace SportGround.Web.Controllers
 		    sched.LoadData = true;
 		    sched.EnableDataprocessor = true;
 		    sched.InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day);
-		    var data = sched.InitialValues.Values;
 		    return View(sched);
 		}
 
@@ -53,8 +56,11 @@ namespace SportGround.Web.Controllers
 
 		public ContentResult Save(int? id, FormCollection actionValues)
 		{
+			var courtId = String.IsNullOrEmpty(actionValues["court"])
+				? activeCourtId
+				: Convert.ToInt32(actionValues["court"]);
 			var action = new DataAction(actionValues);
-			var changedBooking = new CourtBookingModel()
+			var booking = new CourtBookingModel()
 			{
 				Id = Convert.ToInt64(actionValues["id"]),
 				User = new UserModel()
@@ -63,13 +69,19 @@ namespace SportGround.Web.Controllers
 				},
 				Court = new CourtModel()
 				{
-					Id = Convert.ToInt32(actionValues["court"])
+					Id = courtId
 				},
 				StartDate = Convert.ToDateTime(actionValues["start_date"]),
 				EndDate = Convert.ToDateTime(actionValues["end_date"])
 			};
 			try
 			{
+				//var dayOfBook = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId)
+				//	.FirstOrDefault(day => day.StartTime.Day == booking.StartDate.Day);
+				//if (dayOfBook == null || booking.StartDate < dayOfBook.StartTime || booking.EndDate > dayOfBook.EndTime)
+				//{
+				//	throw new Exception("You cant book court in this time");
+				//}
 				switch (action.Type)
 				{
 					case DataActionTypes.Insert:
@@ -77,21 +89,20 @@ namespace SportGround.Web.Controllers
 						{
 							throw new Exception("You cant book unknow court");
 						}
-						changedBooking.Court.Id = activeCourtId;
-						_bookingServices.Create(changedBooking);
+						_bookingServices.Create(booking);
 						break;
 					case DataActionTypes.Delete:
-						_bookingServices.Delete(changedBooking.Id);
+						_bookingServices.Delete(booking.Id);
 						break;
 					default:
-						_bookingServices.Update(changedBooking.Id, changedBooking);
+						_bookingServices.Update(booking.Id, booking);
 						break;
 				}
 				action.TargetId = Convert.ToInt64(actionValues["id"]);
 			}
 			catch (Exception a)
 			{
-				action.Type = DataActionTypes.Error; 
+				action.Type = DataActionTypes.Error;
 			}
 			return (new AjaxSaveResponse(action));
 		}

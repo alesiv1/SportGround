@@ -59,40 +59,6 @@ namespace SportGround.BusinessLogic.Operations
 			return bookingList;
 		}
 
-		public List<DateTimeOffset> GetAllAvailableDataTime(int courtId)
-		{
-			var dateNow = DateTimeOffset.UtcNow;
-			List<DateTimeOffset> allAvailableDataTime = new List<DateTimeOffset>();
-			List<CourtWorkingDaysEntity> courtsWithWorkingHours = _courtRepository
-				.GetCourtById(courtId).WorkingDays;
-			if (courtsWithWorkingHours.Count > 0)
-			{
-				foreach (var data in courtsWithWorkingHours)
-				{
-					var add_Days = (int) data.Day < (int) dateNow.Day
-						? 7 - ((int) dateNow.Day - (int) data.Day)
-						: (int) data.Day - (int) dateNow.Day;
-					var date = DateTimeOffset.Now.AddDays(add_Days).Date;
-					allAvailableDataTime.Add(date);
-					for (int i = 1; i < 4; i++)
-					{
-						allAvailableDataTime.Add(date.AddDays(7 * i));
-					}
-				}
-			}
-			else return allAvailableDataTime;
-
-			var bookedCourtDate = _bookingRepository
-				.GetCourtBookings()
-				.Select(x => x.StartDate)
-				.ToList();
-			allAvailableDataTime = allAvailableDataTime
-				.FindAll(x => !bookedCourtDate.Contains(x.Date) && x.Date >= dateNow.Date)
-				.OrderBy(date => date.Date)
-				.ToList();
-			return allAvailableDataTime;
-		}
-
 		public CourtBookingModel GetCourtBookingById(long id)
 		{
 			var booking = _bookingRepository

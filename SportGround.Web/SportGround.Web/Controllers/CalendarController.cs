@@ -3,12 +3,10 @@ using DHTMLX.Scheduler;
 using DHTMLX.Scheduler.Data;
 using SportGround.BusinessLogic.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
-using DHTMLX.Scheduler.Controls;
 using Microsoft.AspNet.Identity;
 
 namespace SportGround.Web.Controllers
@@ -36,12 +34,19 @@ namespace SportGround.Web.Controllers
 		    sched.LoadData = true;
 		    sched.EnableDataprocessor = true;
 		    sched.InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day);
-		    return View(sched);
+		    sched.Extensions.Add(SchedulerExtensions.Extension.Collision);
+		    sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
+		    sched.Config.first_hour = 8;
+		    sched.Config.last_hour = 21;
+		    sched.LoadData = true;
+		    sched.PreventCache();
+			return View(sched);
 		}
 
 		public ContentResult Data()
 		{
-			var allBookings = _bookingServices.GetBookingList().ToList();
+			var userId = Int32.Parse(((ClaimsIdentity) this.User.Identity).FindFirstValue("Id"));
+			var allBookings = _bookingServices.GetBookingList().Where(book => book.User.Id == userId).ToList();
 			var date = new SchedulerAjaxData(allBookings
 				.Select(e => new
 				{

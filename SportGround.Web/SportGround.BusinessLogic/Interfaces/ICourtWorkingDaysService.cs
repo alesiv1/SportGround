@@ -11,7 +11,7 @@ namespace SportGround.BusinessLogic.Interfaces
 		List<CourtWorkingDaysModel> GetWorkingDaysList();
 		void Create(int courtId, CourtWorkingDaysModel model);
 		void Update(int id, CourtWorkingDaysModel model);
-		void DeleteCourt(int id);
+		void DeleteWorkingDays(int id);
 		List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId);
 		List<DaysOfTheWeek> GetAllAvailableDays(int courtId);
 	}

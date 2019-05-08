@@ -5,13 +5,12 @@ using SportGround.BusinessLogic.Models;
 using SportGround.Data.Interfaces;
 using SportGround.Data.entities;
 using SportGround.Data.Enums;
-using SportGround.Helpers;
+using SportGround.Core;
 
 namespace SportGround.BusinessLogic.Operations
 {
 	public class UserService : IUserService
 	{
-		private readonly string ProjectKey = "SportGround";
 		private IUserRepository _userRepository;
 		private ICourtBookingRepository _bookingRepository;
 		private HashingHelper hashHelper = new HashingHelper();

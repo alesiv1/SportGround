@@ -6,7 +6,7 @@ namespace SportGround.BusinessLogic.Models
 {
 	public class BaseCourtBookingModel
 	{
-		public int Id { get; set; }
+		public long Id { get; set; }
 		[Required]
 		public UserModel User { get; set; }
 		[Required]
@@ -17,7 +17,11 @@ namespace SportGround.BusinessLogic.Models
 	{
 		[Required]
 		[DataType(DataType.DateTime)]
-		public DateTimeOffset Date { get; set; }
+		public DateTimeOffset StartDate { get; set; }
+
+		[Required]
+		[DataType(DataType.DateTime)]
+		public DateTimeOffset EndDate { get; set; }
 
 		public string DateInString { get; set; }
 		public bool IsActive { get; set; }

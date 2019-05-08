@@ -46,9 +46,19 @@
     <div>
         @if (this.User.IsInRole("Admin"))
         {
+            <a href="@Url.Action("ChangeRole", "User", new {id = Model.Id})" class="btn btn-primary fa fa-pencil">
+                <span>
+                    <strong>Change role</strong>
+                </span>
+            </a>
             <a href="@Url.Action("ResetPassword", "User", new {id = Model.Id})" class="btn btn-primary fa fa-pencil">
                 <span>
                     <strong>Reset password</strong>
+                </span>
+            </a>
+            <a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil">
+                <span>
+                    <strong>Back to List</strong>
                 </span>
             </a>
         }
@@ -59,17 +69,9 @@
                     <strong>Reset password</strong>
                 </span>
             </a>
-        }
-        <a href="@Url.Action("Index", "User")" class="btn btn-primary fa fa-pencil">
-            <span>
-                <strong>Back to List</strong>
-            </span>
-        </a>
-        @if (this.User.IsInRole("Admin"))
-        {
-            <a href="@Url.Action("ChangeRole", "User", new {id = Model.Id})" class="btn btn-primary fa fa-pencil">
+            <a href="@Url.Action("Profile", "User")" class="btn btn-primary fa fa-pencil">
                 <span>
-                    <strong>Change role</strong>
+                    <strong>Back to Profile</strong>
                 </span>
             </a>
         }

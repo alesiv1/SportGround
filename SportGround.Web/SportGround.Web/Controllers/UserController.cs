@@ -4,19 +4,31 @@ using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using FluentValidation.Results;
+using SportGround.BusinessLogic.Validations;
 
 namespace SportGround.Web.Controllers
 {
     public class UserController : Controller
     {
 	    private IUserService _userServices;
+	    private UserValidation userValid = new UserValidation();
+	    private UserWithRoleValidation userwithRoleValid = new UserWithRoleValidation();
 
-	    public UserController(IUserService services)
+		public UserController(IUserService services)
 	    {
 		    _userServices = services;
 	    }
 
 		[Authorize]
+		[Route("Profile")]
+		public ActionResult Profile()
+		{
+			var user = _userServices.GetUserById(GetIdForAuthorizedUser());
+			return View(user);
+		}
+
+		[Authorize(Roles = "Admin")]
 		[Route("Users")]
 		public ActionResult Index()
 		{
@@ -24,7 +36,7 @@ namespace SportGround.Web.Controllers
 			return View(users);
 		}
 
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Details(int id)
 		{
 			var user = _userServices.GetUserById(id);
@@ -44,6 +56,15 @@ namespace SportGround.Web.Controllers
 			if (!ModelState.IsValid)
 			{
 				return View();
+			}
+			var validationResult = userwithRoleValid.Validate(user);
+			if (!validationResult.IsValid)
+			{
+				foreach (ValidationFailure data in validationResult.Errors)
+				{
+					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+				}
+				return View(user);
 			}
 			if (_userServices.UserExists(user.Email))
 			{
@@ -80,6 +101,15 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
+			var validationResult = userValid.Validate(user);
+			if (!validationResult.IsValid)
+			{
+				foreach (ValidationFailure data in validationResult.Errors)
+				{
+					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+				}
+				return View(user);
+			}
 			var userEmail = _userServices.GetUserById(id)?.Email;
 			if (_userServices.UserExists(user.Email) && userEmail != user.Email)
 			{
@@ -87,7 +117,7 @@ namespace SportGround.Web.Controllers
 				return View(user);
 			}
 			_userServices.Update(id, user);
-			return RedirectToAction("Index");
+			return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
 		}
 
 		[Authorize]
@@ -122,8 +152,8 @@ namespace SportGround.Web.Controllers
 						return RedirectToAction("LogOut", "Authorisation");
 					}
 				}
-				return RedirectToAction("Index");
-	        }
+				return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
+			}
 	        catch
 	        {
 		        return View();
@@ -159,8 +189,8 @@ namespace SportGround.Web.Controllers
 			try
 	        {		        
 		        _userServices.Update(id, user);
-		        return RedirectToAction("Index");
-	        }
+		        return this.User.IsInRole("Admin") ? RedirectToAction("Index") : RedirectToAction("Profile");
+			}
 	        catch
 	        {
 		        return View();

@@ -6,12 +6,12 @@ namespace SportGround.Data.Interfaces
 {
 	public interface ICourtBookingRepository
 	{
-		void Add(DateTimeOffset date, int courtId, int userId);
-		void Delete(int id);
+		void Add(DateTimeOffset startDate, DateTimeOffset EndDate, int courtId, int userId);
+		void Delete(long id);
 		void DeleteRangeByUserId(int userId);
 		void DeleteRangeByCourtId(int courtId);
 		IReadOnlyList<CourtBookingEntity> GetCourtBookings();
-		CourtBookingEntity GetCourtBookingById(int id);
-		void Update(int id, DateTimeOffset date);
+		CourtBookingEntity GetCourtBookingById(long id);
+		void Update(long id, DateTimeOffset startDate, DateTimeOffset EndDate);
 	}
 }

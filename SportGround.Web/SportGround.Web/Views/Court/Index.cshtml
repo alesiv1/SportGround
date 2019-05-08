@@ -46,7 +46,7 @@
         @if (item.CanBooking)
         { 
         <td>
-            <a href="@Url.Action("BookingCourt", "CourtBooking", new {courtId = item.Id})" class="btn btn-primary">
+            <a href="@Url.Action("Index", "Calendar", new {courtId = item.Id})" class="btn btn-primary">
                 <span>
                     <strong>Booking this court</strong>
                 </span>

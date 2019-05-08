@@ -92,7 +92,7 @@ namespace SportGround.Web.Controllers
 			        .GetUserByEmail(user.Email);
 		        var identity = new ClaimsIdentity(new[] {
 				        new Claim("Id", user.Id.ToString()),
-				        new Claim(ClaimTypes.Email, newUser.Email),
+						new Claim(ClaimTypes.Email, newUser.Email),
 				        new Claim(ClaimTypes.Name, newUser.FirstName),
 				        new Claim(ClaimTypes.Role, newUser.Role.ToString())
 			        },
@@ -112,7 +112,14 @@ namespace SportGround.Web.Controllers
         {
 	        if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
 	        {
-		        return Url.Action("Index", "User");
+		        if (this.User.IsInRole("Admin"))
+		        {
+			        return Url.Action("Index", "User");
+				}
+		        else
+		        {
+			        return Url.Action("Profile", "User");
+				}
 	        }
 	        return returnUrl;
         }

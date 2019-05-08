@@ -92,6 +92,14 @@
     <Compile Include="Migrations\201904121352580_ChangeDataBase.Designer.cs">
       <DependentUpon>201904121352580_ChangeDataBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905021016108_ChangeBookingTable.cs" />
+    <Compile Include="Migrations\201905021016108_ChangeBookingTable.Designer.cs">
+      <DependentUpon>201905021016108_ChangeBookingTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905021357289_MakeIdInLongTimeForBooking.cs" />
+    <Compile Include="Migrations\201905021357289_MakeIdInLongTimeForBooking.Designer.cs">
+      <DependentUpon>201905021357289_MakeIdInLongTimeForBooking.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\CourtBookingRepository.cs" />
@@ -118,6 +126,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904121352580_ChangeDataBase.resx">
       <DependentUpon>201904121352580_ChangeDataBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905021016108_ChangeBookingTable.resx">
+      <DependentUpon>201905021016108_ChangeBookingTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905021357289_MakeIdInLongTimeForBooking.resx">
+      <DependentUpon>201905021357289_MakeIdInLongTimeForBooking.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

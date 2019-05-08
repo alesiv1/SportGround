@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
+using FluentValidation.Results;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
+using SportGround.BusinessLogic.Validations;
 
 namespace SportGround.Web.Controllers
 {
@@ -9,19 +12,22 @@ namespace SportGround.Web.Controllers
     {
 		private ICourtService _courtServices;
 		private IBookingService _bookingServices;
+		private ICourtWorkingDaysService _courtWorkingDaysServices;
+		private CourtValidation courtValid = new CourtValidation();
 
-		public CourtController(ICourtService services, IBookingService bookingServices)
+		public CourtController(ICourtService services, IBookingService bookingServices, ICourtWorkingDaysService servicesDays)
 	    {
 		    _courtServices = services;
 		    _bookingServices = bookingServices;
-	    }
+		    _courtWorkingDaysServices = servicesDays;
+		}
 
 		[Authorize]
 		[Route("Court")]
 		public ActionResult Index()
 		{
 			var allCourt = _courtServices.GetCourtList();
-			allCourt.ForEach(canbook => canbook.CanBooking = _bookingServices.GetAllAvailableDataTime(canbook.Id).Count > 0);
+			allCourt.ForEach(court => court.CanBooking = _courtWorkingDaysServices.GetWorkingDaysForCourt(court.Id).Count > 0);
 			return View(allCourt);
         }
 
@@ -46,12 +52,16 @@ namespace SportGround.Web.Controllers
 	        {
 		        return View();
 	        }
-	        if (String.IsNullOrEmpty(court.Name))
+	        var validationResult = courtValid.Validate(court);
+	        if (!validationResult.IsValid)
 	        {
-		        ModelState.AddModelError("Name", "Field Name can't be null!");
-		        return View();
+		        foreach (ValidationFailure data in validationResult.Errors)
+		        {
+			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+		        }
+		        return View(court);
 	        }
-	        if (_courtServices.CourtExists(court.Name))
+			if (_courtServices.CourtExists(court.Name))
 			{
 				ModelState.AddModelError("Name", "Court with name " + court.Name + "  already exists!");
 				return View();
@@ -74,6 +84,15 @@ namespace SportGround.Web.Controllers
 			if (!ModelState.IsValid)
 			{
 				return View();
+			}
+			var validationResult = courtValid.Validate(court);
+			if (!validationResult.IsValid)
+			{
+				foreach (ValidationFailure data in validationResult.Errors)
+				{
+					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
+				}
+				return View(court);
 			}
 			_courtServices.Update(id, court);
 			return RedirectToAction("Index");

@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar</title>
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+<div style=" height:100%; width:100%; margin:0 auto;">
+    @Html.Raw(Model.Render())
+</div>
+</body>
+</html>

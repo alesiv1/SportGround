@@ -6,12 +6,11 @@ namespace SportGround.BusinessLogic.Interfaces
 {
 	public interface IBookingService
 	{
-		CourtBookingModel GetCourtBookingById(int id);
+		CourtBookingModel GetCourtBookingById(long id);
 		List<CourtBookingModel> GetBookingList();
 		void Create(CourtBookingModel model);
-		void Update(int id, CourtBookingModel model);
-		void Delete(int id);
-		List<DateTimeOffset> GetAllAvailableDataTime(int courtId);
+		void Update(long id, CourtBookingModel model);
+		void Delete(long id);
 		List<CourtBookingModel> GetAllUserBooking(int userId);
 	}
 }

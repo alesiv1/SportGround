@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
@@ -24,7 +25,8 @@ namespace SportGround.Web.Controllers
 		public ActionResult Index(int courtId)
 		{
 			var allHours = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
-			var isAvaAvailableDays = _courtWorkingDaysServices.GetAllAvailableDays(courtId).Count > 0;
+			//var isAvaAvailableDays = _courtWorkingDaysServices.GetAllAvailableDays(courtId).Count > 0;
+			var isAvaAvailableDays = allHours.Count < 1;
 			CourtWithWorkingDaysModel courtWithWorkingHours = new CourtWithWorkingDaysModel()
 			{
 				Id = courtId,
@@ -46,7 +48,8 @@ namespace SportGround.Web.Controllers
 		public ActionResult Create(int courtId)
 		{
 			var court = _courtServices.GetCourtById(courtId);
-			var days = _courtWorkingDaysServices.GetAllAvailableDays(courtId);
+			//var days = _courtWorkingDaysServices.GetAllAvailableDays(courtId);
+			var days = new List<DaysOfTheWeek>(){ DaysOfTheWeek.Monday};
 			if (days.Count < 1)
 			{
 				return View("Index", new { courtId});

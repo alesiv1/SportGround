@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 
 namespace SportGround.BusinessLogic.Operations

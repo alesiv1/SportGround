@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using FluentValidation.Results;
 using SportGround.BusinessLogic.Interfaces;
@@ -27,7 +26,6 @@ namespace SportGround.Web.Controllers
 		public ActionResult Index()
 		{
 			var allCourt = _courtServices.GetCourtList();
-			allCourt.ForEach(court => court.CanBooking = _courtWorkingDaysServices.GetWorkingDaysForCourt(court.Id).Count > 0);
 			return View(allCourt);
         }
 

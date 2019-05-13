@@ -13,7 +13,7 @@ namespace SportGround.Web.Controllers
     {
 	    private IUserService _userServices;
 	    private UserValidation userValid = new UserValidation();
-	    private UserWithRoleValidation userwithRoleValid = new UserWithRoleValidation();
+	    private UserWithPasswordValidation userwithRoleValid = new UserWithPasswordValidation();
 
 		public UserController(IUserService services)
 	    {
@@ -221,13 +221,14 @@ namespace SportGround.Web.Controllers
 
         private int GetIdForAuthorizedUser()
         {
-	        var id = -1;
 	        try
 	        {
-		        id = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
-			}
-			catch { }
-			return id;
+		        return Int32.Parse(((ClaimsIdentity) this.User.Identity).FindFirstValue("Id"));
+	        }
+	        catch
+	        {
+		        return -1;
+	        }
         }
 	}
 }

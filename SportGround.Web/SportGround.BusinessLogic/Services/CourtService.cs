@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Enums;
@@ -100,7 +99,7 @@ namespace SportGround.BusinessLogic.Operations
 
 		public CourtWorkingDaysModel GetWorkingDay(int id)
 		{
-			var workingDay = _courtWorkingDaysRepository.GetCourtWorkingDayById(id);
+			var workingDay = _courtWorkingDaysRepository.GetWorkingDayById(id);
 			return new CourtWorkingDaysModel()
 			{
 				Id = workingDay.Id,
@@ -117,14 +116,14 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, CourtWorkingDaysModel model)
 		{
-			_courtWorkingDaysRepository.Update(id, model.Day, model.StartTime, model.EndTime);
+			_courtWorkingDaysRepository.Update(id, (DaysOfTheWeek) model.StartTime.Day, model.StartTime, model.EndTime);
 		}
 
 		public List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId)
 		{
 			var workingDays = new List<CourtWorkingDaysModel>();
-			var court = _courtRepository.GetCourtById(courtId);
-			foreach (var workingDay in court.WorkingDays)
+			var courtWorkingDays = _courtRepository.GetCourtById(courtId).WorkingDays;
+			foreach (var workingDay in courtWorkingDays)
 			{
 				workingDays.Add(new CourtWorkingDaysModel()
 				{
@@ -140,24 +139,6 @@ namespace SportGround.BusinessLogic.Operations
 				});
 			}
 			return workingDays;
-		}
-
-		public List<DaysOfTheWeek> GetAllAvailableDays(int courtId)
-		{
-			var useDays = GetWorkingDaysForCourt(courtId)
-				.Select(x => x.Day);
-			var daysOfTheWeeks = new List<DaysOfTheWeek>()
-			{
-				DaysOfTheWeek.Sunday,
-				DaysOfTheWeek.Monday,
-				DaysOfTheWeek.Tuesday,
-				DaysOfTheWeek.Wednesday,
-				DaysOfTheWeek.Thursday,
-				DaysOfTheWeek.Friday,
-				DaysOfTheWeek.Saturday
-			};
-			return daysOfTheWeeks
-				.FindAll(x => !useDays.Contains(x));
 		}
 	}
 }

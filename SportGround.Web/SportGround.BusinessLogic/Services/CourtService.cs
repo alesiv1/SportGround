@@ -116,7 +116,7 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Update(int id, CourtWorkingDaysModel model)
 		{
-			_courtWorkingDaysRepository.Update(id, (DaysOfTheWeek) model.StartTime.Day, model.StartTime, model.EndTime);
+			_courtWorkingDaysRepository.Update(id, (DaysOfTheWeek) model.StartTime.DayOfWeek, model.StartTime, model.EndTime);
 		}
 
 		public List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId)

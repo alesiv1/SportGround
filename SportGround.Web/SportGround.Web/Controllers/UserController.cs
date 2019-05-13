@@ -22,7 +22,7 @@ namespace SportGround.Web.Controllers
 
 		[Authorize]
 		[Route("Profile")]
-		public ActionResult Profile()
+		public new ActionResult Profile()
 		{
 			var user = _userServices.GetUserById(GetIdForAuthorizedUser());
 			return View(user);

@@ -50,7 +50,7 @@ namespace SportGround.Data.Repositories
 			return _context.CourtWorkingDays.ToList();
 		}
 
-		public CourtWorkingDaysEntity GetCourtWorkingDayById(int id)
+		public CourtWorkingDaysEntity GetWorkingDayById(int id)
 		{
 			return _context.CourtWorkingDays.Find(id);
 		}

@@ -13,7 +13,7 @@ namespace SportGround.BusinessLogic.Operations
 	{
 		private IUserRepository _userRepository;
 		private ICourtBookingRepository _bookingRepository;
-		private HashingHelper hashHelper = new HashingHelper();
+		private PasswordHashingHelper PasswordHashHelper = new PasswordHashingHelper();
 
 		public UserService(IUserRepository userRepository, ICourtBookingRepository bookingRepository)
 		{
@@ -23,15 +23,15 @@ namespace SportGround.BusinessLogic.Operations
 
 		public void Create(UserModelWithPassword model)
 		{
-			var salt = hashHelper.CreateSaltForPasscode(); 
-			var passcode = hashHelper.GetCodeForPassword(model.Password, salt);
+			var salt = PasswordHashHelper.CreateSaltForPasscode(); 
+			var passcode = PasswordHashHelper.GetCodeForPassword(model.Password, salt);
 			_userRepository.Add(model.FirstName, model.LastName, model.Email, UserRole.User, passcode, salt);
 		}
 
 		public void CreateDefaultUser()
 		{
-			var salt = hashHelper.CreateSaltForPasscode();
-			var passcode = hashHelper.GetCodeForPassword("admin1", salt);
+			var salt = PasswordHashHelper.CreateSaltForPasscode();
+			var passcode = PasswordHashHelper.GetCodeForPassword("admin1", salt);
 			_userRepository.Add("Admin", "Admin", "admin@admin.com", UserRole.Admin, passcode, salt);
 		}
 
@@ -110,18 +110,18 @@ namespace SportGround.BusinessLogic.Operations
 		public void Update(int id, UserModelWithPassword model)
 		{
 			var salt = _userRepository.GetUserById(id).Salt;
-			var password = hashHelper.GetCodeForPassword(model.Password, salt);
+			var password = PasswordHashHelper.GetCodeForPassword(model.Password, salt);
 			_userRepository.Update(id, password);
 		}
 
 		public string GetPasswordHashCode(string password, string salt)
 		{
-			return hashHelper.GetCodeForPassword(password, salt);
+			return PasswordHashHelper.GetCodeForPassword(password, salt);
 		}
 
 		private string GetDecodePassword(string password, string salt)
 		{
-			return hashHelper.GetPasswordByDecode(password, salt);
+			return PasswordHashHelper.GetPasswordByDecode(password, salt);
 		}
 	}
 }

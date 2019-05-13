@@ -17,9 +17,9 @@ namespace SportGround.BusinessLogic.Validations
 		}
 	}
 
-	public class UserWithRoleValidation : AbstractValidator<UserModelWithPassword>
+	public class UserWithPasswordValidation : AbstractValidator<UserModelWithPassword>
 	{
-		public UserWithRoleValidation()
+		public UserWithPasswordValidation()
 		{
 			RuleFor(x => x.FirstName).Length(3, 50).WithMessage("First name must have more 3 and less 50 characters!");
 			RuleFor(x => x.LastName).Length(3, 50).WithMessage("Lust name must have more 3 and less 50 characters!");

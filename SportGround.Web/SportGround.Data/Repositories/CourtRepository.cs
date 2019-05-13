@@ -3,7 +3,6 @@ using SportGround.Data.Context;
 using SportGround.Data.Entities;
 using SportGround.Data.Interfaces;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace SportGround.Data.Repositories

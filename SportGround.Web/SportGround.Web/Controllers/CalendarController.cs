@@ -44,12 +44,12 @@ namespace SportGround.Web.Controllers
 				sched.EnableDataprocessor = true;
 			else
 				sched.Config.isReadonly = true;
-			sched.LoadData = true;
 			sched.Extensions.Add(SchedulerExtensions.Extension.Collision);
 		    sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
 		    sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
 		    sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
 		    sched.PreventCache();
+		    sched.LoadData = true;
 			return View(sched);
 		}
 

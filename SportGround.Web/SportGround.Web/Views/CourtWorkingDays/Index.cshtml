@@ -1,6 +1,6 @@
 ﻿@using WebGrease.Css.Extensions
 @model SportGround.BusinessLogic.Models.CourtWithWorkingDaysModel
-@if(@Model.IsAvailableDays && this.User.IsInRole("Admin"))
+@if(@Model.IsWorkingDays && this.User.IsInRole("Admin"))
 {
     <td>
         <a href="@Url.Action("Create", "CourtWorkingDays", new {courtId = Model.Id})" class="btn btn-primary">
@@ -24,7 +24,7 @@
         <th>Actions</th>
     </tr>
 
-    @foreach (var item in @Model.AllWorkingHours )
+    @foreach (var item in @Model.AllWorkingDays)
     {
         <tr>
             <td>

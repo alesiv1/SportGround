@@ -11,7 +11,7 @@ namespace SportGround.Data.Interfaces
 		void Delete(int id);
 		void DeleteRangeByCourtId(int courtId);
 		IReadOnlyList<CourtWorkingDaysEntity> GetWorkingDays();
-		CourtWorkingDaysEntity GetCourtWorkingDayById(int id);
+		CourtWorkingDaysEntity GetWorkingDayById(int id);
 		void Update(int id, DaysOfTheWeek day, DateTimeOffset startTime, DateTimeOffset endTime);
 	}
 }

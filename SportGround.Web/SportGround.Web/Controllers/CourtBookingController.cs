@@ -1,6 +1,5 @@
 ﻿using SportGround.BusinessLogic.Interfaces;
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using System.Security.Claims;
 using SportGround.BusinessLogic.Models;
@@ -25,12 +24,7 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index()
 		{
-			var userId = -1;
-			try
-			{
-				userId = Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
-			}
-			catch { }
+			var userId = GetIdForAuthorizedUser();
 			if (userId != -1)
 			{
 				var allUserBookings = new List<CourtBookingModel>();
@@ -59,6 +53,18 @@ namespace SportGround.Web.Controllers
 			catch
 			{
 				return View();
+			}
+		}
+
+		private int GetIdForAuthorizedUser()
+		{
+			try
+			{
+				return Int32.Parse(((ClaimsIdentity)this.User.Identity).FindFirstValue("Id"));
+			}
+			catch
+			{
+				return -1;
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
@@ -23,14 +24,14 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allHours = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
-			var isAvaAvailableDays = _courtWorkingDaysServices.GetAllAvailableDays(courtId).Count > 0;
+			var allDays = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
+			var isWorkingDays = allDays.Count < 1;
 			CourtWithWorkingDaysModel courtWithWorkingHours = new CourtWithWorkingDaysModel()
 			{
 				Id = courtId,
 				Name = _courtServices.GetCourtById(courtId).Name,
-				AllWorkingHours = allHours,
-				IsAvailableDays = isAvaAvailableDays
+				AllWorkingDays = allDays,
+				IsWorkingDays = isWorkingDays
 			};
 			return View(courtWithWorkingHours);
 		}
@@ -46,7 +47,7 @@ namespace SportGround.Web.Controllers
 		public ActionResult Create(int courtId)
 		{
 			var court = _courtServices.GetCourtById(courtId);
-			var days = _courtWorkingDaysServices.GetAllAvailableDays(courtId);
+			var days = new List<DaysOfTheWeek>(){ DaysOfTheWeek.Monday};
 			if (days.Count < 1)
 			{
 				return View("Index", new { courtId});
@@ -55,7 +56,6 @@ namespace SportGround.Web.Controllers
             {
 				Court = court,
 				Day = (DaysOfTheWeek) DateTime.Now.Day,
-				AvailableDays = days,
 				StartTime = DateTimeOffset.Now,
 				EndTime = DateTimeOffset.Now,
             });
@@ -65,8 +65,6 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Create(CourtWorkingDaysModel model)
         {
-	        var days = _courtWorkingDaysServices.GetAllAvailableDays(model.Court.Id);
-	        model.AvailableDays = days;
 	        var id = model.Court.Id;
 			var validationResult = workingDaysValid.Validate(model);
 	        if (!validationResult.IsValid)

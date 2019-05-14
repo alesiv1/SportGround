@@ -28,7 +28,6 @@ namespace SportGround.Data.Repositories
 				Password = password,
 				Salt = salt
 			};
-
 			_context.Users.Add(user);
 			_context.SaveChanges();
 		}

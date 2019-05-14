@@ -1,5 +1,4 @@
 ﻿using SportGround.BusinessLogic.Models;
-using SportGround.Data.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +12,5 @@ namespace SportGround.BusinessLogic.Interfaces
 		void Update(int id, CourtWorkingDaysModel model);
 		void DeleteWorkingDays(int id);
 		List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId);
-		List<DaysOfTheWeek> GetAllAvailableDays(int courtId);
 	}
 }

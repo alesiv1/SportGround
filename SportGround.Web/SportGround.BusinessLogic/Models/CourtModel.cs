@@ -14,8 +14,8 @@ namespace SportGround.BusinessLogic.Models
     public class CourtWithWorkingDaysModel : CourtModel
     {
 	    [Required]
-		public List<CourtWorkingDaysModel> AllWorkingHours { get; set; }
+		public List<CourtWorkingDaysModel> AllWorkingDays { get; set; }
 
-		public bool IsAvailableDays { get; set; }
+		public bool IsWorkingDays { get; set; }
 	}
 }

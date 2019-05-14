@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SportGround.Core
 {
-	public class HashingHelper
+	public class PasswordHashingHelper
 	{
 		private readonly string ProjectKey = "SportGround";
 

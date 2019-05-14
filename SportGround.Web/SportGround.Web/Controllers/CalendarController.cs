@@ -26,27 +26,39 @@ namespace SportGround.Web.Controllers
 	    }
 
 		public ActionResult Index(int? courtId)
-	    {
-			if(courtId != null) SetCourtId(courtId);
+		{
+			CourtWorkingDaysModel workingHours = null;
+			if (courtId != null)
+			{
+				SetCourtId(courtId);
+				workingHours = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId ?? -1).FirstOrDefault();
+			}
 		    var dateTimeNow = DateTime.Now;
-		    var sched = new DHXScheduler(this);
-		    sched.Skin = DHXScheduler.Skins.Flat;
-		    sched.LoadData = true;
-		    sched.EnableDataprocessor = true;
-		    sched.InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day);
-		    sched.Extensions.Add(SchedulerExtensions.Extension.Collision);
+		    var sched = new DHXScheduler(this)
+		    {
+			    Skin = DHXScheduler.Skins.Flat,
+			    LoadData = true,
+			    InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day),
+			};
+			if (Request.IsAuthenticated)
+				sched.EnableDataprocessor = true;
+			else
+				sched.Config.isReadonly = true;
+			sched.Extensions.Add(SchedulerExtensions.Extension.Collision);
 		    sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
-		    sched.Config.first_hour = 8;
-		    sched.Config.last_hour = 21;
-		    sched.LoadData = true;
+		    sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
+		    sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
 		    sched.PreventCache();
+		    sched.LoadData = true;
 			return View(sched);
 		}
 
 		public ContentResult Data()
 		{
 			var userId = Int32.Parse(((ClaimsIdentity) this.User.Identity).FindFirstValue("Id"));
-			var allBookings = _bookingServices.GetBookingList().Where(book => book.User.Id == userId).ToList();
+			var allBookings = this.User.IsInRole("Admin") 
+				? _bookingServices.GetBookingList().ToList()
+				: _bookingServices.GetBookingList().Where(book => book.User.Id == userId).ToList();
 			var date = new SchedulerAjaxData(allBookings
 				.Select(e => new
 				{
@@ -81,16 +93,10 @@ namespace SportGround.Web.Controllers
 			};
 			try
 			{
-				//var dayOfBook = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId)
-				//	.FirstOrDefault(day => day.StartTime.Day == booking.StartDate.Day);
-				//if (dayOfBook == null || booking.StartDate < dayOfBook.StartTime || booking.EndDate > dayOfBook.EndTime)
-				//{
-				//	throw new Exception("You cant book court in this time");
-				//}
 				switch (action.Type)
 				{
 					case DataActionTypes.Insert:
-						if (!IsCourt(activeCourtId))
+						if (!IsCourt(activeCourtId) || booking.StartDate.Day < DateTime.UtcNow.Day)
 						{
 							throw new Exception("You cant book unknow court");
 						}
@@ -100,12 +106,16 @@ namespace SportGround.Web.Controllers
 						_bookingServices.Delete(booking.Id);
 						break;
 					default:
+						if (booking.StartDate.Day < DateTime.UtcNow.Day)
+						{
+							throw new Exception("This day is unvalid!");
+						}
 						_bookingServices.Update(booking.Id, booking);
 						break;
 				}
 				action.TargetId = Convert.ToInt64(actionValues["id"]);
 			}
-			catch (Exception a)
+			catch
 			{
 				action.Type = DataActionTypes.Error;
 			}

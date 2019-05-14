@@ -91,7 +91,7 @@ namespace SportGround.Web.Controllers
 		        var newUser = _userServices
 			        .GetUserByEmail(user.Email);
 		        var identity = new ClaimsIdentity(new[] {
-				        new Claim("Id", user.Id.ToString()),
+				        new Claim("Id", newUser.Id.ToString()),
 						new Claim(ClaimTypes.Email, newUser.Email),
 				        new Claim(ClaimTypes.Name, newUser.FirstName),
 				        new Claim(ClaimTypes.Role, newUser.Role.ToString())
@@ -116,12 +116,8 @@ namespace SportGround.Web.Controllers
 		        {
 			        return Url.Action("Index", "User");
 				}
-		        else
-		        {
-			        return Url.Action("Profile", "User");
-				}
 	        }
-	        return returnUrl;
-        }
+			return Url.Action("Profile", "User");
+		}
 	}
 }

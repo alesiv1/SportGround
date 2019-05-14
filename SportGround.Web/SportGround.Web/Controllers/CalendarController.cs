@@ -36,7 +36,7 @@ namespace SportGround.Web.Controllers
 		    var dateTimeNow = DateTime.Now;
 		    var sched = new DHXScheduler(this)
 		    {
-			    Skin = DHXScheduler.Skins.Flat,
+			    Skin = DHXScheduler.Skins.Terrace,
 			    LoadData = true,
 			    InitialDate = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day),
 			};
@@ -45,11 +45,9 @@ namespace SportGround.Web.Controllers
 			else
 				sched.Config.isReadonly = true;
 			sched.Extensions.Add(SchedulerExtensions.Extension.Collision);
-		    sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
-		    sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
-		    sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
-		    sched.PreventCache();
-		    sched.LoadData = true;
+			sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
+			sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
+			sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
 			return View(sched);
 		}
 
@@ -64,8 +62,8 @@ namespace SportGround.Web.Controllers
 				{
 					id = e.Id,
 					text = e.Court.Name,
-					start_date = e.StartDate,
-					end_date = e.EndDate,
+					start_date = e.StartDate.DateTime,
+					end_date = e.EndDate.DateTime,
 					court = e.Court.Id
 				}));
 			return date;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Interfaces;
@@ -41,22 +42,18 @@ namespace SportGround.BusinessLogic.Operations
 			_userRepository.Delete(id);
 		}
 
-		public List<UserModelWithRole> GetUserList()
+		public IReadOnlyList<UserModelWithRole> GetUserList()
 		{
-			var userList = new List<UserModelWithRole>();
-			var users = _userRepository.GetUsers();
-			foreach (var user in users)
-			{
-				userList.Add(new UserModelWithRole()
-				{
-					Id = user.Id,
-					FirstName = user.FirstName,
-					LastName = user.LastName,
-					Email = user.Email,
-					Role = user.Role,
-				});
-			}
-			return userList;
+			return _userRepository.GetUsers()
+				.Select(user => new UserModelWithRole()
+					{
+						Id = user.Id,
+						FirstName = user.FirstName,
+						LastName = user.LastName,
+						Email = user.Email,
+						Role = user.Role,
+					})
+				.ToList();
 		}
 
 		public UserModelWithRole GetUserById(int id)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
@@ -24,7 +25,7 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allDays = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
+			var allDays = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId).ToList();
 			var isWorkingDays = allDays.Count < 1;
 			CourtWithWorkingDaysModel courtWithWorkingHours = new CourtWithWorkingDaysModel()
 			{

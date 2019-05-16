@@ -11,14 +11,10 @@ namespace SportGround.Web.Controllers
     public class CourtBookingController : Controller
     {
 	    private IBookingService _bookingServices;
-	    private IUserService _userServices;
-	    private ICourtService _courtServices;
 
-		public CourtBookingController(IBookingService bookingServices, IUserService userServices, ICourtService courtServices)
+		public CourtBookingController(IBookingService bookingServices)
 	    {
 		    _bookingServices = bookingServices;
-		    _userServices = userServices;
-		    _courtServices = courtServices;
 	    }
 
 		[Authorize]
@@ -27,8 +23,7 @@ namespace SportGround.Web.Controllers
 			var userId = GetIdForAuthorizedUser();
 			if (userId != -1)
 			{
-				var allUserBookings = new List<CourtBookingModel>();
-					allUserBookings = _bookingServices.GetAllUserBooking(userId);
+				var allUserBookings = _bookingServices.GetAllUserBooking(userId);
 				return View(allUserBookings);
 			}
 			return RedirectToAction("Index", "User");

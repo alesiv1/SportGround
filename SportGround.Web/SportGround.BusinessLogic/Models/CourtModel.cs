@@ -1,10 +1,13 @@
-﻿using System;
+﻿using FluentValidation.Attributes;
+using SportGround.BusinessLogic.Validations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SportGround.BusinessLogic.Models
 {
-    public class CourtModel
+	[Validator(typeof(CourtValidation))]
+	public class CourtModel
     {
 		public int Id { get; set; }
 		public string Name { get; set; }

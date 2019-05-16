@@ -1,9 +1,12 @@
-﻿using SportGround.Data.Enums;
+﻿using FluentValidation.Attributes;
+using SportGround.BusinessLogic.Validation;
+using SportGround.Data.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SportGround.BusinessLogic.Models
 {
+	[Validator(typeof(WorkingDaysValidation))]
 	public class CourtWorkingDaysModel
 	{
 		public int Id { get; set; }

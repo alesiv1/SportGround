@@ -7,12 +7,12 @@ namespace SportGround.Core
 {
 	public class PasswordHashingHelper
 	{
-		private readonly string ProjectKey = "SportGround";
+		private const string ProjectKey = "SportGround";
 
 		public string CreateSaltForPasscode()
 		{
 			var random = new RNGCryptoServiceProvider();
-			byte[] salt = new byte[40];
+			var salt = new byte[40];
 			random.GetNonZeroBytes(salt);
 			var saltInString = Convert.ToBase64String(salt);
 			return saltInString;
@@ -25,8 +25,8 @@ namespace SportGround.Core
 
 		public string GetCodeForPassword(string password, string salt)
 		{
-			string EncryptionKey = ProjectKey;
-			byte[] clearBytes = Encoding.Unicode.GetBytes(password);
+			var EncryptionKey = ProjectKey;
+			var clearBytes = Encoding.Unicode.GetBytes(password);
 			using (Aes encryptor = Aes.Create())
 			{
 				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));
@@ -47,9 +47,9 @@ namespace SportGround.Core
 
 		public string GetPasswordByDecode(string hash, string salt)
 		{
-			string EncryptionKey = ProjectKey;
+			var EncryptionKey = ProjectKey;
 			var password = hash.Replace(" ", "+");
-			byte[] cipherBytes = Convert.FromBase64String(password);
+			var cipherBytes = Convert.FromBase64String(password);
 			using (Aes encryptor = Aes.Create())
 			{
 				Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, GetSaltForPasscode(salt));

@@ -4,16 +4,12 @@ using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
-using FluentValidation.Results;
-using SportGround.BusinessLogic.Validations;
 
 namespace SportGround.Web.Controllers
 {
     public class UserController : Controller
     {
-	    private IUserService _userServices;
-	    private UserValidation userValid = new UserValidation();
-	    private UserWithPasswordValidation userwithRoleValid = new UserWithPasswordValidation();
+	    private readonly IUserService _userServices;
 
 		public UserController(IUserService services)
 	    {
@@ -57,15 +53,6 @@ namespace SportGround.Web.Controllers
 			{
 				return View();
 			}
-			var validationResult = userwithRoleValid.Validate(user);
-			if (!validationResult.IsValid)
-			{
-				foreach (ValidationFailure data in validationResult.Errors)
-				{
-					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-				}
-				return View(user);
-			}
 			if (_userServices.UserExists(user.Email))
 			{
 				ModelState.AddModelError("Email", "This email   " + user.Email + "   already exist!");
@@ -100,15 +87,6 @@ namespace SportGround.Web.Controllers
 			if (!ModelState.IsValid)
 			{
 				return View();
-			}
-			var validationResult = userValid.Validate(user);
-			if (!validationResult.IsValid)
-			{
-				foreach (ValidationFailure data in validationResult.Errors)
-				{
-					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-				}
-				return View(user);
 			}
 			var userEmail = _userServices.GetUserById(id)?.Email;
 			if (_userServices.UserExists(user.Email) && userEmail != user.Email)

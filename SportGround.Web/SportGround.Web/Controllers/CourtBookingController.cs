@@ -10,7 +10,7 @@ namespace SportGround.Web.Controllers
 {
     public class CourtBookingController : Controller
     {
-	    private IBookingService _bookingServices;
+	    private readonly IBookingService _bookingServices;
 
 		public CourtBookingController(IBookingService bookingServices)
 	    {

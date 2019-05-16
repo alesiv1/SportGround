@@ -13,9 +13,9 @@ namespace SportGround.Web.Controllers
 {
     public class CalendarController : Controller
     {
-	    private IBookingService _bookingServices;
-	    private ICourtService _courtServices;
-	    private ICourtWorkingDaysService _courtWorkingDaysServices;
+	    private readonly IBookingService _bookingServices;
+	    private readonly ICourtService _courtServices;
+	    private readonly ICourtWorkingDaysService _courtWorkingDaysServices;
 		private static int activeCourtId = -1;
 
 		public CalendarController(IBookingService bookingServices, ICourtService services, ICourtWorkingDaysService courtWorkingDaysServices)

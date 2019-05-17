@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using SportGround.Web.Models;
 
 namespace SportGround.Web.Controllers
 {
@@ -48,7 +49,11 @@ namespace SportGround.Web.Controllers
 			sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
 			sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
 			sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
-			return View(sched);
+			return View(new CalendarModel()
+			{
+				Scheduler = sched,
+				WorkingHours = workingHours
+			});
 		}
 
 		public ContentResult Data()

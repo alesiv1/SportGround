@@ -8,14 +8,15 @@ using System.Web.Mvc;
 using SportGround.BusinessLogic.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using SportGround.Web.Models;
 
 namespace SportGround.Web.Controllers
 {
     public class CalendarController : Controller
     {
-	    private IBookingService _bookingServices;
-	    private ICourtService _courtServices;
-	    private ICourtWorkingDaysService _courtWorkingDaysServices;
+	    private readonly IBookingService _bookingServices;
+	    private readonly ICourtService _courtServices;
+	    private readonly ICourtWorkingDaysService _courtWorkingDaysServices;
 		private static int activeCourtId = -1;
 
 		public CalendarController(IBookingService bookingServices, ICourtService services, ICourtWorkingDaysService courtWorkingDaysServices)
@@ -48,7 +49,11 @@ namespace SportGround.Web.Controllers
 			sched.Extensions.Add(SchedulerExtensions.Extension.Limit);
 			sched.Config.first_hour = workingHours != null ? workingHours.StartTime.Hour : 8;
 			sched.Config.last_hour = workingHours != null ? workingHours.EndTime.Hour : 21;
-			return View(sched);
+			return View(new CalendarModel()
+			{
+				Scheduler = sched,
+				WorkingHours = workingHours
+			});
 		}
 
 		public ContentResult Data()

@@ -1,22 +1,11 @@
-﻿@{
-    Layout = null;
-}
+﻿@model SportGround.Web.Models.CalendarModel
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calendar</title>
-    <style>
-        html, body {
-            height: 100%;
-            padding: 0px;
-            margin: 0px;
-            background-color: #eee;
-        }
-    </style>
 </head>
 <body>
-<div style=" height:100%; width:100%; margin:0 auto;">
-    @Html.Raw(Model.Render())
+<div style="height:80vh;width:100%; margin:0; padding: 0">
+    @Html.Raw(Model.Scheduler.Render())
 </div>
 </body>
 </html>

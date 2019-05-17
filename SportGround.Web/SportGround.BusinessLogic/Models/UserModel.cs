@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using FluentValidation.Attributes;
+using SportGround.BusinessLogic.Validations;
 using SportGround.Data.Enums;
 
 namespace SportGround.BusinessLogic.Models
 {
+	[Validator(typeof(UserValidation))]
 	public class UserModel
 	{
 		public int Id { get; set; }
@@ -18,6 +21,7 @@ namespace SportGround.BusinessLogic.Models
 		public UserRole Role { get; set; }
 	}
 
+	[Validator(typeof(UserWithPasswordValidation))]
 	public class UserModelWithPassword : UserModel
 	{
 		[DataType(DataType.Password)]

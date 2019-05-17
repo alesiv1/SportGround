@@ -1,12 +1,12 @@
-﻿using DHTMLX.Scheduler;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using DHTMLX.Scheduler;
+using SportGround.BusinessLogic.Models;
 
 namespace SportGround.Web.Models
 {
 	public class CalendarModel
 	{
-		public string Courts { get; set; }
 		public DHXScheduler Scheduler { get; set; }
+		public CourtWorkingDaysModel WorkingHours { get; set; }
 	}
 }

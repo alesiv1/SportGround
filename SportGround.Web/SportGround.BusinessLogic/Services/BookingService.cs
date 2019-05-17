@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using SportGround.Data.Interfaces;
@@ -29,32 +30,28 @@ namespace SportGround.BusinessLogic.Operations
 			_bookingRepository.Delete(id);
 		}
 
-		public List<CourtBookingModel> GetBookingList()
+		public IReadOnlyList<CourtBookingModel> GetBookingList()
 		{
-			var bookingList = new List<CourtBookingModel>();
-			var bookings = _bookingRepository.GetCourtBookings();
-			foreach (var booking in bookings)
-			{
-				bookingList.Add(new CourtBookingModel()
-				{
-					Id = booking.Id,
-					User = new UserModel()
+			return _bookingRepository.GetCourtBookings()
+				.Select(booking => new CourtBookingModel()
 					{
-						Id = booking.User.Id,
-						Email = booking.User.Email,
-						FirstName = booking.User.FirstName,
-						LastName = booking.User.LastName
-					},
-					Court = new CourtModel()
-					{
-						Id = booking.Court.Id,
-						Name = booking.Court.Name
-					},
-					StartDate = booking.StartDate,
-					EndDate = booking.EndDate
-				});
-			}
-			return bookingList;
+						Id = booking.Id,
+						User = new UserModel()
+						{
+							Id = booking.User.Id,
+							Email = booking.User.Email,
+							FirstName = booking.User.FirstName,
+							LastName = booking.User.LastName
+						},
+						Court = new CourtModel()
+						{
+							Id = booking.Court.Id,
+							Name = booking.Court.Name
+						},
+						StartDate = booking.StartDate,
+						EndDate = booking.EndDate
+					})
+				.ToList();
 		}
 
 		public CourtBookingModel GetCourtBookingById(long id)
@@ -86,14 +83,12 @@ namespace SportGround.BusinessLogic.Operations
 			_bookingRepository.Update(id, model.StartDate, model.EndDate);
 		}
 
-		public List<CourtBookingModel> GetAllUserBooking(int userId)
+		public IReadOnlyList<CourtBookingModel> GetAllUserBooking(int userId)
 		{
-			var bookingList = new List<CourtBookingModel>();
-			var bookings = _userRepository.GetUserById(userId).BookingCourts;
-			foreach (var booking in bookings)
-			{
-				bookingList.Add(new CourtBookingModel()
-				{
+			return _userRepository.GetUserById(userId)
+				.BookingCourts
+				.Select(booking => new CourtBookingModel()
+					{
 					Id = booking.Id,
 					User = new UserModel()
 					{
@@ -111,9 +106,8 @@ namespace SportGround.BusinessLogic.Operations
 					EndDate = booking.EndDate,
 					IsActive = booking.StartDate.Date >= DateTimeOffset.Now.Date,
 					DateInString = booking.StartDate.ToString("yyyy-M-d dddd")
-				});
-			}
-			return bookingList;
+					})
+				.ToList();
 		}
 	}
 }

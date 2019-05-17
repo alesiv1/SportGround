@@ -10,7 +10,6 @@ namespace SportGround.BusinessLogic.Validations
 		{
 			RuleFor(x => x.Name).Length(5, 50).WithMessage("Name must have more 5 and less 50 characters!");
 			RuleFor(x => x.Name).NotNull().WithMessage("Name is required!");
-			RuleFor(x => x.Name).NotEmpty().WithMessage("Name can't be empty!");
 		}
 	}
 }

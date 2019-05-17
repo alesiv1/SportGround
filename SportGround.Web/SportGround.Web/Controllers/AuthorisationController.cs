@@ -11,7 +11,7 @@ namespace SportGround.Web.Controllers
 {
     public class AuthorisationController : Controller
     {
-	    private IUserService _userServices;
+	    private readonly IUserService _userServices;
 
 	    public AuthorisationController(IUserService service)
 	    {

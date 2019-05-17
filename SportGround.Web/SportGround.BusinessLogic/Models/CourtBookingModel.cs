@@ -26,10 +26,4 @@ namespace SportGround.BusinessLogic.Models
 		public string DateInString { get; set; }
 		public bool IsActive { get; set; }
 	}
-
-	public class CreateCourtBookingModel : BaseCourtBookingModel
-	{ 
-		[Required]
-		public List<string> AvailableDate { get; set; }
-	}
 }

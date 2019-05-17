@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Web.Mvc;
-using FluentValidation.Results;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
-using SportGround.BusinessLogic.Validations;
 
 namespace SportGround.Web.Controllers
 {
     public class CourtController : Controller
     {
-		private ICourtService _courtServices;
-		private IBookingService _bookingServices;
-		private ICourtWorkingDaysService _courtWorkingDaysServices;
-		private CourtValidation courtValid = new CourtValidation();
+		private readonly ICourtService _courtServices;
+		private readonly IBookingService _bookingServices;
+		private readonly ICourtWorkingDaysService _courtWorkingDaysServices;
 
 		public CourtController(ICourtService services, IBookingService bookingServices, ICourtWorkingDaysService servicesDays)
 	    {
@@ -50,15 +47,6 @@ namespace SportGround.Web.Controllers
 	        {
 		        return View();
 	        }
-	        var validationResult = courtValid.Validate(court);
-	        if (!validationResult.IsValid)
-	        {
-		        foreach (ValidationFailure data in validationResult.Errors)
-		        {
-			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-		        }
-		        return View(court);
-	        }
 			if (_courtServices.CourtExists(court.Name))
 			{
 				ModelState.AddModelError("Name", "Court with name " + court.Name + "  already exists!");
@@ -82,15 +70,6 @@ namespace SportGround.Web.Controllers
 			if (!ModelState.IsValid)
 			{
 				return View();
-			}
-			var validationResult = courtValid.Validate(court);
-			if (!validationResult.IsValid)
-			{
-				foreach (ValidationFailure data in validationResult.Errors)
-				{
-					ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-				}
-				return View(court);
 			}
 			_courtServices.Update(id, court);
 			return RedirectToAction("Index");

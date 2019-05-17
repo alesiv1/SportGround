@@ -7,7 +7,7 @@ namespace SportGround.BusinessLogic.Interfaces
 	public interface ICourtService
 	{
 		CourtModel GetCourtById(int id);
-		List<CourtModel> GetCourtList();
+		IReadOnlyList<CourtModel> GetCourtList();
 		void Create(CourtModel model);
 		void Update(int id, CourtModel model);
 		void DeleteCourt(int id);

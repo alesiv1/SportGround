@@ -10,7 +10,7 @@ namespace SportGround.BusinessLogic.Interfaces
 		UserModelWithRole GetUserById(int id);
 		UserEntity GetUserByEmail(string email);
 		UserModelWithPassword GetUserWithPassword(int id);
-		List<UserModelWithRole> GetUserList();
+		IReadOnlyList<UserModelWithRole> GetUserList();
 		void Create(UserModelWithPassword model);
 		void CreateDefaultUser();
 		void Update(int id, UserModel model);

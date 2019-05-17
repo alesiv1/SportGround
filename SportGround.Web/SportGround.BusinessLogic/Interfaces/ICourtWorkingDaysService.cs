@@ -7,10 +7,10 @@ namespace SportGround.BusinessLogic.Interfaces
 	public interface ICourtWorkingDaysService
 	{
 		CourtWorkingDaysModel GetWorkingDay(int id);
-		List<CourtWorkingDaysModel> GetWorkingDaysList();
+		IReadOnlyList<CourtWorkingDaysModel> GetWorkingDaysList();
 		void Create(int courtId, CourtWorkingDaysModel model);
 		void Update(int id, CourtWorkingDaysModel model);
 		void DeleteWorkingDays(int id);
-		List<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId);
+		IReadOnlyList<CourtWorkingDaysModel> GetWorkingDaysForCourt(int courtId);
 	}
 }

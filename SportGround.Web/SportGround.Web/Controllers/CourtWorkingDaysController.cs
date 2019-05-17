@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SportGround.BusinessLogic.Interfaces;
 using SportGround.BusinessLogic.Models;
 using System.Web.Mvc;
@@ -11,9 +12,8 @@ namespace SportGround.Web.Controllers
 {
     public class CourtWorkingDaysController : Controller
     {
-	    private ICourtWorkingDaysService _courtWorkingDaysServices;
-	    private ICourtService _courtServices;
-	    private WorkingDaysValidation workingDaysValid = new WorkingDaysValidation();
+	    private readonly ICourtWorkingDaysService _courtWorkingDaysServices;
+	    private readonly ICourtService _courtServices;
 
 		public CourtWorkingDaysController(ICourtWorkingDaysService servicesDays, ICourtService services)
 	    {
@@ -24,7 +24,7 @@ namespace SportGround.Web.Controllers
 		[Authorize]
 		public ActionResult Index(int courtId)
 		{
-			var allDays = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId);
+			var allDays = _courtWorkingDaysServices.GetWorkingDaysForCourt(courtId).ToList();
 			var isWorkingDays = allDays.Count < 1;
 			CourtWithWorkingDaysModel courtWithWorkingHours = new CourtWithWorkingDaysModel()
 			{
@@ -66,13 +66,8 @@ namespace SportGround.Web.Controllers
         public ActionResult Create(CourtWorkingDaysModel model)
         {
 	        var id = model.Court.Id;
-			var validationResult = workingDaysValid.Validate(model);
-	        if (!validationResult.IsValid)
+	        if (!ModelState.IsValid)
 	        {
-		        foreach (ValidationFailure data in validationResult.Errors)
-		        {
-			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-		        }
 		        return View(model);
 	        }
 	        _courtWorkingDaysServices.Create(id, model);
@@ -90,13 +85,8 @@ namespace SportGround.Web.Controllers
 		[HttpPost]
         public ActionResult Edit(int id, CourtWorkingDaysModel model)
         {
-	        var validationResult = workingDaysValid.Validate(model);
-	        if (!validationResult.IsValid)
+	        if (!ModelState.IsValid)
 	        {
-		        foreach (ValidationFailure data in validationResult.Errors)
-		        {
-			        ModelState.AddModelError(data.PropertyName, data.ErrorMessage);
-		        }
 		        return View(model);
 	        }
 			_courtWorkingDaysServices.Update(id, model);

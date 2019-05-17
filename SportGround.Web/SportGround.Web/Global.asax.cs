@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Mvc;
+using System;
 using System.Security.Claims;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -16,6 +17,8 @@ namespace SportGround.Web
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			BundleConfig.RegisterBundles(BundleTable.Bundles);
 			AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.Name;
+
+			FluentValidationModelValidatorProvider.Configure();
 		}
 	}
 }
